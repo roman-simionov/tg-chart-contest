@@ -1,15 +1,15 @@
 
-export default class Renderer { 
+export default class Renderer {
     /**
-     * 
-     * @param {Element} element 
+     *
+     * @param {Element} element
      */
-    constructor(element) { 
-        
+    constructor(element) {
+        element.classList.add("chart");
     }
 
-    log() { 
+    log() {
         console.log(1);
     }
 
-}
+};

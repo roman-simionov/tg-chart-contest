@@ -1,0 +1,84 @@
+{
+    "env": {
+        "es6": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 2017,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "spellcheck"
+    ],
+    "rules": {
+        "block-spacing": "error",
+        "comma-spacing": "error",
+        "no-unused-vars": [
+            "error",
+            {
+                "vars": "all",
+                "args": "after-used",
+                "argsIgnorePattern": "^_",
+                "ignoreRestSiblings": false
+            }
+        ],
+        "computed-property-spacing": "error",
+        "func-call-spacing": "error",
+        "key-spacing": "error",
+        "no-irregular-whitespace": "error",
+        "no-multi-spaces": "error",
+        "no-trailing-spaces": "error",
+        "no-whitespace-before-property": "error",
+        "object-curly-spacing": [
+            "error",
+            "always"
+        ],
+        "semi-spacing": "error",
+        "space-before-blocks": "error",
+        "space-before-function-paren": [
+            "error",
+            "never"
+        ],
+        "space-in-parens": "error",
+        "space-infix-ops": "error",
+        "space-unary-ops": "error",
+        "semi": "error",
+        "brace-style": [
+            "error",
+            "1tbs",
+            {
+                "allowSingleLine": true
+            }
+        ],
+        "curly": [
+            "error",
+            "multi-line",
+            "consistent"
+        ],
+        "unicode-bom": [
+            "error",
+            "never"
+        ],
+        "eol-last": [
+            "error",
+            "always"
+        ],
+        "spellcheck/spell-checker": [
+            "error",
+            {
+                "lang": "en_US",
+                "comments": false,
+                "strings": false,
+                "identifiers": true,
+                "templates": false,
+                "skipIfMatch": [
+                    "^\\$?..$"
+                ],
+                "skipWords": [
+                    "devtool",
+                    "filename",
+                    "renderer"
+                ]
+            }
+        ]
+    }
+}
