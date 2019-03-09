@@ -71,7 +71,7 @@ class SvgWrapper {
     }
 }
 
-class TextElement extends SvgWrapper {
+export class TextElement extends SvgWrapper {
     constructor() {
         super("text");
     }
@@ -86,7 +86,7 @@ class TextElement extends SvgWrapper {
     }
 }
 
-class Path extends SvgWrapper {
+export class Path extends SvgWrapper {
     constructor() {
         super("path");
     }
@@ -124,8 +124,8 @@ export default class Renderer {
     constructor(element) {
         element.classList.add("chart");
         this.svg = new SvgWrapper("svg").setAttributes({
-            fill: "black",
-            stroke: "black"
+            fill: "none",
+            stroke: "none"
         });
         element.appendChild(this.svg.element);
     }

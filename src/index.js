@@ -1,27 +1,36 @@
 import Renderer from "./renderer";
+import Series from "./series";
+import { numericScale, dateScale } from "./domain";
 
 const renderer = new Renderer(document.getElementById("test"));
 
-const text = renderer.text().setAttributes({
-    x: 10,
-    y: 10
-}).value("text");
+renderer.svg.setAttributes({ width: 500, height: 500 });
+
+const data = new Array(100).fill(0).map((d, i) => new Date(i));
+
+const series = new Series(data.map(d=>[d, Math.random() * 30]), {
+    parent: renderer.svg,
+    stroke: "red"
+});
+
+const series1 = new Series(data.map(d=>[d, Math.random() * 15]), {
+    parent: renderer.svg,
+    stroke: "blue"
+});
 
 
-renderer.svg.setAttributes({ width: 1000, height: 1000 });
-
-
-
-text.renderTo(renderer.svg);
-
-text.animate("x", 100);
-
-const path = renderer.path();
-path.renderTo(renderer.svg);
-
-path.value([[10, 10], [100, 100]]);
+const range = [0, Math.max.apply(null, [series, series1].map(s => s.getRange()))];
+const valueDomain = numericScale(range, [0, 500]);
+const dateDomain = dateScale([data[0], data[99]], [0, 500]);
+series.render(valueDomain, dateDomain);
+series1.render(valueDomain, dateDomain);
 
 setTimeout(() => {
-
-    path.value([[10, 10], [100, 100]].reverse(), true);
+    const range = [0, Math.max.apply(null, [series1].map(s => s.getRange()))];
+    const valueDomain = numericScale(range, [0, 500]);
+    series.hide();
+    series.render(valueDomain, dateDomain, true);
+    series1.render(valueDomain, dateDomain, true);
 }, 1000);
+
+
