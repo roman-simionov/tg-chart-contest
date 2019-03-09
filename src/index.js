@@ -14,6 +14,8 @@ renderer.svg.setAttributes({ width: 1000, height: 1000 });
 
 text.renderTo(renderer.svg);
 
+text.animate("x", 100);
+
 const path = renderer.path();
 path.renderTo(renderer.svg);
 

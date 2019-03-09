@@ -56,16 +56,19 @@ class SvgWrapper {
     }
 
     animate(attributeName, value) {
-        const animation = new Animation().setAttributes({
+        const animation = new Animation(() => {
+            this.setAttributes({ [attributeName]: value });
+        }).setAttributes({
             to: value,
             dur: "1s",
             attributeName,
-            begin: "click"
+            begin: "click",
+            fill: "freeze"
         });
 
         animation.renderTo(this);
         animation.element.beginElement();
-     }
+    }
 }
 
 class TextElement extends SvgWrapper {
@@ -105,9 +108,10 @@ class Path extends SvgWrapper {
 }
 
 class Animation extends SvgWrapper {
-    constructor() {
+    constructor(onEnd) {
         super("animate");
-        this.element.onend = () => {
+        this.element.onend = (e) => {
+            onEnd && onEnd(e);
             this.remove();
         };
     }
