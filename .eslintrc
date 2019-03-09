@@ -76,7 +76,8 @@
                 "skipWords": [
                     "devtool",
                     "filename",
-                    "renderer"
+                    "renderer",
+                    "svg"
                 ]
             }
         ]
