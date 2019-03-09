@@ -6,10 +6,11 @@
     "eslint": "^4.19.1",
     "eslint-plugin-spellcheck": "^0.0.10",
     "mocha": "^4.0.1",
-    "webpack": "^4.29.6"
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
   },
-  "dependencies": {
-    
-  },
-  "scripts": {}
+  "dependencies": {},
+  "scripts": {
+    "webpack": "webpack"
+  }
 }
