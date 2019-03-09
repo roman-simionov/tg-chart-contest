@@ -1,3 +1,4 @@
-import log from "./renderer";
+import Renderer from "./renderer";
 
-log(1);
+const renderer = new Renderer(document.getElementById("test"));
+renderer.log();
