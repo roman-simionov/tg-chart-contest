@@ -75,9 +75,11 @@
                 ],
                 "skipWords": [
                     "devtool",
+                    "dur",
                     "filename",
                     "renderer",
-                    "svg"
+                    "svg",
+                    "onend"
                 ]
             }
         ]

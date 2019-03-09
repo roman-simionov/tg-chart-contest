@@ -16,6 +16,14 @@ class SvgWrapper {
         return this;
     }
 
+    /**
+     *
+     * @param {string} name
+     */
+    getAttribute(name) {
+        return this.element.getAttribute(name);
+    }
+
     setCss(styleSheet) {
         Object.keys(styleSheet).forEach(k => {
             const value = styleSheet[k];
@@ -39,6 +47,25 @@ class SvgWrapper {
     renderTo(svgWrapper) {
         svgWrapper.element.appendChild(this.element);
     }
+
+    remove() {
+        const parent = this.element.parentNode;
+        if (parent) {
+            parent.removeChild(this.element);
+        }
+    }
+
+    animate(attributeName, value) {
+        const animation = new Animation().setAttributes({
+            to: value,
+            dur: "1s",
+            attributeName,
+            begin: "click"
+        });
+
+        animation.renderTo(this);
+        animation.element.beginElement();
+     }
 }
 
 class TextElement extends SvgWrapper {
@@ -65,10 +92,24 @@ class Path extends SvgWrapper {
      *
      * @param {Array<number>} points
      */
-    value(points) {
-        const d = `M${points.join("L")}`;
-        this.setAttributes({ d });
+    value(points, animate) {
+        const d = `M ${points.join(" L ")}`;
+        if (!animate) {
+            this.setAttributes({ d });
+        } else {
+            this.animate("d", d);
+        }
+
         return this;
+    }
+}
+
+class Animation extends SvgWrapper {
+    constructor() {
+        super("animate");
+        this.element.onend = () => {
+            this.remove();
+        };
     }
 }
 export default class Renderer {
