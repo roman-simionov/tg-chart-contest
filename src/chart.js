@@ -28,7 +28,8 @@ export default class Chart {
             this.render();
         });
 
-        this.selector.setDomain([new Date(2019, 2, 1), new Date(2019, 2, 20)]);
+        const x = this.options.x;
+        this.selector.setDomain([x[0], x[x.length - 1]]);
 
         this.resize();
     }
