@@ -51,8 +51,8 @@ class Handler {
         }
         if (x - this.handlerWidth / 2 < 0) {
             x = 0;
-        } else if (x + this.handlerWidth / 2 > this.width) {
-            x = this.width - this.handlerWidth * 2;
+        } else if (x + this.handlerWidth / 2 >= this.width) {
+            x = this.width - this.handlerWidth;
         }
         this.element.setAttributes({ x });
     }
@@ -138,12 +138,12 @@ export default class Selector {
     }
 
     resize(width, height) {
-        this.renderer.svg.setAttributes({ width, height });
-        this.handlers.forEach(h => h.resize(width, height));
-        this.handlers[0].value(125);
-        this.handlers[1].value(width - 400);
         this.width = width;
         this.height = height;
+        this.renderer.svg.setAttributes({ width, height });
+        this.handlers.forEach(h => h.resize(width, height));
+        this.handlers[0].value(0);
+        this.handlers[1].value(this.width);
         this.background.setAttributes({ width, height });
         this.r1.setAttributes({
             height
