@@ -1,4 +1,5 @@
 import Renderer from "./renderer";
+import { numericScale } from "./domain";
 
 class Handler {
     /**
@@ -63,7 +64,7 @@ export default class Selector {
      *
      * @param {Element} element
      */
-    constructor(element) {
+    constructor(element, changed) {
         this.renderer = new Renderer(element);
         this.renderer.svg.element.classList.add("selector");
         this.background = this.renderer.createElement("rect").renderTo(this.renderer.svg);
@@ -77,12 +78,17 @@ export default class Selector {
 
         this.r3 = this.renderer.path().renderTo(this.renderer.svg);
         this.r3.element.classList.add("handler");
+        this.domain = [];
+
+        this.changed = changed;
 
 
-        const handlerChanged = () => {
+        this.handlerChanged = () => {
             this.drawRects();
+
+            this.changed();
         };
-        this.handlers = [new Handler(this.renderer, handlerChanged), new Handler(this.renderer, handlerChanged)];
+        this.handlers = [new Handler(this.renderer, this.handlerChanged), new Handler(this.renderer, this.handlerChanged)];
 
         this.attachEvents();
 
@@ -110,8 +116,7 @@ export default class Selector {
                 this.handlers[0].value(x1 + offset);
                 this.handlers[1].value(x2 + offset);
 
-                this.drawRects();
-
+                this.handlerChanged();
             }
         });
 
@@ -152,5 +157,24 @@ export default class Selector {
             height
         });
         this.drawRects();
+        this.updateScale();
+    }
+
+    setDomain(domain) {
+        this.domain = domain.map(d => new Date(d).getTime());
+        this.updateScale();
+    }
+
+    updateScale() {
+        this.scale = numericScale([0, this.width], this.domain);
+    }
+
+    value() {
+        const [x1, x2] = this.x1x2();
+
+        return [
+            new Date(this.scale(this.width - x1)),
+            new Date(this.scale(x2 - this.width))
+        ];
     }
 }

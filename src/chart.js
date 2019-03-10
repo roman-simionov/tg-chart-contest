@@ -18,7 +18,11 @@ export default class Chart {
 
         this.argumentAxis = new ArgumentAxis(element);
         this.valueAxis = new ValueAxis(this.renderer);
-        this.selector = new Selector(element);
+        this.selector = new Selector(element, () => {
+            this.render();
+        });
+
+        this.selector.setDomain([new Date(2019, 2, 1), new Date(2019, 2, 20)]);
 
         this.resize();
     }
@@ -38,7 +42,7 @@ export default class Chart {
     }
 
     render() {
-        this.argumentAxis.setDomain([new Date(2019, 2, 1), new Date(2019, 2, 20)]);
+        this.argumentAxis.setDomain(this.selector.value());
         this.valueAxis.setDomain([0, 100]);
         this.argumentAxis.render();
         this.valueAxis.render();
