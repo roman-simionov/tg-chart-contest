@@ -5,13 +5,35 @@ class Handler {
      *
      * @param {Renderer} renderer
      */
-    constructor(renderer) {
+    constructor(renderer, changed) {
         this.renderer = renderer;
         this.handlerWidth = 6;
         this.element = renderer.createElement("rect").setAttributes({
             width: this.handlerWidth
         }).renderTo(renderer.svg);
         this.element.element.classList.add("handler");
+        this.changed = changed;
+        this.attachEvents();
+    }
+
+    attachEvents() {
+        this.startEvent = null;
+        this.element.element.addEventListener("pointerdown", (event) => {
+            event.startValue = this.value();
+            this.startEvent = event;
+        });
+
+        document.addEventListener("pointermove", (event) => {
+            if (this.startEvent) {
+                const offset = event.pageX - this.startEvent.pageX;
+                this.value(this.startEvent.startValue + offset);
+                this.changed();
+            }
+        });
+
+        document.addEventListener("pointerup", () => {
+            this.startEvent = null;
+        });
     }
 
     resize(width, height) {
@@ -44,6 +66,9 @@ export default class Selector {
     constructor(element) {
         this.renderer = new Renderer(element);
         this.renderer.svg.element.classList.add("selector");
+        this.background = this.renderer.createElement("rect").renderTo(this.renderer.svg);
+        this.background.element.classList.add("background");
+
         this.r1 = this.renderer.createElement("rect").renderTo(this.renderer.svg);
         this.r1.element.classList.add("shutter");
 
@@ -54,12 +79,53 @@ export default class Selector {
         this.r3.element.classList.add("handler");
 
 
-        this.handlers = [new Handler(this.renderer), new Handler(this.renderer)];
+        const handlerChanged = () => {
+            this.drawRects();
+        };
+        this.handlers = [new Handler(this.renderer, handlerChanged), new Handler(this.renderer, handlerChanged)];
+
+        this.attachEvents();
 
     }
 
+    attachEvents() {
+        this.startEvent = null;
+        this.background.element.addEventListener("pointerdown", (event) => {
+            event.x1x2 = this.x1x2();
+            this.startEvent = event;
+        });
+
+        document.addEventListener("pointermove", (event) => {
+            if (this.startEvent) {
+                let offset = event.pageX - this.startEvent.pageX;
+                const [x1, x2] = this.startEvent.x1x2;
+                if (offset < 0) {
+                    offset = x1 + offset < 0 ? 0 - x1 : offset;
+                }
+
+                if (offset > 0) {
+                    offset = x2 + offset > this.width ? this.width - x2 : offset;
+                }
+
+                this.handlers[0].value(x1 + offset);
+                this.handlers[1].value(x2 + offset);
+
+                this.drawRects();
+
+            }
+        });
+
+        document.addEventListener("pointerup", () => {
+            this.startEvent = null;
+        });
+    }
+
+    x1x2() {
+        return this.handlers.map(h => h.value()).sort((a, b) => a - b);
+    };
+
     drawRects() {
-        const [x1, x2] = this.handlers.map(h => h.value()).sort((a, b) => a - b);
+        const [x1, x2] = this.x1x2();
 
 
         this.r1.setAttributes({ width: x1 });
@@ -78,6 +144,7 @@ export default class Selector {
         this.handlers[1].value(width - 400);
         this.width = width;
         this.height = height;
+        this.background.setAttributes({ width, height });
         this.r1.setAttributes({
             height
         });

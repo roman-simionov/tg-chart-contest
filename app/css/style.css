@@ -32,3 +32,7 @@
     opacity: 0.35;
     fill: cornflowerblue
 }
+
+.selector .background{
+    fill: transparent;
+}
