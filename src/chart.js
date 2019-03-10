@@ -1,5 +1,6 @@
 import Renderer from "./renderer";
 import { ArgumentAxis, ValueAxis } from "./axis";
+import Selector from "./selector";
 
 export default class Chart {
     /**
@@ -17,6 +18,7 @@ export default class Chart {
 
         this.argumentAxis = new ArgumentAxis(element);
         this.valueAxis = new ValueAxis(this.renderer);
+        this.selector = new Selector(element);
 
         this.resize();
     }
@@ -30,6 +32,7 @@ export default class Chart {
             this.renderer.svg.setAttributes({ width, height });
             this.argumentAxis.resize(width, argumentsAxisMeasure.height, argumentsAxisMeasure.lineHeight);
             this.valueAxis.resize(width, height, argumentsAxisMeasure.height - argumentsAxisMeasure.lineHeight);
+            this.selector.resize(width, this.options.selectorHeight || 75);
         }
         this.render();
     }
@@ -51,4 +54,5 @@ export default class Chart {
  * @type {Object}
  *
  * @property {number} mainPlotHeight
+ * @property {number} selectorHeight
  */

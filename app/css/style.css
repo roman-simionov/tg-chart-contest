@@ -20,5 +20,15 @@
 
 .grid{
     stroke: #666;
-    stroke-width: 1;
+    stroke-width: 1px;
+}
+
+.handler{
+    fill: cornflowerblue;
+    opacity: 0.85;
+}
+
+.shutter{
+    opacity: 0.35;
+    fill: cornflowerblue
 }
