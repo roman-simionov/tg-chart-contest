@@ -5,6 +5,7 @@
 .svg{
     fill: none;
     stroke: none;
+    user-select: none;
 }
 
 .label{

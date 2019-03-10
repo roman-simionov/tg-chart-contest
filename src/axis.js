@@ -57,7 +57,9 @@ export class ValueAxis extends BaseAxis {
 
         const ticks = [];
 
-        for (let i = this.domain.domain[0]; i < this.domain.domain[1]; i += 10) {
+        const addInterval = this.calculateInterval();
+
+        for (let i = this.domain.domain[0]; i < this.domain.domain[1]; i = addInterval(i)) {
             const text = this.format(i);
             const label = this.renderer.text().value(text);
             const tick = this.domain.scale(i);
@@ -79,6 +81,27 @@ export class ValueAxis extends BaseAxis {
             "transform": `translate(0, ${-lineHeight})`
         });
         this.domain.setRange([0, height]);
+    }
+
+    calculateInterval() {
+        const domainRange = this.domain.domain[1] - this.domain.domain[0];
+        const screenRange = this.domain.range[1] - this.domain.range[0];
+
+        const count = Math.ceil(screenRange / 35);
+        const interval = domainRange / count;
+
+        let adjustedInterval = 1;
+
+        let multiplier = 0;
+        while (adjustedInterval < interval) {
+            adjustedInterval *= MULTIPLIERS[multiplier++];
+            multiplier > MULTIPLIERS.length;
+            multiplier = 1;
+        }
+
+        return (v) => {
+            return v + adjustedInterval;
+        };
     }
 }
 
