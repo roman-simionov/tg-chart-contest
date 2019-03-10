@@ -188,6 +188,8 @@ export default class Selector {
     }
 
     setSeries(options) {
-        this.seriesView = new SeriesView(this.renderer, options);
+        const seriesGroup = this.renderer.createElement("g").renderTo(this.renderer.svg);
+        seriesGroup.element.classList.add("series");
+        this.seriesView = new SeriesView(seriesGroup, options);
      }
 }

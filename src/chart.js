@@ -33,7 +33,10 @@ export default class Chart {
         this.selector.setDomain([x[0], x[x.length - 1]]);
         this.selector.setSeries(this.options.series);
 
-        this.seriesView = new SeriesView(this.renderer, this.options.series);
+        const seriesGroup = this.renderer.createElement("g").renderTo(this.renderer.svg);
+        seriesGroup.element.classList.add("series");
+
+        this.seriesView = new SeriesView(seriesGroup, this.options.series);
 
         this.resize();
     }

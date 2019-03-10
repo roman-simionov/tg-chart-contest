@@ -2,13 +2,13 @@ import Series from "./series";
 
 export default class SeriesView {
 
-    constructor(renderer, options) {
+    constructor(container, options) {
         /**
          * @type {Series}
          */
         this.series = options.map(o => {
             const series = new Series(o);
-            series.path.renderTo(renderer.svg);
+            series.path.renderTo(container);
             return series;
         });
     }

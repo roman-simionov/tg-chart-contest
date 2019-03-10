@@ -36,3 +36,7 @@
 .selector .background{
     fill: transparent;
 }
+
+.series {
+    stroke-width: 2;
+}
