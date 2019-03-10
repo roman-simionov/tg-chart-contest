@@ -77,7 +77,10 @@
                     "devtool",
                     "dur",
                     "filename",
-                    "renderer",
+                    "rect",
+                    "rects",
+                    "resize",
+                    "renderer",             
                     "svg",
                     "onend"
                 ]

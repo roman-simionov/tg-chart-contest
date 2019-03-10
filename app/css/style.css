@@ -1,0 +1,19 @@
+.title{
+    font-size: 24px;
+}
+
+.svg{
+    fill: none;
+    stroke: none;
+    height: 400px;
+}
+
+.label{
+    font-size: 14px;
+    stroke: #666;
+    fill: #666
+}
+
+.test-label{
+    visibility: hidden;
+}

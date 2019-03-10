@@ -46,6 +46,7 @@ class SvgWrapper {
      */
     renderTo(svgWrapper) {
         svgWrapper.element.appendChild(this.element);
+        return this;
     }
 
     remove() {
@@ -122,11 +123,8 @@ export default class Renderer {
      * @param {Element} element
      */
     constructor(element) {
-        element.classList.add("chart");
-        this.svg = new SvgWrapper("svg").setAttributes({
-            fill: "none",
-            stroke: "none"
-        });
+        element.classList.add("svg");
+        this.svg = new SvgWrapper("svg");
         element.appendChild(this.svg.element);
     }
 
