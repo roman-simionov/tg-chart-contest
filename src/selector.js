@@ -38,8 +38,6 @@ class Handler {
                     const offset = event.pageX - this.startEvent.pageX;
                     this.value(this.startEvent.startValue + offset);
                     this.changed();
-                    event.preventDefault();
-                    this.startEvent.preventDefault();
                 }
             });
         });
@@ -47,7 +45,6 @@ class Handler {
         pointer_up.forEach(e => {
             document.addEventListener(e, () => {
                 this.startEvent = null;
-                event.preventDefault();
             });
         });
     }
@@ -119,6 +116,7 @@ export default class Selector {
             this.background.element.addEventListener(e, (event) => {
                 event.x1x2 = this.x1x2();
                 this.startEvent = event;
+                event.stopPropagation();
             });
         });
 
@@ -137,8 +135,8 @@ export default class Selector {
 
                     this.handlers[0].value(x1 + offset);
                     this.handlers[1].value(x2 + offset);
-
                     this.handlerChanged();
+                    event.stopPropagation();
                 }
             });
         });
