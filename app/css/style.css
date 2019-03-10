@@ -65,35 +65,73 @@
     line-height:20px;
 }
 
-.outer-circle {
-    border-radius: 50%;
-    height: 20px;
-    width: 20px;
-    
-    position: relative;
+.svg-wrapper {
     display: inline-block;
-  }
-  .inner-circle {
-    position: absolute;
-    background-color: white;
-    border-radius: 50%;
-    height: 16px;
-    width: 16px;
-    
-    top: 50%;
-    left: 50%;
-    margin: -8px 0px 0px -8px;
-    /* 
-     Offset the position correctly with
-     minus half of the width and minus half of the height 
-    */
+    width: 30px;
+    height: 30px;
+    overflow: visible;
+}
+
+.circle-border{
+    fill: transparent;
+}
+
+.checking .circle{
+    animation: scale-forward .4s;
+}
+
+.checking .mark{
+    animation: scale-forward .4s;
+}
+
+
+.unchecking .circle{
+    animation: scale-backward .4s;
+    transform: translate(26px, 26px) scale(0, 0);
+}
+
+.unchecking .mark{
+    animation: scale-backward .4s;
+    transform: translate(26px, 26px) scale(0, 0);
+}
+
+
+@keyframes scale-forward {
+    0% {
+        transform: translate(26px, 26px) scale(0, 0)
+    }
+    100% {
+        transform: translate(0, 0) scale(1, 1);
+    }
+    50% {
+      transform: translate(-2px, -2px) scale(1.1, 1.1);
+    }
+}
+
+
+@keyframes scale-backward {
+    0% {
+        transform: translate(0, 0) scale(1, 1);
+    }
+    100% {
+        transform: translate(26px, 26px) scale(0, 0);
+    }
+    50% {
+        transform: translate(-2px, -2px) scale(1.1, 1.1)
+    }
   }
 
-  .legend-label{
-      display: inline-block;
-      height: 20px;
-      line-height:20px;
+.checkmark .check{
+    stroke: white;
+    fill: transparent;
+    stroke-width: 2px;
+}
+
+.legend-label{
+    display: inline-block;
+    height: 20px;
+    line-height:20px;
     margin-left: 10px;
     padding-bottom: 10spx;
     font-size: 18px;
-  }
+}
