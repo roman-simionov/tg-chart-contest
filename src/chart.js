@@ -16,8 +16,9 @@ export default class Chart {
         this.element.classList.add("chart");
 
 
+        if (options.title) {
             this.element.innerHTML = `<div class="title">${options.title}</div>`;
-
+        }
 
         this.renderer = new Renderer(this.element);
 
@@ -40,7 +41,7 @@ export default class Chart {
             const height = this.options.mainPlotHeight || 350;
             this.renderer.svg.setAttributes({ width, height });
             this.argumentAxis.resize(width, argumentsAxisMeasure.height, argumentsAxisMeasure.lineHeight);
-            this.valueAxis.resize(width, height, argumentsAxisMeasure.height - argumentsAxisMeasure.lineHeight);
+            this.valueAxis.resize(width, height, argumentsAxisMeasure.lineHeight);
             this.selector.resize(width, this.options.selectorHeight || 75);
         }
         this.render();

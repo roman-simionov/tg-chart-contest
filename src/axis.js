@@ -95,8 +95,8 @@ export class ArgumentAxis extends BaseAxis {
     }
 
     measure() {
-        const { y, height } = this.testLabel.element.getBoundingClientRect();
-        return { height: y, lineHeight: height };
+        const { y, height } = this.testLabel.element.getBBox();
+        return { height: height, lineHeight: height + y };
     }
 
     /**
@@ -132,9 +132,9 @@ export class ArgumentAxis extends BaseAxis {
     }
 
     resize(width, height, lineHeight) {
-        this.renderer.svg.setAttributes({ width, height });
+        this.renderer.svg.setAttributes({ width, height: height + lineHeight });
         this.group.setAttributes({
-            "transform": `translate(0, ${lineHeight})`
+            "transform": `translate(0, ${height})`
         });
         this.domain.setRange([0, width]);
     }
