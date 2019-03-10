@@ -17,3 +17,8 @@
 .test-label{
     visibility: hidden;
 }
+
+.grid{
+    stroke: #666;
+    stroke-width: 1;
+}

@@ -29,7 +29,7 @@ export default class Chart {
             const height = this.options.mainPlotHeight || 350;
             this.renderer.svg.setAttributes({ width, height });
             this.argumentAxis.resize(width, argumentsAxisMeasure.height, argumentsAxisMeasure.lineHeight);
-            this.valueAxis.resize(height);
+            this.valueAxis.resize(width, height, argumentsAxisMeasure.height - argumentsAxisMeasure.lineHeight);
         }
         this.render();
     }

@@ -25,26 +25,53 @@ export class ValueAxis extends BaseAxis {
 
     /**
      *
+     * @param {Renderer} renderer
+     */
+    constructor(renderer) {
+        super(renderer);
+        this.gridGroup = this.renderer.createElement("g").renderTo(this.renderer.svg);
+        this.gridGroup.element.classList.add("grid");
+    }
+
+    /**
+     *
      * @param {number} value
      */
     format(value) {
         return value;
     }
 
+    renderGrid(ticks) {
+        ticks.map(t => {
+            this.renderer.path().value([[0, t], [this.width, t]]).renderTo(this.gridGroup);
+        });
+    }
+
     render() {
+
+        const ticks = [];
+
         for (let i = this.domain.domain[0]; i < this.domain.domain[1]; i += 10) {
             const text = this.format(i);
             const label = this.renderer.text().value(text);
+            const tick = this.domain.scale(i);
+            ticks.push(tick);
 
             label.setAttributes({
-                y: this.domain.scale(i)
+                y: tick
             });
             label.renderTo(this.group);
         }
+
+        this.renderGrid(ticks);
     }
 
 
-    resize(height) {
+    resize(width, height, lineHeight) {
+        this.width = width;
+        this.group.setAttributes({
+            "transform": `translate(0, ${-lineHeight})`
+        });
         this.domain.setRange([0, height]);
     }
 }
