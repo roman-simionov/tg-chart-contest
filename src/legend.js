@@ -16,8 +16,8 @@ export default class Legend {
             return `<div class="legend-item">
                         <div class="svg-wrapper">
                             <svg class="checkmark" id="item-${i}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                                <circle class="circle-border" cx="26" cy="26" r="22" stroke="${o.stroke}"/>
-                                <circle class="circle" cx="26" cy="26" r="22" fill="${o.stroke}"/>
+                                <circle class="circle-border" cx="26" cy="26" r="22" stroke="${o.color}"/>
+                                <circle class="circle" cx="26" cy="26" r="22" fill="${o.color}"/>
                                 <path class="check" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
                             </svg>
                         </div>

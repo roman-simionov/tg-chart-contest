@@ -9,7 +9,7 @@ fetch("./chart_data.json").then(data => data.json()).then(d => {
                 const name = settings.names[s];
                 return {
                     name,
-                    stroke: settings.colors[s],
+                    color: settings.colors[s],
                     type: settings.types[s],
                     x,
                     y: settings.columns.find(c => c[0] === s).slice(1)

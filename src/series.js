@@ -9,7 +9,7 @@ export default class Series {
         this.options = options;
         this.path = new Path();
         this.path.setAttributes({
-            stroke: options.stroke
+            stroke: options.color
         });
     }
 
