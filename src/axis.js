@@ -52,6 +52,9 @@ export class ValueAxis extends BaseAxis {
 
     render() {
 
+        this.gridGroup.element.textContent = "";
+        this.group.element.textContent = "";
+
         const ticks = [];
 
         for (let i = this.domain.domain[0]; i < this.domain.domain[1]; i += 10) {

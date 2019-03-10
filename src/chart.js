@@ -1,6 +1,7 @@
 import Renderer from "./renderer";
 import { ArgumentAxis, ValueAxis } from "./axis";
 import Selector from "./selector";
+import SeriesView from "./series-view";
 
 export default class Chart {
     /**
@@ -32,6 +33,8 @@ export default class Chart {
         this.selector.setDomain([x[0], x[x.length - 1]]);
         this.selector.setSeries(this.options.series);
 
+        this.seriesView = new SeriesView(this.renderer, this.options.series);
+
         this.resize();
     }
 
@@ -51,9 +54,13 @@ export default class Chart {
 
     render() {
         this.argumentAxis.setDomain(this.selector.value());
-        this.valueAxis.setDomain([0, 100]);
+        const valueDomain = [0, this.seriesView.getRange(this.selector.value())];
+
+        this.valueAxis.setDomain(valueDomain);
         this.argumentAxis.render();
         this.valueAxis.render();
+
+        this.seriesView.render(this.valueAxis.domain.scale, this.argumentAxis.domain.scale);
     }
 
     width() {

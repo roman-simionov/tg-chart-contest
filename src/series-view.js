@@ -13,8 +13,8 @@ export default class SeriesView {
         });
     }
 
-    getRange() {
-        return Math.max.apply(null, this.series.map(s => s.getRange()));
+    getRange(range) {
+        return Math.max.apply(null, this.series.map(s => s.getRange(range)));
     }
 
     /**
