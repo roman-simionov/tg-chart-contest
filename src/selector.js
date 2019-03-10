@@ -31,7 +31,7 @@ class Handler {
                 this.startEvent = event;
                 event.preventDefault();
                 return false;
-            }, { passive: true });
+            }, { passive: false });
         });
 
         pointer_move.forEach(e => {
@@ -43,13 +43,13 @@ class Handler {
                     event.preventDefault();
                     return false;
                 }
-            }, { passive: true });
+            }, { passive: false });
         });
 
         pointer_up.forEach(e => {
             document.addEventListener(e, () => {
                 this.startEvent = null;
-            }, { passive: true });
+            }, { passive: false });
         });
     }
 
@@ -121,7 +121,7 @@ export default class Selector {
                 event.x1x2 = this.x1x2();
                 this.startEvent = event;
                 event.stopPropagation();
-            }, { passive: true });
+            }, { passive: false });
         });
 
         pointer_move.forEach(e => {
@@ -144,14 +144,14 @@ export default class Selector {
                     event.preventDefault();
                     return false;
                 }
-            }, { passive: true });
+            }, { passive: false });
         });
 
         pointer_up.forEach(e => {
             document.addEventListener(e, () => {
                 this.startEvent = null;
             });
-        }, { passive: true });
+        }, { passive: false });
     }
 
     x1x2() {

@@ -21,9 +21,7 @@ export default class Legend {
                                 <path class="check" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
                             </svg>
                         </div>
-                        <div class="legend-label">
-                            <span>${o.name}<span>
-                        </div>
+                        <div class="legend-label">${o.name}</div>
                     </div>`;
         }).join("");
 
