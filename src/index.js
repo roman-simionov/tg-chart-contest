@@ -1,9 +1,9 @@
 import Chart from "./chart";
 
 fetch("./chart_data.json").then(data => data.json()).then(d => {
-    d.forEach(settings => {
+    const charts = d.map(settings => {
         const x = settings.columns.find(c => c[0] == "x").slice(1);
-        new Chart(document.querySelector("body"), {
+        const chart = new Chart(document.querySelector("body"), {
             x,
             series: Object.keys(settings.names).map(s => {
                 const name = settings.names[s];
@@ -16,7 +16,19 @@ fetch("./chart_data.json").then(data => data.json()).then(d => {
                 };
             })
         });
+
+        return chart;
     });
+
+    let timeout = null;
+    window.onresize = function() {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            charts.forEach(c => {
+                c.resize();
+            });
+        }, 30);
+    };
 });
 
 
