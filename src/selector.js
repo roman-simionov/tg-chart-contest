@@ -71,6 +71,9 @@ export default class Selector {
         this.background = this.renderer.createElement("rect").renderTo(this.renderer.svg);
         this.background.element.classList.add("background");
 
+        this.seriesGroup = this.renderer.createElement("g").renderTo(this.renderer.svg);
+        this.seriesGroup.element.classList.add("series");
+
         this.r1 = this.renderer.createElement("rect").renderTo(this.renderer.svg);
         this.r1.element.classList.add("shutter");
 
@@ -188,8 +191,6 @@ export default class Selector {
     }
 
     setSeries(options) {
-        const seriesGroup = this.renderer.createElement("g").renderTo(this.renderer.svg);
-        seriesGroup.element.classList.add("series");
-        this.seriesView = new SeriesView(seriesGroup, options);
+        this.seriesView = new SeriesView(this.seriesGroup, options);
      }
 }

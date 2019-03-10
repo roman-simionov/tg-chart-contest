@@ -2,6 +2,7 @@
 .chart{
     font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
     font-size: 12px;
+    margin: 15px;
 }
 
 .title{
@@ -35,6 +36,10 @@
 .shutter{
     opacity: 0.35;
     fill: cornflowerblue
+}
+
+.selector{
+    padding-top: 15px;
 }
 
 .selector .background{
