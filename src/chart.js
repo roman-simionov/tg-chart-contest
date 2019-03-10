@@ -30,6 +30,7 @@ export default class Chart {
 
         const x = this.options.x;
         this.selector.setDomain([x[0], x[x.length - 1]]);
+        this.selector.setSeries(this.options.series);
 
         this.resize();
     }

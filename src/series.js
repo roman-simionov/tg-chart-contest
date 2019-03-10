@@ -5,17 +5,17 @@ export default class Series {
      * @param {Array<number[]>} data
      * @param {{parent: SvgWrapper, fill: string}} options
      */
-    constructor(data, options) {
-        this.data = data;
+    constructor(options) {
+        this.options = options;
         this.path = new Path();
         this.path.setAttributes({
             stroke: options.stroke
         });
-        this.path.renderTo(options.parent);
     }
 
     getRange(bounds) {
-        const visibleData = (bounds !== undefined ? this.data.filter(([a]) => a >= bounds[0] && a <= bounds[1]) : this.data).map(([_, v]) => v);
+        const x = this.options.x;
+        const visibleData = bounds !== undefined ? this.options.y.filter((_, i) => x[i] >= bounds[0] && x[i] <= bounds[1]) : this.options.y;
 
         return Math.max.apply(null, visibleData);
     }
@@ -27,7 +27,8 @@ export default class Series {
      * @param {boolean} animate
      */
     render(valueDomain, argumentDomain, animate) {
-        const points = this.data.map(([a, v]) => [argumentDomain(a), valueDomain(v)]);
+        const x = this.options.x;
+        const points = this.options.y.map((v, i) => [argumentDomain(x[i]), valueDomain(v)]);
         this.path.value(points, animate);
     }
 

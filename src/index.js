@@ -1,7 +1,7 @@
 import Chart from "./chart";
 
 fetch("./chart_data.json").then(data => data.json()).then(d => {
-    d.slice(0, 1).forEach(settings => {
+    d.forEach(settings => {
         const x = settings.columns.find(c => c[0] == "x").slice(1);
         new Chart(document.querySelector("body"), {
             x,

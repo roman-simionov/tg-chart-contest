@@ -1,5 +1,6 @@
 import Renderer from "./renderer";
-import { numericScale } from "./domain";
+import { numericScale, dateScale } from "./domain";
+import SeriesView from "./series-view";
 
 class Handler {
     /**
@@ -158,6 +159,8 @@ export default class Selector {
         });
         this.drawRects();
         this.updateScale();
+
+        this.renderSeriesView();
     }
 
     setDomain(domain) {
@@ -177,4 +180,14 @@ export default class Selector {
             new Date(this.scale(this.width - x2))
         ];
     }
+
+    renderSeriesView() {
+        const valueScale = numericScale([0, this.seriesView.getRange()], [0, this.height]);
+        const argumentScale = dateScale(this.domain.map(d=>new Date(d)), [0, this.width]);
+        this.seriesView.render(valueScale, argumentScale, false);
+    }
+
+    setSeries(options) {
+        this.seriesView = new SeriesView(this.renderer, options);
+     }
 }
