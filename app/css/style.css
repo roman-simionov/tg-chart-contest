@@ -6,12 +6,12 @@
     fill: none;
     stroke: none;
     user-select: none;
+    font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
 }
 
 .label{
-    font-size: 14px;
-    stroke: #666;
-    fill: #666
+    font-size: 12px;
+    fill: #888
 }
 
 .test-label{
@@ -19,7 +19,7 @@
 }
 
 .grid{
-    stroke: #666;
+    stroke: #e6e6e6;
     stroke-width: 1px;
 }
 
