@@ -30,11 +30,11 @@
 
 .handler{
     fill: cornflowerblue;
-    opacity: 0.85;
+    opacity: 0.35;
 }
 
 .shutter{
-    opacity: 0.35;
+    opacity: 0.15;
     fill: cornflowerblue
 }
 

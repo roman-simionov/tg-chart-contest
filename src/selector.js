@@ -159,8 +159,9 @@ export default class Selector {
         this.r1.setAttributes({ width: x1 });
         this.r2.setAttributes({ x: x2, width: this.width - x2 });
 
+        const handlerWidth = this.handlers[0].handlerWidth;
         this.r3.setAttributes({
-            d: `M${x1},0 L${x2},0 L${x2},4 L${x1},4 Z  M${x1},${this.height - 4} L${x2},${this.height - 4} L${x2},${this.height} L${x1},${this.height} Z`
+            d: `M${x1 + handlerWidth},0 L${x2},0 L${x2},4 L${x1 + handlerWidth},4 Z  M${x1 + handlerWidth},${this.height - 4} L${x2},${this.height - 4} L${x2},${this.height} L${x1 + handlerWidth},${this.height} Z`
         });
 
     }
