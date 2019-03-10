@@ -106,6 +106,9 @@ export class ArgumentAxis extends BaseAxis {
     }
 
     render() {
+
+        this.group.element.textContent = "";
+
         for (let i = this.domain.domain[0].getTime(); i < this.domain.domain[1].getTime(); i += 1000 * 60 * 60 * 24) {
             const text = this.format(new Date(i));
             const label = this.renderer.text().value(text);

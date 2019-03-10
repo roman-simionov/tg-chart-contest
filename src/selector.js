@@ -174,7 +174,7 @@ export default class Selector {
 
         return [
             new Date(this.scale(this.width - x1)),
-            new Date(this.scale(x2 - this.width))
+            new Date(this.scale(this.width - x2))
         ];
     }
 }
