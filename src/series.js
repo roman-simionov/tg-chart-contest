@@ -14,6 +14,9 @@ export default class Series {
     }
 
     getRange(bounds) {
+        if (!this.options.visible) {
+            return 0;
+        }
         const x = this.options.x;
         const visibleData = bounds !== undefined ? this.options.y.filter((_, i) => x[i] >= bounds[0] && x[i] <= bounds[1]) : this.options.y;
 
@@ -28,8 +31,16 @@ export default class Series {
      */
     render(valueDomain, argumentDomain, animate) {
         const x = this.options.x;
-        const points = this.options.y.map((v, i) => [argumentDomain(x[i]), valueDomain(v)]);
-        this.path.value(points, animate);
+        const y = this.options.y;
+        if (isFinite(valueDomain(y[0]))) {
+            const points = y.map((v, i) => [argumentDomain(x[i]), valueDomain(v)]);
+            this.path.value(points, animate);
+        }
+        if (this.options.visible) {
+            this.show();
+        } else {
+            this.hide();
+        }
     }
 
     hide() {

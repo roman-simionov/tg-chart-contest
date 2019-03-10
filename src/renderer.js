@@ -61,7 +61,7 @@ class SvgWrapper {
             this.setAttributes({ [attributeName]: value });
         }).setAttributes({
             to: value,
-            dur: "1s",
+            dur: "0.8s",
             attributeName,
             begin: "click",
             fill: "freeze"

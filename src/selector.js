@@ -29,7 +29,9 @@ class Handler {
             this.element.element.addEventListener(e, (event) => {
                 event.startValue = this.value();
                 this.startEvent = event;
-            });
+                event.preventDefault();
+                return false;
+            }, { passive: true });
         });
 
         pointer_move.forEach(e => {
@@ -38,14 +40,16 @@ class Handler {
                     const offset = event.pageX - this.startEvent.pageX;
                     this.value(this.startEvent.startValue + offset);
                     this.changed();
+                    event.preventDefault();
+                    return false;
                 }
-            });
+            }, { passive: true });
         });
 
         pointer_up.forEach(e => {
             document.addEventListener(e, () => {
                 this.startEvent = null;
-            });
+            }, { passive: true });
         });
     }
 
@@ -117,7 +121,7 @@ export default class Selector {
                 event.x1x2 = this.x1x2();
                 this.startEvent = event;
                 event.stopPropagation();
-            });
+            }, { passive: true });
         });
 
         pointer_move.forEach(e => {
@@ -137,15 +141,17 @@ export default class Selector {
                     this.handlers[1].value(x2 + offset);
                     this.handlerChanged();
                     event.stopPropagation();
+                    event.preventDefault();
+                    return false;
                 }
-            });
+            }, { passive: true });
         });
 
         pointer_up.forEach(e => {
             document.addEventListener(e, () => {
                 this.startEvent = null;
             });
-        });
+        }, { passive: true });
     }
 
     x1x2() {
@@ -204,10 +210,10 @@ export default class Selector {
         ];
     }
 
-    renderSeriesView() {
+    renderSeriesView(animate) {
         const valueScale = numericScale([0, this.seriesView.getRange()], [0, this.height]);
         const argumentScale = dateScale(this.domain.map(d=>new Date(d)), [0, this.width]);
-        this.seriesView.render(valueScale, argumentScale, false);
+        this.seriesView.render(valueScale, argumentScale, animate);
     }
 
     setSeries(options) {

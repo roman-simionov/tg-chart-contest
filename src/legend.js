@@ -5,7 +5,7 @@ export default class Legend {
      * @param {Element} element
      * @param {*} options
      */
-    constructor(element, options) {
+    constructor(element, options, changed) {
         const div = document.createElement("div");
         div.classList.add("legend");
         this.div = div;
@@ -21,9 +21,13 @@ export default class Legend {
                                 <path class="check" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
                             </svg>
                         </div>
-                        <span class="legend-label">${o.name}</span>
+                        <div class="legend-label">
+                            <span>${o.name}<span>
+                        </div>
                     </div>`;
         }).join("");
+
+        this.changed = changed;
 
         this.attachEvents();
     }
@@ -42,6 +46,7 @@ export default class Legend {
                     parentNode.classList.add("checking");
                 }
                 options.visible = !options.visible;
+                this.changed();
             }
         });
     }

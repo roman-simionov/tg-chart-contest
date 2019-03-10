@@ -39,7 +39,10 @@ export default class Chart {
 
         this.seriesView = new SeriesView(seriesGroup, this.options.series);
 
-        this.legend = new Legend(this.element, options.series);
+        this.legend = new Legend(this.element, options.series, () => {
+            this.render(true);
+            this.selector.renderSeriesView(true);
+        });
 
         this.resize();
     }
@@ -58,7 +61,7 @@ export default class Chart {
         this.render();
     }
 
-    render() {
+    render(animate) {
         this.argumentAxis.setDomain(this.selector.value());
         const valueDomain = [0, this.seriesView.getRange(this.selector.value())];
 
@@ -66,7 +69,7 @@ export default class Chart {
         this.argumentAxis.render();
         this.valueAxis.render();
 
-        this.seriesView.render(this.valueAxis.domain.scale, this.argumentAxis.domain.scale);
+        this.seriesView.render(this.valueAxis.domain.scale, this.argumentAxis.domain.scale, animate);
     }
 
     width() {

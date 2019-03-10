@@ -40,7 +40,7 @@
 
 .selector{
     padding-top: 15px;
-    touch-action: none;
+    touch-action: pan-x pan-y;
 }
 
 .selector .background{
@@ -53,23 +53,25 @@
 
 .legend{
     padding-top: 15px;
+    user-select: none;
 }
 
 .legend-item{
     display: inline-block;
     border: 1px solid #888;
-    border-radius: 20px;
+    border-radius: 30px;
     padding: 10px;
     margin-right: 16px;
-    font-size: 16px;
-    line-height:20px;
+    font-size: 18px;
 }
 
 .svg-wrapper {
     display: inline-block;
+    line-height:20px;
     width: 30px;
     height: 30px;
     overflow: visible;
+    vertical-align: middle;
 }
 
 .circle-border{
@@ -83,7 +85,6 @@
 .checking .mark{
     animation: scale-forward .4s;
 }
-
 
 .unchecking .circle{
     animation: scale-backward .4s;
@@ -129,9 +130,7 @@
 
 .legend-label{
     display: inline-block;
-    height: 20px;
-    line-height:20px;
     margin-left: 10px;
-    padding-bottom: 10spx;
     font-size: 18px;
+    vertical-align: middle;
 }
