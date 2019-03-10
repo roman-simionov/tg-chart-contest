@@ -2,6 +2,7 @@ import Renderer from "./renderer";
 import { ArgumentAxis, ValueAxis } from "./axis";
 import Selector from "./selector";
 import SeriesView from "./series-view";
+import Legend from "./legend";
 
 export default class Chart {
     /**
@@ -37,6 +38,8 @@ export default class Chart {
         seriesGroup.element.classList.add("series");
 
         this.seriesView = new SeriesView(seriesGroup, this.options.series);
+
+        this.legend = new Legend(this.element, options.series);
 
         this.resize();
     }

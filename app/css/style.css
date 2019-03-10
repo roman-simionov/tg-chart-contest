@@ -1,3 +1,9 @@
+
+.chart{
+    font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+    font-size: 12px;
+}
+
 .title{
     font-size: 24px;
 }
@@ -6,11 +12,9 @@
     fill: none;
     stroke: none;
     user-select: none;
-    font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
 }
 
 .label{
-    font-size: 12px;
     fill: #888
 }
 
@@ -40,3 +44,50 @@
 .series {
     stroke-width: 2;
 }
+
+.legend{
+    padding-top: 15px;
+}
+
+.legend-item{
+    display: inline-block;
+    border: 1px solid #888;
+    border-radius: 20px;
+    padding: 10px;
+    margin-right: 16px;
+    font-size: 16px;
+    line-height:20px;
+}
+
+.outer-circle {
+    border-radius: 50%;
+    height: 20px;
+    width: 20px;
+    
+    position: relative;
+    display: inline-block;
+  }
+  .inner-circle {
+    position: absolute;
+    background-color: white;
+    border-radius: 50%;
+    height: 16px;
+    width: 16px;
+    
+    top: 50%;
+    left: 50%;
+    margin: -8px 0px 0px -8px;
+    /* 
+     Offset the position correctly with
+     minus half of the width and minus half of the height 
+    */
+  }
+
+  .legend-label{
+      display: inline-block;
+      height: 20px;
+      line-height:20px;
+    margin-left: 10px;
+    padding-bottom: 10spx;
+    font-size: 18px;
+  }
