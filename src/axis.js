@@ -43,7 +43,8 @@ export class ValueAxis extends BaseAxis {
 
     renderGrid(ticks) {
         ticks.map(t => {
-            this.renderer.path().value([[0, t], [this.width, t]]).renderTo(this.gridGroup);
+            const y = t - 0.5;
+            this.renderer.path().value([[0, y], [this.width, y]]).renderTo(this.gridGroup);
         });
     }
 
