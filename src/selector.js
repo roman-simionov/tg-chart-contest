@@ -2,6 +2,10 @@ import Renderer from "./renderer";
 import { numericScale, dateScale } from "./domain";
 import SeriesView from "./series-view";
 
+const pointer_start = ["pointerdown", "touchstart"];
+const pointer_move = ["pointermove", "touchmove"];
+const pointer_up = ["pointerup", "touchend"];
+
 class Handler {
     /**
      *
@@ -9,7 +13,7 @@ class Handler {
      */
     constructor(renderer, changed) {
         this.renderer = renderer;
-        this.handlerWidth = 6;
+        this.handlerWidth = 8;
         this.element = renderer.createElement("rect").setAttributes({
             width: this.handlerWidth
         }).renderTo(renderer.svg);
@@ -20,21 +24,31 @@ class Handler {
 
     attachEvents() {
         this.startEvent = null;
-        this.element.element.addEventListener("pointerdown", (event) => {
-            event.startValue = this.value();
-            this.startEvent = event;
+
+        pointer_start.forEach(e => {
+            this.element.element.addEventListener(e, (event) => {
+                event.startValue = this.value();
+                this.startEvent = event;
+            });
         });
 
-        document.addEventListener("pointermove", (event) => {
-            if (this.startEvent) {
-                const offset = event.pageX - this.startEvent.pageX;
-                this.value(this.startEvent.startValue + offset);
-                this.changed();
-            }
+        pointer_move.forEach(e => {
+            document.addEventListener(e, (event) => {
+                if (this.startEvent) {
+                    const offset = event.pageX - this.startEvent.pageX;
+                    this.value(this.startEvent.startValue + offset);
+                    this.changed();
+                    event.preventDefault();
+                    this.startEvent.preventDefault();
+                }
+            });
         });
 
-        document.addEventListener("pointerup", () => {
-            this.startEvent = null;
+        pointer_up.forEach(e => {
+            document.addEventListener(e, () => {
+                this.startEvent = null;
+                event.preventDefault();
+            });
         });
     }
 
@@ -53,7 +67,7 @@ class Handler {
         }
         if (x - this.handlerWidth / 2 < 0) {
             x = 0;
-        } else if (x + this.handlerWidth / 2 >= this.width) {
+        } else if (x + this.handlerWidth >= this.width) {
             x = this.width - this.handlerWidth;
         }
         this.element.setAttributes({ x });
@@ -100,32 +114,39 @@ export default class Selector {
 
     attachEvents() {
         this.startEvent = null;
-        this.background.element.addEventListener("pointerdown", (event) => {
-            event.x1x2 = this.x1x2();
-            this.startEvent = event;
+
+        pointer_start.forEach(e => {
+            this.background.element.addEventListener(e, (event) => {
+                event.x1x2 = this.x1x2();
+                this.startEvent = event;
+            });
         });
 
-        document.addEventListener("pointermove", (event) => {
-            if (this.startEvent) {
-                let offset = event.pageX - this.startEvent.pageX;
-                const [x1, x2] = this.startEvent.x1x2;
-                if (offset < 0) {
-                    offset = x1 + offset < 0 ? 0 - x1 : offset;
+        pointer_move.forEach(e => {
+            document.addEventListener(e, (event) => {
+                if (this.startEvent) {
+                    let offset = event.pageX - this.startEvent.pageX;
+                    const [x1, x2] = this.startEvent.x1x2;
+                    if (offset < 0) {
+                        offset = x1 + offset < 0 ? 0 - x1 : offset;
+                    }
+
+                    if (offset > 0) {
+                        offset = x2 + offset > this.width ? this.width - x2 : offset;
+                    }
+
+                    this.handlers[0].value(x1 + offset);
+                    this.handlers[1].value(x2 + offset);
+
+                    this.handlerChanged();
                 }
-
-                if (offset > 0) {
-                    offset = x2 + offset > this.width ? this.width - x2 : offset;
-                }
-
-                this.handlers[0].value(x1 + offset);
-                this.handlers[1].value(x2 + offset);
-
-                this.handlerChanged();
-            }
+            });
         });
 
-        document.addEventListener("pointerup", () => {
-            this.startEvent = null;
+        pointer_up.forEach(e => {
+            document.addEventListener(e, () => {
+                this.startEvent = null;
+            });
         });
     }
 
@@ -141,7 +162,7 @@ export default class Selector {
         this.r2.setAttributes({ x: x2, width: this.width - x2 });
 
         this.r3.setAttributes({
-            d: `M${x1},0 L${x2},0 L${x2},2 L${x1},2 Z  M${x1},${this.height - 2} L${x2},${this.height - 2} L${x2},${this.height} L${x1},${this.height} Z`
+            d: `M${x1},0 L${x2},0 L${x2},4 L${x1},4 Z  M${x1},${this.height - 4} L${x2},${this.height - 4} L${x2},${this.height} L${x1},${this.height} Z`
         });
 
     }
