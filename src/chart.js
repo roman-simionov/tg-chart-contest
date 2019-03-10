@@ -1,5 +1,5 @@
 import Renderer from "./renderer";
-import { ArgumentAxis } from "./axis";
+import { ArgumentAxis, ValueAxis } from "./axis";
 
 export default class Chart {
     /**
@@ -16,6 +16,7 @@ export default class Chart {
         this.renderer = new Renderer(element);
 
         this.argumentAxis = new ArgumentAxis(element);
+        this.valueAxis = new ValueAxis(this.renderer);
 
         this.resize();
     }
@@ -25,15 +26,19 @@ export default class Chart {
         const argumentsAxisMeasure = this.argumentAxis.measure();
 
         if (width > 0) {
-            this.renderer.svg.setAttributes({ width, height: this.options.mainPlotHeight || 350 });
+            const height = this.options.mainPlotHeight || 350;
+            this.renderer.svg.setAttributes({ width, height });
             this.argumentAxis.resize(width, argumentsAxisMeasure.height, argumentsAxisMeasure.lineHeight);
+            this.valueAxis.resize(height);
         }
         this.render();
     }
 
     render() {
         this.argumentAxis.setDomain([new Date(2019, 2, 1), new Date(2019, 2, 20)]);
+        this.valueAxis.setDomain([0, 100]);
         this.argumentAxis.render();
+        this.valueAxis.render();
     }
 
     width() {
