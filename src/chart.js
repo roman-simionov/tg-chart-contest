@@ -5,20 +5,25 @@ import Selector from "./selector";
 export default class Chart {
     /**
      *
-     * @param {Element} element
+     * @param {Element} container
      * @param {ChartOptions} options
      */
-    constructor(element, options) {
+    constructor(container, options) {
         this.options = options;
-        this.element = element;
-        element.classList.add("chart");
-        element.innerHTML = `<div class="title">${options.title}</div>`;
 
-        this.renderer = new Renderer(element);
+        this.element = document.createElement("div");
+        container.appendChild(this.element);
+        this.element.classList.add("chart");
 
-        this.argumentAxis = new ArgumentAxis(element);
+
+            this.element.innerHTML = `<div class="title">${options.title}</div>`;
+
+
+        this.renderer = new Renderer(this.element);
+
+        this.argumentAxis = new ArgumentAxis(this.element);
         this.valueAxis = new ValueAxis(this.renderer);
-        this.selector = new Selector(element, () => {
+        this.selector = new Selector(this.element, () => {
             this.render();
         });
 
@@ -28,7 +33,7 @@ export default class Chart {
     }
 
     resize() {
-        const { width } = this.element.getClientRects()[0];
+        const { width } = this.element.getBoundingClientRect();
         const argumentsAxisMeasure = this.argumentAxis.measure();
 
         if (width > 0) {

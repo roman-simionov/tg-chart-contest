@@ -123,8 +123,8 @@ export default class Renderer {
      * @param {Element} element
      */
     constructor(element) {
-        element.classList.add("svg");
         this.svg = new SvgWrapper("svg");
+        this.svg.element.classList.add("svg");
         element.appendChild(this.svg.element);
     }
 

@@ -2,6 +2,8 @@ import Renderer from "./renderer";
 import Domain from "./domain";
 const MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Dec"];
 
+const MULTIPLIERS = [1, 2, 5];
+
 class BaseAxis {
     /**
      *
@@ -109,11 +111,16 @@ export class ArgumentAxis extends BaseAxis {
 
         this.group.element.textContent = "";
 
-        for (let i = this.domain.domain[0].getTime(); i < this.domain.domain[1].getTime(); i += 1000 * 60 * 60 * 24) {
+        const addInterval = this.calculateInterval();
+
+        const startValue = new Date(this.domain.domain[0].getTime());
+        startValue.setHours(0);
+        startValue.setMinutes(0);
+        startValue.setSeconds(0);
+
+        for (let i = startValue; i < this.domain.domain[1].getTime(); i = addInterval(i)) {
             const value = new Date(i);
-            value.setHours(0);
-            value.setMinutes(0);
-            value.setSeconds(0);
+
             const text = this.format(value);
             const label = this.renderer.text().value(text);
 
@@ -130,5 +137,30 @@ export class ArgumentAxis extends BaseAxis {
             "transform": `translate(0, ${lineHeight})`
         });
         this.domain.setRange([0, width]);
+    }
+
+    calculateInterval() {
+        const domainRange = this.domain.domain[1] - this.domain.domain[0];
+        const screenRange = this.domain.range[1] - this.domain.range[0];
+
+        const count = Math.ceil(screenRange / 50);
+        const interval = domainRange / count;
+
+        let adjustedInterval = 1000 * 60 * 60 * 24;
+
+        let multiplier = 0;
+        let days = 1;
+        while (adjustedInterval < interval) {
+            adjustedInterval *= MULTIPLIERS[multiplier];
+            days *= MULTIPLIERS[multiplier++];
+            multiplier > MULTIPLIERS.length;
+            multiplier = 1;
+        }
+
+        return (v) => {
+            const date = new Date(v);
+            date.setDate(date.getDate() + days);
+            return date;
+        };
     }
 }
