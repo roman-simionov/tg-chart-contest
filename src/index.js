@@ -1,36 +1,23 @@
-import Renderer from "./renderer";
-import Series from "./series";
-import { numericScale, dateScale } from "./domain";
+import Chart from "./chart";
 
-const renderer = new Renderer(document.getElementById("test"));
+fetch("./chart_data.json").then(data => data.json()).then(d => {
+    d.slice(0, 2).forEach(settings => {
+        const x = settings.columns.find(c => c[0] == "x");
+        new Chart(document.querySelector("body"), {
+            series: Object.keys(settings.names).map(s => {
+                const name = settings.names[s];
 
-renderer.svg.setAttributes({ width: 500, height: 500 });
-
-const data = new Array(100).fill(0).map((d, i) => new Date(i));
-
-const series = new Series(data.map(d=>[d, Math.random() * 30]), {
-    parent: renderer.svg,
-    stroke: "red"
+                return {
+                    name,
+                    stroke: settings.colors[s],
+                    type: settings.types[s],
+                    x,
+                    y: settings.columns.find(c => c[0] === name)
+                };
+            })
+        });
+    });
 });
 
-const series1 = new Series(data.map(d=>[d, Math.random() * 15]), {
-    parent: renderer.svg,
-    stroke: "blue"
-});
-
-
-const range = [0, Math.max.apply(null, [series, series1].map(s => s.getRange()))];
-const valueDomain = numericScale(range, [0, 500]);
-const dateDomain = dateScale([data[0], data[99]], [0, 500]);
-series.render(valueDomain, dateDomain);
-series1.render(valueDomain, dateDomain);
-
-setTimeout(() => {
-    const range = [0, Math.max.apply(null, [series1].map(s => s.getRange()))];
-    const valueDomain = numericScale(range, [0, 500]);
-    series.hide();
-    series.render(valueDomain, dateDomain, true);
-    series1.render(valueDomain, dateDomain, true);
-}, 1000);
 
 
