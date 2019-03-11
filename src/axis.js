@@ -1,6 +1,7 @@
 import Renderer from "./renderer";
 import Domain from "./domain";
-const MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+export const MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const MULTIPLIERS = [1, 2, 5];
 

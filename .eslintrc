@@ -82,6 +82,7 @@
                     "resize",
                     "renderer",             
                     "svg",
+                    "tooltip",
                     "onend"
                 ]
             }

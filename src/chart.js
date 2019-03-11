@@ -3,6 +3,7 @@ import { ArgumentAxis, ValueAxis } from "./axis";
 import Selector from "./selector";
 import SeriesView from "./series-view";
 import Legend from "./legend";
+import Tooltip from "./tooltip";
 
 export default class Chart {
     /**
@@ -44,11 +45,13 @@ export default class Chart {
             this.selector.renderSeriesView(true);
         });
 
+        this.tooltip = new Tooltip(this.element, this.renderer);
+
         this.resize();
     }
 
     resize() {
-        const { width } = this.element.getBoundingClientRect();
+        const { x, width } = this.element.getBoundingClientRect();
         const argumentsAxisMeasure = this.argumentAxis.measure();
 
         if (width > 0) {
@@ -57,6 +60,7 @@ export default class Chart {
             this.argumentAxis.resize(width, argumentsAxisMeasure.height, argumentsAxisMeasure.lineHeight);
             this.valueAxis.resize(width, height, argumentsAxisMeasure.lineHeight);
             this.selector.resize(width, this.options.selectorHeight || 75);
+            this.tooltip.resize(width, height, x);
         }
         this.render();
     }

@@ -3,6 +3,7 @@
     font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
     font-size: 12px;
     margin: 15px;
+    position: relative;
 }
 
 .title{
@@ -17,6 +18,20 @@
 
 .label{
     fill: #888
+}
+
+#tooltip{
+    border: 1px solid #888;
+    border-radius: 8px;
+    display: inline-block;
+    padding: 8px;
+    background-color: white;
+
+}
+
+.tooltip-line{
+    stroke-width: 1;
+    stroke: #888;
 }
 
 .test-label{

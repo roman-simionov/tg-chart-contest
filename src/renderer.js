@@ -1,5 +1,4 @@
-
-class SvgWrapper {
+export class SvgWrapper {
     /**
      *
      * @param {string} tagName
@@ -70,6 +69,25 @@ class SvgWrapper {
         animation.renderTo(this);
         animation.element.beginElement();
     }
+
+    move(x, y) {
+        if (this.moveAnimation) {
+            this.moveAnimation.element.endElement();
+        }
+        this.moveAnimation = new Animation(() => {
+            this.setAttributes({ transform: `translate(${x}, ${y})` });
+        }, "animateTransform")
+            .setAttributes({
+                type: "translate",
+                attributeName: "transform",
+                to: `${x} ${y}`,
+                dur: "0.2s",
+                begin: "click",
+                fill: "freeze"
+            });
+            this.moveAnimation.renderTo(this);
+            this.moveAnimation.element.beginElement();
+    }
 }
 
 export class TextElement extends SvgWrapper {
@@ -109,8 +127,8 @@ export class Path extends SvgWrapper {
 }
 
 class Animation extends SvgWrapper {
-    constructor(onEnd) {
-        super("animate");
+    constructor(onEnd, tagName) {
+        super(tagName || "animate");
         this.element.onend = (e) => {
             onEnd && onEnd(e);
             this.remove();
