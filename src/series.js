@@ -50,6 +50,9 @@ export default class Series {
     }
 
     getPoint(x) {
+        if (this.options.visible === false) {
+            return null;
+        }
         let i = x;
         let j = x;
         let v;
