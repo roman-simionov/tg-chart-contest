@@ -55,36 +55,34 @@ export class SvgWrapper {
         }
     }
 
-    animate(attributeName, value) {
+    animate(attributeName, value, options = {}) {
         const animation = new Animation(() => {
             this.setAttributes({ [attributeName]: value });
-        }).setAttributes({
+        }).setAttributes(Object.assign({
             to: value,
             dur: "0.8s",
             attributeName,
             begin: "click",
             fill: "freeze"
-        });
+        }, options));
 
         animation.renderTo(this);
         animation.element.beginElement();
     }
 
     move(x, y) {
-        if (this.x === x && this.y === y) {
-            return;
-        }
-        this.x = x;
-        this.y = y;
         if (this.moveAnimation) {
             this.moveAnimation.element.endElement();
         }
         this.moveAnimation = new Animation(() => {
+            this.x = x;
+            this.y = y;
             this.setAttributes({ transform: `translate(${x}, ${y})` });
         }, "animateTransform")
             .setAttributes({
                 type: "translate",
                 attributeName: "transform",
+                from: `${this.x || 0} ${this.y || 0}`,
                 to: `${x} ${y}`,
                 dur: "0.2s",
                 begin: "click",
@@ -134,10 +132,10 @@ export class Path extends SvgWrapper {
 class Animation extends SvgWrapper {
     constructor(onEnd, tagName) {
         super(tagName || "animate");
-        this.element.onend = (e) => {
+        this.element.addEventListener("endEvent", (e) => {
             onEnd && onEnd(e);
             this.remove();
-        };
+        });
     }
 }
 export default class Renderer {

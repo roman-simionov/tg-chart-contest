@@ -20,13 +20,17 @@
     fill: #888
 }
 
+.hover-group{
+    stroke-width: 2px;
+    fill: white;
+}
+
 #tooltip{
     border: 1px solid #888;
     border-radius: 8px;
     display: inline-block;
     padding: 8px;
     background-color: white;
-
 }
 
 .tooltip-line{

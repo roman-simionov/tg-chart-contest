@@ -28,13 +28,8 @@ class ForeignObject extends SvgWrapper {
         const { width, height } = div.getBoundingClientRect();
 
         this.width = width;
-        object.setAttribute("width", width);
-        object.setAttribute("height", height);
-    }
-    move(x, y) {
-        super.move(x, y);
-        this.x = null;
-        this.y = null;
+        object.setAttribute("width", width + 40);
+        object.setAttribute("height", height + 40);
     }
 }
 
@@ -48,7 +43,12 @@ export default class Tooltip {
         this.group = renderer.createElement("g").renderTo(renderer.svg).setAttributes({ opacity: 0 });
         this.line = renderer.path().renderTo(this.group);
         this.line.element.classList.add("tooltip-line");
-        this.tooltip = new ForeignObject().renderTo(this.group);
+        this.tooltipGroup = renderer.createElement("g").renderTo(this.group);
+        this.tooltip = new ForeignObject().renderTo(this.tooltipGroup);
+        this.x = null;
+
+        this.hoverGroup = renderer.createElement("g").renderTo(this.group);
+        this.hoverGroup.element.classList.add("hover-group");
 
         this.attachEvents(renderer.svg.element, seriesView);
     }
@@ -57,22 +57,39 @@ export default class Tooltip {
      * @param {Element} element
      */
     attachEvents(element, seriesView) {
-        ["pointermove", "touchstart"].forEach(eventName => {
+        ["pointermove", "touchstart", "touchmove"].forEach(eventName => {
             element.addEventListener(eventName, (event) => {
                 const points = seriesView.getPoints(Math.round(event.pageX - this.offset));
                 if (points && points.length) {
                     let { x, a } = points[0];
-                    this.group.animate("opacity", 1);
-                    this.line.move(x, 0);
-                    this.tooltip.value(a);
-                    const tooltipX = x < (this.width - this.offset) / 2 ? x + 8 : x - this.tooltip.width - 8;
-                    this.tooltip.move(tooltipX, 0);
+                    if (x !== this.x) {
+                        this.x = x;
+                        this.group.animate("opacity", 1);
+                        this.hoverGroup.element.textContent = "";
+                        points.forEach(({ x, y, series }) => {
+                            const circle = (new SvgWrapper("circle"))
+                                .setAttributes({
+                                    cx: x,
+                                    cy: y,
+                                    r: 6,
+                                    stroke: series.options.color,
+                                    opacity: 0
+                                })
+                                .renderTo(this.hoverGroup);
+                            circle.animate("opacity", 1);
+                        });
+                        this.line.move(x, 0);
+                        this.tooltip.value(a);
+                        const tooltipX = x < (this.width - this.offset) / 2 ? x + 8 : x - this.tooltip.width - 8;
+                        this.tooltipGroup.move(tooltipX, 0);
+                    }
                 }
                 event.stopPropagation();
-            });
+            }, { passive: false });
 
             document.addEventListener(eventName, () => {
                 this.group.animate("opacity", 0);
+                this.x = null;
             });
         });
     }
