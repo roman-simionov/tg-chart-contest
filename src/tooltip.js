@@ -13,7 +13,7 @@ class ForeignObject extends SvgWrapper {
      */
     value(date, points) {
         date = new Date(date);
-        this.element.innerHTML = ` <foreignobject id="obj" x="0" y="0" width="300">
+        this.element.innerHTML = ` <foreignobject id="obj" x="0" y="0" width="1000">
             <body xmlns="http://www.w3.org/1999/xhtml">
               <div id="tooltip">
               <div class="date">${DAYS[date.getDay()]}, ${MONTH[date.getMonth()]} ${date.getDate()}</div>
@@ -31,11 +31,11 @@ class ForeignObject extends SvgWrapper {
         const object = this.element.querySelector("#obj");
         const div = this.element.querySelector("#tooltip");
 
-        const { width, height } = div.getBoundingClientRect();
+        const { width, height } = div.getBoundingClientRect(true);
 
         this.width = width;
-        object.setAttribute("width", width + 40);
-        object.setAttribute("height", height + 40);
+        object.setAttribute("width", width + 50);
+        object.setAttribute("height", height + 50);
     }
 }
 
