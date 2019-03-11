@@ -32,8 +32,14 @@ export default class Series {
     render(valueDomain, argumentDomain, animate) {
         const x = this.options.x;
         const y = this.options.y;
+        this.pointArguments = [];
+        this.valueDomain = valueDomain;
         if (isFinite(valueDomain(y[0]))) {
-            const points = y.map((v, i) => [argumentDomain(x[i]), valueDomain(v)]);
+            const points = y.map((v, i) => {
+                const _x = argumentDomain(x[i]);
+                this.pointArguments[Math.floor(_x)] = i;
+                return [_x, valueDomain(v)];
+            });
             this.path.value(points, animate);
         }
         if (this.options.visible) {
@@ -41,6 +47,36 @@ export default class Series {
         } else {
             this.hide();
         }
+    }
+
+    getPoint(x) {
+        let i = x;
+        let j = x;
+        let v;
+        let a;
+        const check = (c) => {
+            const index = this.pointArguments[c];
+            if (index !== undefined) {
+                a = this.options.x[index];
+                v = this.options.y[index];
+                x = c;
+                return true;
+            }
+        };
+        while (i < this.pointArguments.length || j >= 0) {
+            if (check(i++)) break;
+            if (check(j--)) break;
+        }
+        if (a === undefined) {
+            return null;
+        }
+        return {
+            series: this,
+            v,
+            y: this.valueDomain(v),
+            a,
+            x
+        };
     }
 
     hide() {

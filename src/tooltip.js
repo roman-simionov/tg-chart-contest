@@ -31,35 +31,43 @@ class ForeignObject extends SvgWrapper {
         object.setAttribute("width", width);
         object.setAttribute("height", height);
     }
+    move(x, y) {
+        super.move(x, y);
+        this.x = null;
+        this.y = null;
+    }
 }
 
 export default class Tooltip {
     /**
      *
-     * @param {Element} container
      * @param {Renderer} renderer
+     * @param {SeriesView} seriesView
      */
-    constructor(container, renderer) {
+    constructor(renderer, seriesView) {
         this.group = renderer.createElement("g").renderTo(renderer.svg).setAttributes({ opacity: 0 });
         this.line = renderer.path().renderTo(this.group);
         this.line.element.classList.add("tooltip-line");
         this.tooltip = new ForeignObject().renderTo(this.group);
 
-        this.attachEvents(renderer.svg.element);
+        this.attachEvents(renderer.svg.element, seriesView);
     }
     /**
      *
      * @param {Element} element
      */
-    attachEvents(element) {
+    attachEvents(element, seriesView) {
         ["pointermove", "touchstart"].forEach(eventName => {
             element.addEventListener(eventName, (event) => {
-                const x = event.pageX - this.offset;
-                this.group.animate("opacity", 1);
-                this.line.move(x, 0);
-                this.tooltip.value(x);
-                const tooltipX = x < (this.width - this.offset) / 2 ? x + 8 : x - this.tooltip.width - 8;
-                this.tooltip.move(tooltipX, 0);
+                const points = seriesView.getPoints(Math.round(event.pageX - this.offset));
+                if (points && points.length) {
+                    let { x, a } = points[0];
+                    this.group.animate("opacity", 1);
+                    this.line.move(x, 0);
+                    this.tooltip.value(a);
+                    const tooltipX = x < (this.width - this.offset) / 2 ? x + 8 : x - this.tooltip.width - 8;
+                    this.tooltip.move(tooltipX, 0);
+                }
                 event.stopPropagation();
             });
 

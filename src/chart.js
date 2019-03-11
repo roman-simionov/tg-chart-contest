@@ -45,7 +45,7 @@ export default class Chart {
             this.selector.renderSeriesView(true);
         });
 
-        this.tooltip = new Tooltip(this.element, this.renderer);
+        this.tooltip = new Tooltip(this.renderer, this.seriesView);
 
         this.resize();
     }

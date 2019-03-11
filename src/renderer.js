@@ -71,6 +71,11 @@ export class SvgWrapper {
     }
 
     move(x, y) {
+        if (this.x === x && this.y === y) {
+            return;
+        }
+        this.x = x;
+        this.y = y;
         if (this.moveAnimation) {
             this.moveAnimation.element.endElement();
         }
