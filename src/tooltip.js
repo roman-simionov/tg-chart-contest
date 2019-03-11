@@ -1,16 +1,12 @@
 import { SvgWrapper } from "./renderer";
-
 import { MONTH } from "./axis";
 
 const DAYS = ["Sun", "Mon", "Tue", "Wen", "Thu", "Fri", "Sat"];
 
-
 class ForeignObject extends SvgWrapper {
     constructor() {
         super("g");
-        this.timeout = null;
     }
-
     /**
      *
      * @param {Date} date
@@ -34,7 +30,6 @@ class ForeignObject extends SvgWrapper {
         this.width = width;
         object.setAttribute("width", width);
         object.setAttribute("height", height);
-
     }
 }
 
@@ -52,13 +47,11 @@ export default class Tooltip {
 
         this.attachEvents(renderer.svg.element);
     }
-
     /**
      *
      * @param {Element} element
      */
     attachEvents(element) {
-
         ["pointermove", "touchstart"].forEach(eventName => {
             element.addEventListener(eventName, (event) => {
                 const x = event.pageX - this.offset;
@@ -74,14 +67,12 @@ export default class Tooltip {
                 this.group.animate("opacity", 0);
             });
         });
-
     }
 
     resize(width, height, offset) {
         this.width = width;
         this.height = height;
         this.offset = offset;
-
         this.line.value([[0, 0], [0, height]]);
     }
 }
