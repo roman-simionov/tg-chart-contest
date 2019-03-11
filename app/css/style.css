@@ -34,13 +34,13 @@
 }
 
 .date{
-    margin-bottom: 8px;
     font-size: 14px;
 }
 
 .series-data{
     display: inline-block;
-    margin-right: 8px;
+    margin-top: 8px;
+    margin-right: 12px;
 }
 
 .series-data .value{
