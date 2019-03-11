@@ -33,6 +33,25 @@
     background-color: white;
 }
 
+.date{
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.series-data{
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.series-data .value{
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.series-data .name{
+    font-size: 14px
+}
+
 .tooltip-line{
     stroke-width: 1;
     stroke: #888;
