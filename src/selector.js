@@ -211,7 +211,7 @@ export default class Selector {
     }
 
     renderSeriesView(animate) {
-        const valueScale = numericScale([0, this.seriesView.getRange()], [0, this.height]);
+        const valueScale = numericScale(this.seriesView.getRange(), [0, this.height]);
         const argumentScale = dateScale(this.domain.map(d=>new Date(d)), [0, this.width]);
         this.seriesView.render(valueScale, argumentScale, animate);
     }

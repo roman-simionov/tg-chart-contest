@@ -6,7 +6,7 @@
 export function numericScale([d1, d2], [r1, r2]) {
     const range = r2 - r1;
     const domain = d2 - d1;
-    return (v) => r1 + (d2 - v - d1) * (range / domain);
+    return (v) => r1 + (d2 - v) * (range / domain);
 }
 
 /**

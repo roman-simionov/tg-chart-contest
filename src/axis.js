@@ -26,7 +26,7 @@ export function createTicks([s1, s2], [d1, d2]) {
         }
     }
 
-    const startTick = math.floor(d1 / interval) * interval;
+    const startTick = math.floor(d1 / adjustedInterval) * adjustedInterval;
 
     return new Array(math.ceil(domainRange / adjustedInterval) + 1).fill(0).map((_, i) => startTick + adjustedInterval * i);
 }

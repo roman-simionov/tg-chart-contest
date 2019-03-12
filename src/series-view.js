@@ -14,7 +14,8 @@ export default class SeriesView {
     }
 
     getRange(range) {
-        return Math.max.apply(null, this.series.map(s => s.getRange(range)));
+        const ranges = this.series.reduce((r, s) => r.concat(s.getRange(range)), []);
+        return [0, Math.max.apply(null, ranges)];
     }
 
     getPoints(x) {
