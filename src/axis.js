@@ -3,34 +3,39 @@ import Domain from "./domain";
 
 export const MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-const MULTIPLIERS = [1, 2, 5];
+const MULTIPLIERS = [1, 2, 5, 10];
+
+const math = Math;
 
 export function createTicks([s1, s2], [d1, d2]) {
     const domainRange = d2 - d1;
     const screenRange = s2 - s1;
 
-    const count = Math.ceil(screenRange / 35);
+    const count = math.ceil(screenRange / 30);
     const interval = domainRange / count;
 
-    let adjustedInterval = 1;
+    const factor = math.pow(10, math.floor(math.log10(interval)));
+    let adjustedInterval = factor;
 
-    let multiplier = 0;
+    let m = 0;
+
     while (adjustedInterval < interval) {
-        adjustedInterval *= MULTIPLIERS[multiplier++];
-        multiplier > MULTIPLIERS.length;
-        multiplier = 1;
+        adjustedInterval = factor * MULTIPLIERS[m++];
+        if (m > MULTIPLIERS.length) {
+            break;
+        }
     }
 
-    const startTick = Math.floor(d1 / interval) * interval;
+    const startTick = math.floor(d1 / interval) * interval;
 
-    return new Array(Math.ceil(domainRange / adjustedInterval) + 1).fill(0).map((_, i) => startTick + adjustedInterval * i);
+    return new Array(math.ceil(domainRange / adjustedInterval) + 1).fill(0).map((_, i) => startTick + adjustedInterval * i);
 }
 
 export function createDateTicks([s1, s2], [d1, d2], firstDate) {
     const domainRange = d2 - d1;
     const screenRange = s2 - s1;
 
-    const count = Math.ceil(screenRange / 55);
+    const count = math.ceil(screenRange / 55);
     const interval = domainRange / count;
 
     let adjustedInterval = 1000 * 60 * 60 * 24;
@@ -40,16 +45,16 @@ export function createDateTicks([s1, s2], [d1, d2], firstDate) {
         adjustedInterval *= 2;
     }
 
-    days = Math.ceil(adjustedInterval / (1000 * 60 * 60 * 24));
+    days = math.ceil(adjustedInterval / (1000 * 60 * 60 * 24));
 
     firstDate = new Date(firstDate);
     firstDate.setHours(0);
     firstDate.setMinutes(0);
     firstDate.setSeconds(0);
 
-    const startTick = new Date(firstDate.getTime() + Math.floor((d1 - firstDate) / adjustedInterval) * adjustedInterval);
+    const startTick = new Date(firstDate.getTime() + math.floor((d1 - firstDate) / adjustedInterval) * adjustedInterval);
 
-    return new Array(Math.ceil(domainRange / adjustedInterval) + 1)
+    return new Array(math.ceil(domainRange / adjustedInterval) + 1)
         .fill(0).map((_, i) => {
             const s = new Date(startTick);
             return s.setDate(s.getDate() + days * i);
@@ -97,7 +102,7 @@ export class ValueAxis extends BaseAxis {
 
     renderGrid(ticks) {
         ticks.map(y => {
-            y = Math.round(y);
+            y = math.round(y);
             this.renderer.path().value([[0, y], [this.width, y]]).renderTo(this.gridGroup);
         });
     }
