@@ -56,11 +56,13 @@ export class SvgWrapper {
     }
 
     animate(attributeName, value, options = {}) {
+        const animationField = `${attributeName}`;
+
         const animation = new Animation(() => {
             this.setAttributes({ [attributeName]: value });
         }).setAttributes(Object.assign({
             to: value,
-            dur: "0.8s",
+            dur: "0.5s",
             attributeName,
             begin: "click",
             fill: "freeze"
@@ -68,6 +70,11 @@ export class SvgWrapper {
 
         animation.renderTo(this);
         animation.element.beginElement();
+
+        if (this[animationField]) {
+            this.animationField.endElement();
+            this[animationField] = animation;
+        }
     }
 
     move(x, y) {

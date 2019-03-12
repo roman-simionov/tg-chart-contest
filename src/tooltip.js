@@ -46,7 +46,10 @@ export default class Tooltip {
      * @param {SeriesView} seriesView
      */
     constructor(renderer, seriesView) {
-        this.group = renderer.createElement("g").renderTo(renderer.svg).setAttributes({ opacity: 0 });
+        this.group = renderer.createElement("g").renderTo(renderer.svg).setAttributes({
+            opacity: 0,
+            "pointer-events": "none"
+        });
         this.line = renderer.path().renderTo(this.group);
         this.line.element.classList.add("tooltip-line");
         this.tooltipGroup = renderer.createElement("g").renderTo(this.group);
