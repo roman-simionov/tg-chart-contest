@@ -127,34 +127,12 @@ export class ValueAxis extends BaseAxis {
         this.renderGrid(ticks);
     }
 
-
     resize(width, height, lineHeight) {
         this.width = width;
         this.group.setAttributes({
             "transform": `translate(0, ${-lineHeight})`
         });
         this.domain.setRange([0, height]);
-    }
-
-    calculateInterval() {
-        const domainRange = this.domain.domain[1] - this.domain.domain[0];
-        const screenRange = this.domain.range[1] - this.domain.range[0];
-
-        const count = Math.ceil(screenRange / 35);
-        const interval = domainRange / count;
-
-        let adjustedInterval = 1;
-
-        let multiplier = 0;
-        while (adjustedInterval < interval) {
-            adjustedInterval *= MULTIPLIERS[multiplier++];
-            multiplier > MULTIPLIERS.length;
-            multiplier = 1;
-        }
-
-        return (v) => {
-            return v + adjustedInterval;
-        };
     }
 }
 
@@ -212,28 +190,5 @@ export class ArgumentAxis extends BaseAxis {
             "transform": `translate(0, ${height})`
         });
         this.domain.setRange([0, width]);
-    }
-
-    calculateInterval() {
-        const domainRange = this.domain.domain[1] - this.domain.domain[0];
-        const screenRange = this.domain.range[1] - this.domain.range[0];
-
-        const count = Math.ceil(screenRange / 50);
-        const interval = domainRange / count;
-
-        let adjustedInterval = 1000 * 60 * 60 * 24;
-
-        let days = 1;
-        while (adjustedInterval < interval) {
-            adjustedInterval *= 2;
-        }
-
-        days = adjustedInterval / (1000 * 60 * 60 * 24);
-
-        return (v) => {
-            const date = new Date(v);
-            date.setDate(date.getDate() + days);
-            return date;
-        };
     }
 }

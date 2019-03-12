@@ -78,10 +78,6 @@ export default class Chart {
 
         this.seriesView.render(this.valueAxis.domain.scale, this.argumentAxis.domain.scale, animate);
     }
-
-    width() {
-        return this.renderer.svg.getAttribute("width");
-    }
 }
 
 /**
