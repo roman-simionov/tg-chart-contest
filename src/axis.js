@@ -26,6 +26,36 @@ export function createTicks([s1, s2], [d1, d2]) {
     return new Array(Math.ceil(domainRange / adjustedInterval) + 1).fill(0).map((_, i) => startTick + adjustedInterval * i);
 }
 
+export function createDateTicks([s1, s2], [d1, d2], firstDate) {
+    const domainRange = d2 - d1;
+    const screenRange = s2 - s1;
+
+    const count = Math.ceil(screenRange / 55);
+    const interval = domainRange / count;
+
+    let adjustedInterval = 1000 * 60 * 60 * 24;
+
+    let days = 1;
+    while (adjustedInterval < interval) {
+        adjustedInterval *= 2;
+    }
+
+    days = Math.ceil(adjustedInterval / (1000 * 60 * 60 * 24));
+
+    firstDate = new Date(firstDate);
+    firstDate.setHours(0);
+    firstDate.setMinutes(0);
+    firstDate.setSeconds(0);
+
+    const startTick = new Date(firstDate.getTime() + Math.floor((d1 - firstDate) / adjustedInterval) * adjustedInterval);
+
+    return new Array(Math.ceil(domainRange / adjustedInterval) + 1)
+        .fill(0).map((_, i) => {
+            const s = new Date(startTick);
+            return s.setDate(s.getDate() + days * i);
+        });
+}
+
 class BaseAxis {
     /**
      *
@@ -156,20 +186,16 @@ export class ArgumentAxis extends BaseAxis {
         return `${MONTH[value.getMonth()]} ${value.getDate()}`;
     }
 
-    render() {
+    /**
+     *
+     * @param {Date[]} tickValues
+     */
+    render(tickValues) {
 
         this.group.element.textContent = "";
 
-        const addInterval = this.calculateInterval();
-
-        const startValue = new Date(this.domain.domain[0].getTime());
-        startValue.setHours(0);
-        startValue.setMinutes(0);
-        startValue.setSeconds(0);
-
-        for (let i = startValue; i < this.domain.domain[1].getTime(); i = addInterval(i)) {
-            const value = new Date(i);
-
+        tickValues.forEach(value => {
+            value = new Date(value);
             const text = this.format(value);
             const label = this.renderer.text().value(text);
 
@@ -177,7 +203,7 @@ export class ArgumentAxis extends BaseAxis {
                 x: this.domain.scale(value)
             });
             label.renderTo(this.group);
-        }
+        });
     }
 
     resize(width, height, lineHeight) {
@@ -197,14 +223,12 @@ export class ArgumentAxis extends BaseAxis {
 
         let adjustedInterval = 1000 * 60 * 60 * 24;
 
-        let multiplier = 0;
         let days = 1;
         while (adjustedInterval < interval) {
-            adjustedInterval *= MULTIPLIERS[multiplier];
-            days *= MULTIPLIERS[multiplier++];
-            multiplier > MULTIPLIERS.length;
-            multiplier = 1;
+            adjustedInterval *= 2;
         }
+
+        days = adjustedInterval / (1000 * 60 * 60 * 24);
 
         return (v) => {
             const date = new Date(v);

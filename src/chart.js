@@ -1,5 +1,5 @@
 import Renderer from "./renderer";
-import { ArgumentAxis, ValueAxis, createTicks } from "./axis";
+import { ArgumentAxis, ValueAxis, createTicks, createDateTicks } from "./axis";
 import Selector from "./selector";
 import SeriesView from "./series-view";
 import Legend from "./legend";
@@ -66,13 +66,14 @@ export default class Chart {
     }
 
     render(animate) {
+        const argumentTicks = createDateTicks(this.argumentAxis.domain.range, this.selector.value(), this.selector.domain[0]);
         this.argumentAxis.setDomain(this.selector.value());
         const valueDomain = [0, this.seriesView.getRange(this.selector.value())];
 
         const valueTicks = createTicks(this.valueAxis.domain.range, valueDomain);
 
         this.valueAxis.setDomain([valueTicks[0], valueTicks[valueTicks.length - 1]]);
-        this.argumentAxis.render();
+        this.argumentAxis.render(argumentTicks);
         this.valueAxis.render(valueTicks);
 
         this.seriesView.render(this.valueAxis.domain.scale, this.argumentAxis.domain.scale, animate);
