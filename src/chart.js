@@ -1,5 +1,5 @@
 import Renderer from "./renderer";
-import { ArgumentAxis, ValueAxis } from "./axis";
+import { ArgumentAxis, ValueAxis, createTicks } from "./axis";
 import Selector from "./selector";
 import SeriesView from "./series-view";
 import Legend from "./legend";
@@ -69,9 +69,11 @@ export default class Chart {
         this.argumentAxis.setDomain(this.selector.value());
         const valueDomain = [0, this.seriesView.getRange(this.selector.value())];
 
-        this.valueAxis.setDomain(valueDomain);
+        const valueTicks = createTicks(this.valueAxis.domain.range, valueDomain);
+
+        this.valueAxis.setDomain([valueTicks[0], valueTicks[valueTicks.length - 1]]);
         this.argumentAxis.render();
-        this.valueAxis.render();
+        this.valueAxis.render(valueTicks);
 
         this.seriesView.render(this.valueAxis.domain.scale, this.argumentAxis.domain.scale, animate);
     }

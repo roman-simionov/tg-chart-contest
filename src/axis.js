@@ -5,6 +5,27 @@ export const MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "S
 
 const MULTIPLIERS = [1, 2, 5];
 
+export function createTicks([s1, s2], [d1, d2]) {
+    const domainRange = d2 - d1;
+    const screenRange = s2 - s1;
+
+    const count = Math.ceil(screenRange / 35);
+    const interval = domainRange / count;
+
+    let adjustedInterval = 1;
+
+    let multiplier = 0;
+    while (adjustedInterval < interval) {
+        adjustedInterval *= MULTIPLIERS[multiplier++];
+        multiplier > MULTIPLIERS.length;
+        multiplier = 1;
+    }
+
+    const startTick = Math.floor(d1 / interval) * interval;
+
+    return new Array(Math.ceil(domainRange / adjustedInterval) + 1).fill(0).map((_, i) => startTick + adjustedInterval * i);
+}
+
 class BaseAxis {
     /**
      *
@@ -45,32 +66,33 @@ export class ValueAxis extends BaseAxis {
     }
 
     renderGrid(ticks) {
-        ticks.map(t => {
-            const y = t - 0.5;
+        ticks.map(y => {
+            y = Math.round(y);
             this.renderer.path().value([[0, y], [this.width, y]]).renderTo(this.gridGroup);
         });
     }
 
-    render() {
+    /**
+     *
+     * @param {Number[]} tickValues
+     */
+    render(tickValues) {
 
         this.gridGroup.element.textContent = "";
         this.group.element.textContent = "";
 
-        const ticks = [];
-
-        const addInterval = this.calculateInterval();
-
-        for (let i = this.domain.domain[0]; i < this.domain.domain[1]; i = addInterval(i)) {
-            const text = this.format(i);
+        const ticks = tickValues.map(v => {
+            const text = this.format(v);
             const label = this.renderer.text().value(text);
-            const tick = this.domain.scale(i);
-            ticks.push(tick);
+            const tick = this.domain.scale(v);
 
             label.setAttributes({
                 y: tick
             });
             label.renderTo(this.group);
-        }
+
+            return tick;
+        });
 
         this.renderGrid(ticks);
     }

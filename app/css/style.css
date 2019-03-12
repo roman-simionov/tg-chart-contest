@@ -66,6 +66,14 @@
     stroke-width: 1px;
 }
 
+.grid > :first-child{
+    transform: translate(0, -1px);
+}
+
+.grid > :last-child{
+    transform: translate(0, 1px);
+}
+
 .handler{
     fill: cornflowerblue;
     opacity: 0.35;
