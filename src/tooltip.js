@@ -11,9 +11,9 @@ class ForeignObject extends SvgWrapper {
      *
      * @param {Date} date
      */
-    value(date, points) {
+    value(date, points, startWidth) {
         date = new Date(date);
-        this.element.innerHTML = ` <foreignobject id="obj" x="0" y="0" width="1000">
+        this.element.innerHTML = ` <foreignobject id="obj" x="0" y="0" width="${startWidth}">
             <body xmlns="http://www.w3.org/1999/xhtml">
               <div id="tooltip">
               <div class="date">${DAYS[date.getDay()]}, ${MONTH[date.getMonth()]} ${date.getDate()}</div>
@@ -34,8 +34,8 @@ class ForeignObject extends SvgWrapper {
         const { width, height } = div.getBoundingClientRect(true);
 
         this.width = width;
-        object.setAttribute("width", width + 50);
-        object.setAttribute("height", height + 50);
+        object.setAttribute("width", width);
+        object.setAttribute("height", height);
     }
 }
 
@@ -88,7 +88,7 @@ export default class Tooltip {
                             circle.animate("opacity", 1);
                         });
                         this.line.move(x, 0);
-                        this.tooltip.value(a, points);
+                        this.tooltip.value(a, points, this.width / 2 - this.offset);
                         const tooltipX = x < (this.width - this.offset) / 2 ? x + 8 : x - this.tooltip.width - 8;
                         this.tooltipGroup.move(tooltipX, 0);
                     }
