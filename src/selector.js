@@ -189,6 +189,8 @@ export default class Selector {
         this.drawRects();
         this.updateScale();
 
+        this.seriesView.resize(width, height);
+
         this.renderSeriesView();
     }
 
@@ -214,6 +216,11 @@ export default class Selector {
         const valueScale = numericScale(this.seriesView.getRange(), [0, this.height]);
         const argumentScale = dateScale(this.domain.map(d=>new Date(d)), [0, this.width]);
         this.seriesView.render(valueScale, argumentScale, animate);
+        this.seriesView.setCommonScale(valueScale);
+    }
+
+    scaleSeries() {
+        this.seriesView.transform();
     }
 
     setSeries(options) {

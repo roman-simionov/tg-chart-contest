@@ -9,7 +9,8 @@ export default class Series {
         this.options = options;
         this.path = new Path();
         this.path.setAttributes({
-            stroke: options.color
+            stroke: options.color,
+            opacity: 1
         });
     }
 
@@ -37,11 +38,19 @@ export default class Series {
         if (isFinite(valueDomain(y[0]))) {
             const points = y.map((v, i) => {
                 const _x = argumentDomain(x[i]);
-                this.pointArguments[Math.floor(_x)] = i;
+               // this.pointArguments[Math.floor(_x)] = i;
                 return [_x, valueDomain(v)];
             });
             this.path.value(points, animate);
         }
+    }
+
+    resize(width, height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    applyVisibility() {
         if (this.options.visible) {
             this.show();
         } else {
@@ -83,10 +92,10 @@ export default class Series {
     }
 
     hide() {
-        this.path.element.setAttribute("visibility", "hidden");
+       this.path.animate("opacity", 0);
     }
 
     show() {
-        this.path.element.removeAttribute("visibility");
+        this.path.animate("opacity", 1);
     }
 }

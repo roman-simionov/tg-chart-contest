@@ -28,7 +28,8 @@ export default class Chart {
         this.argumentAxis = new ArgumentAxis(this.element);
         this.valueAxis = new ValueAxis(this.renderer);
         this.selector = new Selector(this.element, () => {
-            this.render();
+            this.renderAxis();
+            this.seriesView.transform(this.selector.value());
         });
 
         const x = this.options.x;
@@ -41,31 +42,46 @@ export default class Chart {
         this.seriesView = new SeriesView(seriesGroup, this.options.series);
 
         this.legend = new Legend(this.element, options.series, () => {
-            this.render(true);
-            this.selector.renderSeriesView(true);
+            this.seriesView.transform(this.selector.value());
+            this.selector.scaleSeries();
         });
 
         this.tooltip = new Tooltip(this.renderer, this.seriesView);
 
-        this.resize();
+
+        new Promise(r => r()).then(() => {
+            this.resize();
+        });
     }
 
     resize() {
         const { x, width } = this.element.getBoundingClientRect();
         const argumentsAxisMeasure = this.argumentAxis.measure();
 
-        if (width > 0) {
-            const height = this.options.mainPlotHeight || 350;
-            this.renderer.svg.setAttributes({ width, height });
-            this.argumentAxis.resize(width, argumentsAxisMeasure.height, argumentsAxisMeasure.lineHeight);
-            this.valueAxis.resize(width, height, argumentsAxisMeasure.lineHeight);
-            this.selector.resize(width, this.options.selectorHeight || 75);
-            this.tooltip.resize(width, height, x);
-        }
-        this.render();
+        new Promise(r => r()).then(() => {
+            if (width > 0) {
+                const height = this.options.mainPlotHeight || 350;
+                this.renderer.svg.setAttributes({ width, height });
+                this.argumentAxis.resize(width, argumentsAxisMeasure.height, argumentsAxisMeasure.lineHeight);
+                this.valueAxis.resize(width, height, argumentsAxisMeasure.lineHeight);
+                this.selector.resize(width, this.options.selectorHeight || 75);
+                this.tooltip.resize(width, height, x);
+                this.seriesView.resize(width, height);
+                this.renderAxis();
+                this.renderSeries();
+            }
+        });
+
     }
 
-    render(animate) {
+    renderSeries() {
+        const valueScale = this.valueAxis.domain.scale;
+        const argumentScale = this.argumentAxis.domain.scale;
+        this.seriesView.render(valueScale, argumentScale);
+        this.seriesView.setCommonScale(valueScale, argumentScale);
+    }
+
+    renderAxis() {
         const argumentTicks = createDateTicks(this.argumentAxis.domain.range, this.selector.value(), this.selector.domain[0]);
         this.argumentAxis.setDomain(this.selector.value());
         const valueDomain = this.seriesView.getRange(this.selector.value());
@@ -77,7 +93,6 @@ export default class Chart {
         }
 
         this.argumentAxis.render(argumentTicks);
-        this.seriesView.render(this.valueAxis.domain.scale, this.argumentAxis.domain.scale, animate);
     }
 }
 

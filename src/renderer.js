@@ -1,3 +1,19 @@
+const ANIMATION_DURATION = "0.2s";
+
+function getScale(svgWrapper) {
+    const parse = getComputedStyle(svgWrapper.element).transform.split(/[,()]/);
+    return `${parse[1]} ${parse[4]}`;
+}
+
+function getTransform(svgWrapper) {
+    const matrix = getComputedStyle(svgWrapper.element).transform;
+    if (matrix === "nome") {
+        return "0 0";
+    }
+    const parse = matrix.split(/[,()]/);
+    return `${parse[5]} ${parse[6]}`;
+}
+
 export class SvgWrapper {
     /**
      *
@@ -59,10 +75,11 @@ export class SvgWrapper {
         const animationField = `${attributeName}`;
 
         const animation = new Animation(() => {
-            this.setAttributes({ [attributeName]: value });
+             this.setAttributes({ [attributeName]: getComputedStyle(this.element)[animationField] });
         }).setAttributes(Object.assign({
             to: value,
-            dur: "0.5s",
+            from: getComputedStyle(this.element)[animationField],
+            dur: ANIMATION_DURATION,
             attributeName,
             begin: "click",
             fill: "freeze"
@@ -72,31 +89,57 @@ export class SvgWrapper {
         animation.element.beginElement();
 
         if (this[animationField]) {
-            this.animationField.endElement();
-            this[animationField] = animation;
+            this[animationField].element.endElement();
         }
+
+        this[animationField] = animation;
     }
 
-    move(x, y) {
+    move(x, y, options) {
+        const animation = new Animation(() => {
+            this.setAttributes({ transform: `translate(${getTransform(this)})` });
+        }, "animateTransform")
+            .setAttributes(Object.assign({
+                type: "translate",
+                attributeName: "transform",
+                from: getTransform(this),
+                to: `${x} ${y}`,
+                dur: ANIMATION_DURATION,
+                begin: "click",
+                fill: "freeze"
+            }, options));
+
+        animation.renderTo(this);
+        animation.element.beginElement();
+
         if (this.moveAnimation) {
             this.moveAnimation.element.endElement();
         }
-        this.moveAnimation = new Animation(() => {
-            this.x = x;
-            this.y = y;
-            this.setAttributes({ transform: `translate(${x}, ${y})` });
+        this.moveAnimation = animation;
+    }
+
+    scale(x, y) {
+        const animation = new Animation(() => {
+            this.setAttributes({ transform: `scale(${getScale(this)})` });
         }, "animateTransform")
             .setAttributes({
-                type: "translate",
+                type: "scale",
                 attributeName: "transform",
-                from: `${this.x || 0} ${this.y || 0}`,
+                from: getScale(this),
                 to: `${x} ${y}`,
-                dur: "0.2s",
+                dur: ANIMATION_DURATION,
                 begin: "click",
                 fill: "freeze"
             });
-            this.moveAnimation.renderTo(this);
-            this.moveAnimation.element.beginElement();
+        animation.renderTo(this);
+        animation.element.beginElement();
+
+        if (this.scaleAnimation) {
+            this.scaleAnimation.element.endElement();
+        }
+
+        this.scaleAnimation = animation;
+
     }
 }
 
@@ -125,7 +168,7 @@ export class Path extends SvgWrapper {
      * @param {Array<number>} points
      */
     value(points, animate) {
-        const d = `M ${points.join(" L ")}`;
+        const d = `M${points.join("L")}`;
         if (!animate) {
             this.setAttributes({ d });
         } else {

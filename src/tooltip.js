@@ -50,7 +50,7 @@ export default class Tooltip {
             opacity: 0,
             "pointer-events": "none"
         });
-        this.line = renderer.path().renderTo(this.group);
+        this.line = renderer.path().renderTo(this.group).setAttributes({ "transform": "translate(0 0)" });
         this.line.element.classList.add("tooltip-line");
         this.tooltipGroup = renderer.createElement("g").renderTo(this.group);
         this.tooltip = new ForeignObject().renderTo(this.tooltipGroup);
@@ -87,10 +87,10 @@ export default class Tooltip {
                                 .renderTo(this.hoverGroup);
                             circle.animate("opacity", 1);
                         });
-                        this.line.move(x, 0);
+                        this.line.move(x, 0, { dur: "0.2s" });
                         this.tooltip.value(a, points, this.width / 2 - this.offset);
                         const tooltipX = x < (this.width - this.offset) / 2 ? x + 8 : x - this.tooltip.width - 8;
-                        this.tooltipGroup.move(tooltipX, 0);
+                        this.tooltipGroup.move(tooltipX, 0, { dur: "0.2s" });
                     }
                 }
                 event.stopPropagation();
