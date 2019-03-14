@@ -89,7 +89,7 @@ export class SvgWrapper {
         animation.element.beginElement();
 
         if (this[animationField]) {
-            this[animationField].element.endElement();
+            this[animationField].remove();
         }
 
         this[animationField] = animation;
@@ -113,7 +113,7 @@ export class SvgWrapper {
         animation.element.beginElement();
 
         if (this.moveAnimation) {
-            this.moveAnimation.element.endElement();
+            this.moveAnimation.remove();
         }
         this.moveAnimation = animation;
     }
@@ -135,7 +135,7 @@ export class SvgWrapper {
         animation.element.beginElement();
 
         if (this.scaleAnimation) {
-            this.scaleAnimation.element.endElement();
+            this.scaleAnimation.remove();
         }
 
         this.scaleAnimation = animation;
