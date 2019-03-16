@@ -1,7 +1,13 @@
 const ANIMATION_DURATION = "0.2s";
 
 function getScale(svgWrapper) {
-    const parse = getComputedStyle(svgWrapper.element).transform.split(/[,()]/);
+    const matrix = getComputedStyle(svgWrapper.element).transform;
+
+    if (matrix === "none") {
+        return "1 1";
+    }
+
+    const parse = matrix.split(/[,()]/);
     return `${parse[1]} ${parse[4]}`;
 }
 
@@ -86,7 +92,7 @@ export class SvgWrapper {
         }, options));
 
         animation.renderTo(this);
-        animation.element.beginElement();
+        animation.start();
 
         if (this[animationField]) {
             this[animationField].remove();
@@ -96,13 +102,15 @@ export class SvgWrapper {
     }
 
     move(x, y, options) {
+        const from = getTransform(this);
+        this.setAttributes({ from: `translate(${from})` });
         const animation = new Animation(() => {
             this.setAttributes({ transform: `translate(${getTransform(this)})` });
         }, "animateTransform")
             .setAttributes(Object.assign({
                 type: "translate",
                 attributeName: "transform",
-                from: getTransform(this),
+                from,
                 to: `${x} ${y}`,
                 dur: ANIMATION_DURATION,
                 begin: "click",
@@ -110,9 +118,10 @@ export class SvgWrapper {
             }, options));
 
         animation.renderTo(this);
-        animation.element.beginElement();
+        animation.start();
 
         if (this.moveAnimation) {
+            this.moveAnimation.end();
             this.moveAnimation.remove();
         }
         this.moveAnimation = animation;
@@ -132,7 +141,7 @@ export class SvgWrapper {
                 fill: "freeze"
             });
         animation.renderTo(this);
-        animation.element.beginElement();
+        animation.start();
 
         if (this.scaleAnimation) {
             this.scaleAnimation.remove();
@@ -147,7 +156,6 @@ export class TextElement extends SvgWrapper {
     constructor() {
         super("text");
     }
-
     /**
      *
      * @param {string} text
@@ -162,7 +170,6 @@ export class Path extends SvgWrapper {
     constructor() {
         super("path");
     }
-
     /**
      *
      * @param {Array<number>} points
@@ -186,6 +193,14 @@ class Animation extends SvgWrapper {
             onEnd && onEnd(e);
             this.remove();
         });
+    }
+
+    start() {
+        this.element.beginElement();
+    }
+
+    end() {
+        this.element.endElement();
     }
 }
 export default class Renderer {

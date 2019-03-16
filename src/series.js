@@ -38,7 +38,10 @@ export default class Series {
         if (isFinite(valueDomain(y[0]))) {
             const points = y.map((v, i) => {
                 const _x = argumentDomain(x[i]);
-               // this.pointArguments[Math.floor(_x)] = i;
+                if (_x > 0) {
+                    this.pointArguments[Math.floor(_x)] = i;
+                }
+
                 return [_x, valueDomain(v)];
             });
             this.path.value(points, animate);
