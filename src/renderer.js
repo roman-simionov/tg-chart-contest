@@ -183,15 +183,8 @@ export class Path extends SvgWrapper {
      *
      * @param {Array<number>} points
      */
-    value(points, animate) {
-        const d = `M${points.join("L")}`;
-        if (!animate) {
-            this.setAttributes({ d });
-        } else {
-            this.animate("d", d);
-        }
-
-        return this;
+    value(points) {
+        return this.setAttributes({ d: `M${points.join("L")}` });
     }
 }
 
@@ -297,5 +290,4 @@ export default class Renderer {
     createElement(tagName) {
         return new SvgWrapper(tagName);
     }
-
 };

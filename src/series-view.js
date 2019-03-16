@@ -7,7 +7,10 @@ export default class SeriesView {
      * @param {container} container
      * @param {*} options
      */
-    constructor(container, options) {
+    constructor(container, options, argumentAxis, valueAxis) {
+        this.argumentAxis = argumentAxis;
+        this.valueAxis = valueAxis;
+
         this.container = container.setAttributes({ "transform": "translate(0 0)" });
         this.scaleY = new SvgWrapper("g")
             .setAttributes({ "transform": "scale(1 1)" })
@@ -39,7 +42,7 @@ export default class SeriesView {
      * @param {number} x
      */
     getPoints(x) {
-        return this.series.map(s => s.getPoint(x))
+        return this.series.map(s => s.getPoint(x, this.argumentAxis.domain.scale, this.valueAxis.domain.scale))
             .filter(p => p)
             .filter((p, _, a) => p.a.valueOf() === a[0].a.valueOf());
     }
@@ -73,7 +76,10 @@ export default class SeriesView {
             }
         }
 
-        this.series.forEach(s => s.applyVisibility());
+        this.series.forEach(s => {
+            s.applyVisibility();
+            s.resetTracker();
+        });
     }
 
     /**

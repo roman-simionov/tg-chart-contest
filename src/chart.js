@@ -41,7 +41,7 @@ export default class Chart {
             .addClass("series")
             .renderTo(this.renderer.svg);
 
-        this.seriesView = new SeriesView(seriesGroup, this.options.series);
+        this.seriesView = new SeriesView(seriesGroup, this.options.series, this.argumentAxis, this.valueAxis);
 
         this.legend = new Legend(this.element, options.series, () => {
             this.renderAxis();

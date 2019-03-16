@@ -13,6 +13,7 @@ export default class Series {
             opacity: 1,
             "vector-effect": "non-scaling-stroke"
         });
+        this.pointArguments = [];
     }
 
     getRange(bounds) {
@@ -25,27 +26,13 @@ export default class Series {
         return [Math.min.apply(null, visibleData), Math.max.apply(null, visibleData)];
     }
 
-    /**
-     *
-     * @param {*} argumentDomain
-     * @param {*} valueDomain
-     * @param {boolean} animate
-     */
-    render(valueDomain, argumentDomain, animate) {
+    render(valueScale, argumentScale) {
         const x = this.options.x;
         const y = this.options.y;
-        this.pointArguments = [];
-        this.valueDomain = valueDomain;
-        if (isFinite(valueDomain(y[0]))) {
-            const points = y.map((v, i) => {
-                const _x = argumentDomain(x[i]);
-                if (_x > 0) {
-                    this.pointArguments[Math.floor(_x)] = i;
-                }
 
-                return [_x, valueDomain(v)];
-            });
-            this.path.value(points, animate);
+        if (isFinite(valueScale(y[0]))) {
+            const points = y.map((v, i) => [argumentScale(x[i]), valueScale(v)]);
+            this.path.value(points);
         }
     }
 
@@ -62,9 +49,12 @@ export default class Series {
         }
     }
 
-    getPoint(x) {
+    getPoint(x, argumentScale, valueScale) {
         if (this.options.visible === false) {
             return null;
+        }
+        if (this.pointArguments.length === 0) {
+            this.setupTracker(argumentScale);
         }
         let i = x;
         let j = x;
@@ -89,10 +79,25 @@ export default class Series {
         return {
             series: this,
             v,
-            y: this.valueDomain(v),
+            y: valueScale(v),
             a,
             x
         };
+    }
+
+    resetTracker() {
+        this.pointArguments = [];
+    }
+
+    setupTracker(argumentScale) {
+        const x = this.options.x;
+        this.pointArguments = [];
+        x.forEach((v, i) => {
+            const x = Math.round(argumentScale(v));
+            if (x >= 0 && x <= this.width) {
+                this.pointArguments[x] = i;
+            }
+        });
     }
 
     hide() {
