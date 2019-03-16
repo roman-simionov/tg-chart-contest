@@ -11,7 +11,7 @@ export function createTicks([s1, s2], [d1, d2]) {
     const domainRange = d2 - d1;
     const screenRange = s2 - s1;
 
-    const count = math.ceil(screenRange / 30);
+    const count = math.ceil(screenRange / 35);
     const interval = domainRange / count;
 
     const factor = math.pow(10, math.floor(math.log10(interval)));
