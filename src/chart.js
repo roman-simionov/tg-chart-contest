@@ -43,7 +43,7 @@ export default class Chart {
 
         this.legend = new Legend(this.element, options.series, () => {
             this.renderAxis();
-            this.seriesView.transform(this.selector.value());
+            this.seriesView.transform(this.argumentAxis.domain.domain, this.valueAxis.domain.domain);
             this.selector.scaleSeries();
         });
 

@@ -16,7 +16,7 @@ export default class Series {
 
     getRange(bounds) {
         if (!this.options.visible) {
-            return 0;
+            return [];
         }
         const x = this.options.x;
         const visibleData = bounds !== undefined ? this.options.y.filter((_, i) => x[i + 1] >= bounds[0] && x[i - 1] <= bounds[1]) : this.options.y;

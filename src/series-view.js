@@ -20,7 +20,7 @@ export default class SeriesView {
 
     getRange(range) {
         const ranges = this.series.reduce((r, s) => r.concat(s.getRange(range)), []);
-        return [0, Math.max.apply(null, ranges)];
+        return [Math.min.apply(null, ranges), Math.max.apply(null, ranges)];
     }
 
     getPoints(x) {
