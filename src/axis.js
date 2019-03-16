@@ -4,6 +4,7 @@ import Domain from "./domain";
 export const MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const MULTIPLIERS = [1, 2, 5, 10];
+const LABEL_ANIMATION_SETTINGS = { dur: "0.2s" };
 
 const math = Math;
 
@@ -174,18 +175,58 @@ export class ArgumentAxis extends BaseAxis {
      * @param {Date[]} tickValues
      */
     render(tickValues) {
+        const ticks = this.ticks || [];
 
-        this.group.element.textContent = "";
-
-        tickValues.forEach(value => {
+        this.ticks = tickValues.map((value, index) => {
             value = new Date(value);
             const text = this.format(value);
+            const x = this.domain.scale(value);
+
+            const tick = ticks.find(t => !t.removing && t.value.valueOf() === value.valueOf());
+
+            if (tick) {
+                tick.updated = true;
+
+                return {
+                    value: tick.value,
+                    label: tick.label.setAttributes({ x })
+                };
+            }
+
             const label = this.renderer.text().value(text);
 
-            label.setAttributes({
-                x: this.domain.scale(value)
-            });
+            label.setAttributes({ x });
             label.renderTo(this.group);
+            if (ticks.length && index !== 0) {
+                label.setAttributes({ opacity: 0 });
+                label.animate("opacity", 1, LABEL_ANIMATION_SETTINGS);
+            }
+
+            return {
+                value,
+                label
+            };
+        });
+
+        ticks.forEach(t => {
+            if (!t.updated) {
+                t.label
+                    .setAttributes({ x: this.domain.scale(t.value) });
+                if (!t.removing) {
+                    t.label.animate("opacity", 0, LABEL_ANIMATION_SETTINGS);
+                    t.removing = true;
+                }
+
+                this.ticks.push(t);
+            }
+        });
+
+        this.ticks = this.ticks.filter(t => {
+            if (t.removing && t.label.getAttribute("opacity") === "0") {
+                t.label.remove();
+                return false;
+            }
+            return true;
         });
     }
 
