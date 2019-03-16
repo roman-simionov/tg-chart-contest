@@ -29,7 +29,7 @@ export default class Chart {
         this.valueAxis = new ValueAxis(this.renderer);
         this.selector = new Selector(this.element, () => {
             this.renderAxis();
-            this.seriesView.transform(this.selector.value());
+            this.seriesView.transform(this.argumentAxis.domain.domain, this.valueAxis.domain.domain);
         });
 
         const x = this.options.x;

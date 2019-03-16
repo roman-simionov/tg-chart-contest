@@ -34,8 +34,8 @@ export default class SeriesView {
         this.argumentCommonScale = argumentScale;
     }
 
-    transform(domain) {
-        const range = this.getRange(domain);
+    transform(argumentDomain, valueDomain) {
+        const range = valueDomain || this.getRange(argumentDomain);
         const newStart = this.valueCommonScale(range[1]);
         const newEnd = this.valueCommonScale(range[0]);
 
@@ -46,8 +46,8 @@ export default class SeriesView {
             this.scaleY.scale(1, scaleY || 1);
         }
 
-        if (domain) {
-            const range = domain;
+        if (argumentDomain) {
+            const range = argumentDomain;
             const newStart = this.argumentCommonScale(range[0]);
             const newEnd = this.argumentCommonScale(range[1]);
 

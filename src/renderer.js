@@ -82,9 +82,8 @@ export class SvgWrapper {
         const from = options.from || this[animationField] && this[animationField].value() ||
             this.getAttribute(attributeName) ||
             getComputedStyle(this.element)[animationField];
-
-        if (parseFloat(from) === value) {
-            return this;
+        if (options.from) {
+            this.setAttributes({ [animationField]: from });
         }
 
         const animation = new Animation((v) => {
