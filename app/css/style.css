@@ -4,6 +4,7 @@
     font-size: 12px;
     margin: 15px;
     position: relative;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
 .title{
@@ -14,7 +15,6 @@
     fill: none;
     stroke: none;
     user-select: none;
-    
 }
 
 .label{
