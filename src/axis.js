@@ -1,10 +1,9 @@
-import Renderer from "./renderer";
+import Renderer, { SvgWrapper } from "./renderer";
 import Domain from "./domain";
 
 export const MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const MULTIPLIERS = [1, 2, 5, 10];
-const LABEL_ANIMATION_SETTINGS = { dur: "0.2s" };
 
 const math = Math;
 
@@ -101,36 +100,94 @@ export class ValueAxis extends BaseAxis {
         return value;
     }
 
-    renderGrid(ticks) {
-        ticks.map(y => {
-            y = math.round(y);
-            this.renderer.path().value([[0, y], [this.width, y]]).renderTo(this.gridGroup);
-        });
-    }
-
     /**
      *
      * @param {Number[]} tickValues
      */
     render(tickValues) {
 
-        this.gridGroup.element.textContent = "";
-        this.group.element.textContent = "";
+        const ticks = this.ticks || [];
 
-        const ticks = tickValues.map(v => {
-            const text = this.format(v);
+        this.ticks = tickValues.map((value) => {
+
+            const y = this.domain.scale(value);
+
+            const tick = ticks.find(t => !t.removing && t.value.valueOf() === value.valueOf());
+
+            if (tick) {
+                tick.updated = true;
+                tick.label.animate("y", y);
+                tick.grid
+                    .animate("y1", y)
+                    .animate("y2", y);
+
+                return {
+                    value,
+                    label: tick.label,
+                    grid: tick.grid
+                };
+            }
+
+            const text = this.format(value);
             const label = this.renderer.text().value(text);
-            const tick = this.domain.scale(v);
+            const grid = new SvgWrapper("line").setAttributes({
+                x1: 0,
+                x2: this.width,
+                y1: y,
+                y2: y
+            }).renderTo(this.gridGroup);
 
-            label.setAttributes({
-                y: tick
-            });
+            label.setAttributes({ y });
             label.renderTo(this.group);
 
-            return tick;
+            if (ticks.length && this.oldScale) {
+                const from = this.oldScale(value);
+                label
+                    .animate("y", y, { from })
+                    .animate("opacity", 1, { from: "0" });
+                grid
+                    .animate("y1", y, { from })
+                    .animate("y2", y, { from })
+                    .animate("opacity", 1, { from: "0" });
+            }
+
+            return {
+                value,
+                label,
+                grid
+            };
         });
 
-        this.renderGrid(ticks);
+        ticks.forEach(t => {
+            if (!t.updated) {
+                const y = this.domain.scale(t.value);
+                t.grid
+                    .animate("y1", y)
+                    .animate("y2", y);
+
+                t.label
+                    .animate("y", y);
+
+                if (!t.removing) {
+                    t.label.animate("opacity", 0);
+                    t.grid.animate("opacity", 0);
+                    t.removing = true;
+                }
+
+                this.ticks.push(t);
+            }
+        });
+
+        this.ticks = this.ticks.filter(t => {
+            if (t.removing && t.label.getAttribute("opacity") === "0") {
+                t.label.remove();
+                t.grid.remove();
+                return false;
+            }
+            return true;
+        });
+
+        this.oldScale = this.domain.scale;
     }
 
     resize(width, height, lineHeight) {
@@ -197,9 +254,8 @@ export class ArgumentAxis extends BaseAxis {
 
             label.setAttributes({ x });
             label.renderTo(this.group);
-            if (ticks.length && index !== 0) {
-                label.setAttributes({ opacity: 0 });
-                label.animate("opacity", 1, LABEL_ANIMATION_SETTINGS);
+            if (ticks.length && (index !== 0 && index !== tickValues.length - 1)) {
+                label.animate("opacity", 1, { from: "0" });
             }
 
             return {
@@ -213,7 +269,7 @@ export class ArgumentAxis extends BaseAxis {
                 t.label
                     .setAttributes({ x: this.domain.scale(t.value) });
                 if (!t.removing) {
-                    t.label.animate("opacity", 0, LABEL_ANIMATION_SETTINGS);
+                    t.label.animate("opacity", 0);
                     t.removing = true;
                 }
 

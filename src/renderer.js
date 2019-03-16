@@ -79,26 +79,32 @@ export class SvgWrapper {
 
     animate(attributeName, value, options = {}) {
         const animationField = `${attributeName}`;
+        const from = options.from || this[animationField] && this[animationField].value() ||
+            this.getAttribute(attributeName) ||
+            getComputedStyle(this.element)[animationField];
 
-        const animation = new Animation(() => {
-             this.setAttributes({ [attributeName]: getComputedStyle(this.element)[animationField] });
-        }).setAttributes(Object.assign({
-            to: value,
-            from: getComputedStyle(this.element)[animationField],
-            dur: ANIMATION_DURATION,
-            attributeName,
-            begin: "click",
-            fill: "freeze"
-        }, options));
+        if (parseFloat(from) === value) {
+            return this;
+        }
+
+        const animation = new Animation((v) => {
+            this.setAttributes({ [attributeName]: v });
+        })
+            .value(attributeName, from, value, options)
+            .renderTo(this)
+            .start();
 
         animation.renderTo(this);
         animation.start();
 
         if (this[animationField]) {
+            this[animationField].end();
             this[animationField].remove();
         }
 
         this[animationField] = animation;
+
+        return this;
     }
 
     move(x, y, options) {
@@ -189,18 +195,48 @@ export class Path extends SvgWrapper {
 class Animation extends SvgWrapper {
     constructor(onEnd, tagName) {
         super(tagName || "animate");
-        this.element.addEventListener("endEvent", (e) => {
-            onEnd && onEnd(e);
+        this.element.addEventListener("endEvent", () => {
+            onEnd && onEnd(this.value());
             this.remove();
         });
     }
 
     start() {
         this.element.beginElement();
+        return this;
     }
 
     end() {
         this.element.endElement();
+        return this;
+    }
+
+    value(attributeName, from, to, options = {}) {
+        if (attributeName === undefined) {
+            return this.calculateValue(this.from, this.to);
+        }
+        this.from = parseFloat(from);
+        this.to = parseFloat(to);
+
+        this.setAttributes(Object.assign({
+            to,
+            from,
+            dur: ANIMATION_DURATION,
+            attributeName,
+            begin: "click",
+            fill: "freeze"
+        }, options));
+
+        return this;
+    }
+
+    calculateValue(start, end) {
+        const diff = end - start;
+        const duration = parseFloat(this.getAttribute("dur"));
+        const time = this.element.getCurrentTime() &&
+            Math.min(this.element.getCurrentTime() - this.element.getStartTime(), duration) ||
+            duration;
+        return start + diff * Math.min(1, time / duration);
     }
 }
 export default class Renderer {
