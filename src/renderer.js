@@ -53,6 +53,16 @@ export class SvgWrapper {
         return this;
     }
 
+    addClass(name) {
+        this.element.classList.add(name);
+        return this;
+    }
+
+    removeClass(name) {
+        this.element.classList.remove(name);
+        return this;
+    }
+
     /**
      *
      * @param {SvgWrapper} svgWrapper

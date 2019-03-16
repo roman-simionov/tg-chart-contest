@@ -69,14 +69,11 @@ path{
 .grid{
     stroke: #e6e6e6;
     stroke-width: 1px;
-}
-
-.grid > :first-child{
-    transform: translate(0, -1px);
-}
-
-.grid > :last-child{
     transform: translate(0, 1px);
+}
+
+.grid .first{
+    transform: translate(0, -2px);
 }
 
 .handler{

@@ -108,11 +108,13 @@ export class ValueAxis extends BaseAxis {
 
         const ticks = this.ticks || [];
 
-        this.ticks = tickValues.map((value) => {
+        this.ticks = tickValues.map((value, index) => {
 
             const y = this.domain.scale(value);
 
             const tick = ticks.find(t => !t.removing && t.value.valueOf() === value.valueOf());
+
+            let tickObject;
 
             if (tick) {
                 tick.updated = true;
@@ -121,41 +123,51 @@ export class ValueAxis extends BaseAxis {
                     .animate("y1", y)
                     .animate("y2", y);
 
-                return {
+                tickObject = {
                     value,
                     label: tick.label,
                     grid: tick.grid
                 };
+            } else {
+                const text = this.format(value);
+                const label = this.renderer.text().value(text);
+                const grid = new SvgWrapper("line").setAttributes({
+                    x1: 0,
+                    x2: this.width,
+                    y1: y,
+                    y2: y
+                }).renderTo(this.gridGroup);
+
+                label.setAttributes({ y });
+                label.renderTo(this.group);
+
+                if (ticks.length && this.oldScale) {
+                    const from = this.oldScale(value);
+                    label
+                        .animate("y", y, { from })
+                        .animate("opacity", 1, { from: "0" });
+                    grid
+                        .animate("y1", y, { from })
+                        .animate("y2", y, { from })
+                        .animate("opacity", 1, { from: "0" });
+                }
+
+                tickObject = {
+                    value,
+                    label,
+                    grid
+                };
             }
 
-            const text = this.format(value);
-            const label = this.renderer.text().value(text);
-            const grid = new SvgWrapper("line").setAttributes({
-                x1: 0,
-                x2: this.width,
-                y1: y,
-                y2: y
-            }).renderTo(this.gridGroup);
-
-            label.setAttributes({ y });
-            label.renderTo(this.group);
-
-            if (ticks.length && this.oldScale) {
-                const from = this.oldScale(value);
-                label
-                    .animate("y", y, { from })
-                    .animate("opacity", 1, { from: "0" });
-                grid
-                    .animate("y1", y, { from })
-                    .animate("y2", y, { from })
-                    .animate("opacity", 1, { from: "0" });
+            if (index === 0) {
+                tickObject.grid
+                    .addClass("first");
+            } else {
+                tickObject.grid
+                    .removeClass("first");
             }
 
-            return {
-                value,
-                label,
-                grid
-            };
+            return tickObject;
         });
 
         ticks.forEach(t => {
