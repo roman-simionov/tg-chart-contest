@@ -88,8 +88,10 @@ export class ValueAxis extends BaseAxis {
      */
     constructor(renderer) {
         super(renderer);
-        this.gridGroup = this.renderer.createElement("g").renderTo(this.renderer.svg);
-        this.gridGroup.element.classList.add("grid");
+        this.gridGroup = this.renderer
+            .createElement("g")
+            .addClass("grid")
+            .renderTo(this.renderer.svg);
     }
 
     /**
@@ -219,11 +221,11 @@ export class ArgumentAxis extends BaseAxis {
     constructor(element) {
         const renderer = new Renderer(element);
         super(renderer);
-        this.renderer.svg.element.classList.add("axis");
+        this.renderer.svg.addClass("axis");
         this.testLabel = this.renderer.text()
+            .addClass("test-label", "label")
             .value("test")
             .renderTo(this.renderer.svg);
-        this.testLabel.element.classList.add("test-label", "label");
     }
 
     measure() {

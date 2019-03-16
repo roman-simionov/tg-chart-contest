@@ -6,8 +6,9 @@ export default class SeriesView {
     constructor(container, options) {
         this.container = container.setAttributes({ "transform": "translate(0,0)" });
         this.scaleY = new SvgWrapper("g").renderTo(this.container).setAttributes({ "transform": "scale(1, 1)" });
-        this.transformX = new SvgWrapper("g").renderTo(this.scaleY);
-        this.transformX.element.classList.add("transform-x");
+        this.transformX = new SvgWrapper("g")
+            .addClass("transform-x")
+            .renderTo(this.scaleY);
         /**
          * @type {Series}
          */

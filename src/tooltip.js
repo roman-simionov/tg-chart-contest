@@ -50,14 +50,18 @@ export default class Tooltip {
             opacity: 0,
             "pointer-events": "none"
         });
-        this.line = renderer.path().renderTo(this.group).setAttributes({ "transform": "translate(0 0)" });
-        this.line.element.classList.add("tooltip-line");
+        this.line = renderer.path()
+            .addClass("tooltip-line")
+            .setAttributes({ "transform": "translate(0 0)" })
+            .renderTo(this.group);
+
         this.tooltipGroup = renderer.createElement("g").renderTo(this.group);
         this.tooltip = new ForeignObject().renderTo(this.tooltipGroup);
         this.x = null;
 
-        this.hoverGroup = renderer.createElement("g").renderTo(this.group);
-        this.hoverGroup.element.classList.add("hover-group");
+        this.hoverGroup = renderer.createElement("g")
+            .addClass("hover-group")
+            .renderTo(this.group);
 
         this.attachEvents(renderer.svg.element, seriesView);
     }

@@ -14,10 +14,11 @@ class Handler {
     constructor(renderer, changed) {
         this.renderer = renderer;
         this.handlerWidth = 8;
-        this.element = renderer.createElement("rect").setAttributes({
-            width: this.handlerWidth
-        }).renderTo(renderer.svg);
-        this.element.element.classList.add("handler");
+        this.element = renderer.createElement("rect")
+            .addClass("handler")
+            .setAttributes({
+                width: this.handlerWidth
+            }).renderTo(renderer.svg);
         this.changed = changed;
         this.attachEvents();
     }
@@ -81,36 +82,41 @@ export default class Selector {
      * @param {Element} element
      */
     constructor(element, changed) {
-        this.renderer = new Renderer(element);
-        this.renderer.svg.element.classList.add("selector");
-        this.background = this.renderer.createElement("rect").renderTo(this.renderer.svg);
-        this.background.element.classList.add("background");
+        const renderer = this.renderer = new Renderer(element);
+        const svg = renderer.svg.addClass("selector");
 
-        this.seriesGroup = this.renderer.createElement("g").renderTo(this.renderer.svg);
-        this.seriesGroup.element.classList.add("series");
+        this.seriesGroup = renderer.createElement("g")
+            .addClass("series")
+            .renderTo(svg);
+        this.background = renderer.createElement("rect")
+            .addClass("background")
+            .renderTo(svg);
 
-        this.r1 = this.renderer.createElement("rect").renderTo(this.renderer.svg);
-        this.r1.element.classList.add("shutter");
+        this.r1 = renderer.createElement("rect")
+            .addClass("shutter")
+            .renderTo(svg);
 
-        this.r2 = this.renderer.createElement("rect").renderTo(this.renderer.svg);
-        this.r2.element.classList.add("shutter");
+        this.r2 = renderer
+            .createElement("rect")
+            .addClass("shutter")
+            .renderTo(svg);
 
-        this.r3 = this.renderer.path().renderTo(this.renderer.svg);
-        this.r3.element.classList.add("handler");
+        this.r3 = renderer.path()
+            .addClass("handler")
+            .renderTo(svg);
+
         this.domain = [];
 
         this.changed = changed;
-
 
         this.handlerChanged = () => {
             this.drawRects();
 
             this.changed();
         };
-        this.handlers = [new Handler(this.renderer, this.handlerChanged), new Handler(this.renderer, this.handlerChanged)];
+        this.handlers = [new Handler(renderer, this.handlerChanged), new Handler(renderer, this.handlerChanged)];
 
         this.attachEvents();
-
     }
 
     attachEvents() {
