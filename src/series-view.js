@@ -11,10 +11,8 @@ export default class SeriesView {
         this.argumentAxis = argumentAxis;
         this.valueAxis = valueAxis;
 
-        this.container = container.setAttributes({ "transform": "translate(0 0)" });
-        this.scaleY = new SvgWrapper("g")
-            .setAttributes({ "transform": "scale(1 1)" })
-            .renderTo(this.container);
+        this.container = container;
+        this.scaleY = new SvgWrapper("g").renderTo(this.container);
         this.transformX = new SvgWrapper("g")
             .addClass("transform-x")
             .renderTo(this.scaleY);
@@ -90,6 +88,9 @@ export default class SeriesView {
      */
     render(valueDomain, argumentDomain, animate) {
         this.series.forEach(s => s.render(valueDomain, argumentDomain, animate));
+        this.transformX.setAttributes({ "transform": `translate(0 0) scale(1 1)` });
+        this.container.setAttributes({ "transform": "translate(0 0)" });
+        this.scaleY.setAttributes({ "transform": "scale(1 1)" });
     }
 
     /**
@@ -100,6 +101,7 @@ export default class SeriesView {
     resize(width, height) {
         this.height = height;
         this.width = width;
+
         this.series.forEach(s => s.resize(width, height));
     }
 }
