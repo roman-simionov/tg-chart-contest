@@ -38,8 +38,9 @@ path{
     background-color: white;
 }
 
-.date{
+.tooltip .date{
     font-size: 14px;
+    white-space: nowrap;
 }
 
 .series-data{
