@@ -59,19 +59,29 @@ class Handler {
         this.width = width;
     }
 
+    attrX() {
+        return Number(this.element.element.getAttribute("x"));
+    }
+
     /**
      *
      * @param {number} v
      */
     value(x) {
         if (x === undefined) {
-            return Number(this.element.element.getAttribute("x"));
+            return this.x;
         }
-        if (x - this.handlerWidth / 2 < 0) {
+
+        if (x < 0) {
             x = 0;
-        } else if (x + this.handlerWidth >= this.width) {
-            x = this.width - this.handlerWidth;
+        } else if (x > this.width) {
+            x = this.width;
         }
+        this.x = x;
+
+        if (x + this.handlerWidth > this.width) {
+            x = this.width - this.handlerWidth;
+         }
         this.element.setAttributes({ x });
     }
 }
@@ -160,13 +170,12 @@ export default class Selector {
         }, { passive: false });
     }
 
-    x1x2() {
-        return this.handlers.map(h => h.value()).sort((a, b) => a - b);
+    x1x2(type = "value") {
+        return this.handlers.map(h => h[type]()).sort((a, b) => a - b);
     };
 
     drawRects() {
-        const [x1, x2] = this.x1x2();
-
+        const [x1, x2] = this.x1x2("attrX");
 
         this.r1.setAttributes({ width: x1 });
         this.r2.setAttributes({ x: x2, width: this.width - x2 });
@@ -179,6 +188,9 @@ export default class Selector {
     }
 
     resize(width, height) {
+        const x1x2 = this.x1x2();
+        const value = this.value();
+
         this.width = width;
         this.height = height;
         this.renderer.svg.setAttributes({ width, height });
@@ -192,8 +204,17 @@ export default class Selector {
         this.r2.setAttributes({
             height
         });
-        this.drawRects();
+
         this.updateScale();
+
+        const scale = numericScale(this.domain, [0, this.width]);
+
+        if (x1x2[0] !== undefined) {
+            this.handlers[0].value(this.width - scale(new Date(value[0].valueOf())));
+            this.handlers[1].value(this.width - scale(new Date(value[1].valueOf())));
+        }
+
+        this.drawRects();
 
         this.seriesView.resize(width, height);
 
