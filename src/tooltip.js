@@ -46,24 +46,31 @@ export default class Tooltip {
      * @param {SeriesView} seriesView
      */
     constructor(renderer, seriesView) {
+        this.x = null;
+        this.renderer = renderer;
+        this.attachEvents(renderer.svg.element, seriesView);
+    }
+
+    render(x = 0) {
+        const renderer = this.renderer;
         this.group = renderer.createElement("g").renderTo(renderer.svg).setAttributes({
             opacity: 0,
             "pointer-events": "none"
         });
         this.line = renderer.path()
             .addClass("tooltip-line")
-            .setAttributes({ "transform": "translate(0 0)" })
+            .setAttributes({ "transform": `translate(${x} 0)` })
+            .value([[0, 0], [0, this.height]])
             .renderTo(this.group);
 
-        this.tooltipGroup = renderer.createElement("g").renderTo(this.group);
-        this.tooltip = new ForeignObject().renderTo(this.tooltipGroup);
-        this.x = null;
+        this.tooltipGroup = renderer.createElement("g")
+            .setAttributes({ "transform": `translate(${x} 0)` })
+            .renderTo(this.group);
 
+        this.tooltip = new ForeignObject().renderTo(this.tooltipGroup);
         this.hoverGroup = renderer.createElement("g")
             .addClass("hover-group")
             .renderTo(this.group);
-
-        this.attachEvents(renderer.svg.element, seriesView);
     }
     /**
      *
@@ -72,7 +79,11 @@ export default class Tooltip {
     attachEvents(element, seriesView) {
         ["pointermove", "touchstart", "touchmove"].forEach(eventName => {
             element.addEventListener(eventName, (event) => {
-                const points = seriesView.getPoints(Math.round(event.pageX - this.offset));
+                const position = event.pageX - this.offset;
+                if (!this.group) {
+                    this.render(position);
+                }
+                const points = seriesView.getPoints(Math.round(position));
                 if (points && points.length) {
                     let { x, a } = points[0];
                     if (x !== this.x) {
@@ -101,8 +112,10 @@ export default class Tooltip {
             }, { passive: false });
 
             document.addEventListener(eventName, () => {
-                this.group.animate("opacity", 0);
-                this.x = null;
+                if (this.x !== null && this.group) {
+                    this.group.animate("opacity", 0);
+                    this.x = null;
+                }
             });
         });
     }
@@ -111,6 +124,5 @@ export default class Tooltip {
         this.width = width;
         this.height = height;
         this.offset = offset;
-        this.line.value([[0, 0], [0, height]]);
     }
 }

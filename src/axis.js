@@ -27,8 +27,13 @@ export function createTicks([s1, s2], [d1, d2]) {
     }
 
     const startTick = math.floor(d1 / adjustedInterval) * adjustedInterval;
+    const ticks = new Array(math.ceil(domainRange / adjustedInterval) + 1).fill(0).map((_, i) => startTick + adjustedInterval * i);
 
-    return new Array(math.ceil(domainRange / adjustedInterval) + 1).fill(0).map((_, i) => startTick + adjustedInterval * i);
+    if (ticks[ticks.length - 1] < d2) {
+        ticks.push(ticks[ticks.length - 1] + adjustedInterval);
+    }
+
+    return ticks;
 }
 
 export function createDateTicks([s1, s2], [d1, d2], firstDate) {
