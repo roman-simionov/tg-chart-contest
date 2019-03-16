@@ -13,9 +13,9 @@ export default class Legend {
         this.options = options;
         div.innerHTML = options.map((o, i) => {
             o.visible = o.visible === undefined ? true : false;
-            return `<div class="legend-item">
+            return `<div class="legend-item" id="item-${i}">
                         <div class="svg-wrapper">
-                            <svg class="checkmark" id="item-${i}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
                                 <circle class="circle-border" cx="26" cy="26" r="22" stroke="${o.color}"/>
                                 <circle class="circle" cx="26" cy="26" r="22" fill="${o.color}"/>
                                 <path class="check" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
@@ -32,16 +32,17 @@ export default class Legend {
 
     attachEvents() {
         this.div.addEventListener("click", (event) => {
-            const parentNode = event.target.parentNode;
-            if (parentNode.classList.contains("checkmark")) {
-                const id = parentNode.getAttribute("id").split("-")[1];
+            const item = event.target.closest(".legend-item");
+            if (item) {
+                const checkMark = item.querySelector(".checkmark");
+                const id = item.getAttribute("id").split("-")[1];
                 const options = this.options[id];
                 if (options.visible) {
-                    parentNode.classList.remove("checking");
-                    parentNode.classList.add("unchecking");
+                    checkMark.classList.remove("checking");
+                    checkMark.classList.add("unchecking");
                 } else {
-                    parentNode.classList.remove("unchecking");
-                    parentNode.classList.add("checking");
+                    checkMark.classList.remove("unchecking");
+                    checkMark.classList.add("checking");
                 }
                 options.visible = !options.visible;
                 this.changed();
