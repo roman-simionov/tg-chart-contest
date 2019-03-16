@@ -10,7 +10,8 @@ export default class Series {
         this.path = new Path();
         this.path.setAttributes({
             stroke: options.color,
-            opacity: 1
+            opacity: 1,
+            "vector-effect": "non-scaling-stroke"
         });
     }
 
