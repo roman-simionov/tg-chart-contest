@@ -1,23 +1,12 @@
 const ANIMATION_DURATION = "0.2s";
 
-function getScale(svgWrapper) {
+function getComputedTransform(type, svgWrapper) {
     const matrix = getComputedStyle(svgWrapper.element).transform;
-
     if (matrix === "none") {
-        return "1 1";
+        return null;
     }
-
-    const parse = matrix.split(/[,()]/);
-    return `${parse[1]} ${parse[4]}`;
-}
-
-function getTransform(svgWrapper) {
-    const matrix = getComputedStyle(svgWrapper.element).transform;
-    if (matrix === "nome") {
-        return "0 0";
-    }
-    const parse = matrix.split(/[,()]/);
-    return `${parse[5]} ${parse[6]}`;
+    const parse = matrix.split(/[,()\s]/).filter(v=>v !== "");
+    return type === "translate" ? `${parse[5]} ${parse[6]}` : `${parse[1]} ${parse[4]}`;
 }
 
 export class SvgWrapper {
@@ -103,9 +92,6 @@ export class SvgWrapper {
             .renderTo(this)
             .start();
 
-        animation.renderTo(this);
-        animation.start();
-
         if (this[animationField]) {
             this[animationField].end();
             this[animationField].remove();
@@ -116,54 +102,62 @@ export class SvgWrapper {
         return this;
     }
 
-    move(x, y, options) {
-        const from = getTransform(this);
-        this.setAttributes({ from: `translate(${from})` });
-        const animation = new Animation(() => {
-            this.setAttributes({ transform: `translate(${getTransform(this)})` });
-        }, "animateTransform")
-            .setAttributes(Object.assign({
-                type: "translate",
-                attributeName: "transform",
-                from,
-                to: `${x} ${y}`,
-                dur: ANIMATION_DURATION,
-                begin: "click",
-                fill: "freeze"
-            }, options));
-
-        animation.renderTo(this);
-        animation.start();
-
-        if (this.moveAnimation) {
-            this.moveAnimation.end();
-            this.moveAnimation.remove();
+    currentTransform(type, animation) {
+        const calculatedValue = getComputedTransform(type, this);
+        if (calculatedValue) {
+            return calculatedValue;
         }
-        this.moveAnimation = animation;
+        if (animation) {
+            return animation.value();
+        }
+        const transform = this.getAttribute("transform");
+        if (transform) {
+            const parse = transform.split(/[(,\s)]/).filter(v=>v !== "");
+            if (parse[0] === type) {
+                return `${parse[1]} ${parse[2]}`;
+            }
+            return "1 1";
+        }
     }
 
-    scale(x, y) {
-        const animation = new Animation(() => {
-            this.setAttributes({ transform: `scale(${getScale(this)})` });
-        }, "animateTransform")
-            .setAttributes({
-                type: "scale",
-                attributeName: "transform",
-                from: getScale(this),
-                to: `${x} ${y}`,
-                dur: ANIMATION_DURATION,
-                begin: "click",
-                fill: "freeze"
-            });
-        animation.renderTo(this);
-        animation.start();
+    scale(x, y, options) {
+        const from = this.currentTransform("scale", this.scaleAnimation);
+
+        const animation = new TransformAnimation((v) => {
+            this.setAttributes({ "transform": `scale(${v})` });
+        })
+            .value("scale", from, `${x} ${y}`, options)
+            .renderTo(this)
+            .start();
 
         if (this.scaleAnimation) {
+            this.scaleAnimation.end();
             this.scaleAnimation.remove();
         }
 
         this.scaleAnimation = animation;
 
+        return this;
+    }
+
+    move(x, y, options) {
+        const from = this.currentTransform("translate", this.moveAnimation);
+
+        const animation = new TransformAnimation((v) => {
+            this.setAttributes({ "transform": `translate(${v})` });
+        })
+            .value("translate", from, `${x} ${y}`, options)
+            .renderTo(this)
+            .start();
+
+        if (this.moveAnimation) {
+            this.moveAnimation.end();
+            this.moveAnimation.remove();
+        }
+
+        this.moveAnimation = animation;
+
+        return this;
     }
 }
 
@@ -220,12 +214,19 @@ class Animation extends SvgWrapper {
         return this;
     }
 
+    /**
+     *
+     * @param {string} attributeName
+     * @param {Number} from
+     * @param {Number} to
+     * @param {*} options
+     */
     value(attributeName, from, to, options = {}) {
         if (attributeName === undefined) {
-            return this.calculateValue(this.from, this.to);
+            return this.calculateValue(parseFloat(this.from), parseFloat(this.to));
         }
-        this.from = parseFloat(from);
-        this.to = parseFloat(to);
+        this.from = from;
+        this.to = to;
 
         this.setAttributes(Object.assign({
             to,
@@ -248,6 +249,32 @@ class Animation extends SvgWrapper {
         return start + diff * Math.min(1, time / duration);
     }
 }
+
+class TransformAnimation extends Animation {
+    constructor(onEnd) {
+        super(onEnd, "animateTransform");
+    }
+
+    /**
+     *
+     * @param {string} type 'scale'|'translate'
+     * @param {string} from 'x y'
+     * @param {string} to 'x y'
+     * @param {*} options
+     */
+    value(type, from, to, options = {}) {
+        if (type === undefined) {
+            const [xFrom, yFrom] = this.from.split(" ");
+            const [xTo, yTo] = this.to.split(" ");
+            const x = this.calculateValue(parseFloat(xFrom), parseFloat(xTo));
+            const y = this.calculateValue(parseFloat(yFrom), parseFloat(yTo));
+            return `${x} ${y}`;
+        }
+
+        super.value("transform", from, to, Object.assign({ type }, options));
+        return this;
+    }
+ }
 export default class Renderer {
     /**
      *

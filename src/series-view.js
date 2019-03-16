@@ -2,10 +2,16 @@ import Series from "./series";
 import { SvgWrapper } from "./renderer";
 
 export default class SeriesView {
-
+    /**
+     *
+     * @param {container} container
+     * @param {*} options
+     */
     constructor(container, options) {
-        this.container = container.setAttributes({ "transform": "translate(0,0)" });
-        this.scaleY = new SvgWrapper("g").renderTo(this.container).setAttributes({ "transform": "scale(1, 1)" });
+        this.container = container.setAttributes({ "transform": "translate(0 0)" });
+        this.scaleY = new SvgWrapper("g")
+            .setAttributes({ "transform": "scale(1 1)" })
+            .renderTo(this.container);
         this.transformX = new SvgWrapper("g")
             .addClass("transform-x")
             .renderTo(this.scaleY);
@@ -19,11 +25,19 @@ export default class SeriesView {
         });
     }
 
+    /**
+     *
+     * @param {Date[]} range
+     */
     getRange(range) {
         const ranges = this.series.reduce((r, s) => r.concat(s.getRange(range)), []);
         return [Math.min.apply(null, ranges), Math.max.apply(null, ranges)];
     }
 
+    /**
+     *
+     * @param {number} x
+     */
     getPoints(x) {
         return this.series.map(s => s.getPoint(x))
             .filter(p => p)
@@ -72,6 +86,11 @@ export default class SeriesView {
         this.series.forEach(s => s.render(valueDomain, argumentDomain, animate));
     }
 
+    /**
+     *
+     * @param {number} width
+     * @param {number} height
+     */
     resize(width, height) {
         this.height = height;
         this.width = width;
