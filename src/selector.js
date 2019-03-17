@@ -243,7 +243,7 @@ export default class Selector {
     }
 
     scaleSeries() {
-        this.seriesView.transform();
+        this.seriesView.transform().applyVisibility();
     }
 
     setSeries(options) {

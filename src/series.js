@@ -95,10 +95,12 @@ export default class Series {
     setupTracker(argumentScale) {
         const x = this.options.x;
         this.pointArguments = [];
-        x.forEach((v, i) => {
+        x.some((v, i) => {
             const x = Math.round(argumentScale(v));
-            if (x >= 0 && x <= this.width) {
+            if (x >= 0 && x <= this.width + 1) {
                 this.pointArguments[x] = i;
+            } else if (x > 0) {
+                return true;
             }
         });
     }
