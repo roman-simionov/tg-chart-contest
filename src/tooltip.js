@@ -73,6 +73,7 @@ export default class Tooltip {
      * @param {Element} element
      */
     attachEvents(element, seriesView) {
+        let timeout = null;
         ["pointermove", "touchstart", "touchmove"].forEach(eventName => {
             element.addEventListener(eventName, (event) => {
                 const position = event.pageX - this.offset;
@@ -84,24 +85,27 @@ export default class Tooltip {
                     let { x, a } = points[0];
                     if (x !== this.x) {
                         this.x = x;
-                        this.group.animate("opacity", 1);
-                        this.hoverGroup.element.textContent = "";
-                        points.forEach(({ x, y, series }) => {
-                            const circle = (new SvgWrapper("circle"))
-                                .setAttributes({
-                                    cx: x,
-                                    cy: y,
-                                    r: 10,
-                                    stroke: series.options.color,
-                                    opacity: 0
-                                })
-                                .renderTo(this.hoverGroup);
-                            circle.animate("opacity", 1);
-                        });
-                        this.line.move(x, 0, { dur: "0.2s" });
-                        this.tooltip.value(a, points, this.width / 2 - this.offset, this.height);
-                        const tooltipX = x < (this.width - this.offset) / 2 ? x + 18 : x - this.tooltip.width - 18;
-                        this.tooltipGroup.move(tooltipX, 0, { dur: "0.2s" });
+                        clearTimeout(timeout);
+                        timeout = setTimeout(() => {
+                            this.group.animate("opacity", 1);
+                            this.hoverGroup.element.textContent = "";
+                            points.forEach(({ x, y, series }) => {
+                                const circle = (new SvgWrapper("circle"))
+                                    .setAttributes({
+                                        cx: x,
+                                        cy: y,
+                                        r: 10,
+                                        stroke: series.options.color,
+                                        opacity: 0
+                                    })
+                                    .renderTo(this.hoverGroup);
+                                circle.animate("opacity", 1);
+                            });
+                            this.line.move(x, 0);
+                            this.tooltip.value(a, points, this.width / 2 - this.offset, this.height);
+                            const tooltipX = x < (this.width - this.offset) / 2 ? x + 18 : x - this.tooltip.width - 18;
+                            this.tooltipGroup.move(tooltipX, 0);
+                        }, 50);
                     }
                 }
                 event.stopPropagation();
@@ -109,6 +113,7 @@ export default class Tooltip {
 
             document.addEventListener(eventName, () => {
                 if (this.x !== null && this.group) {
+                    clearTimeout(timeout);
                     this.group.animate("opacity", 0);
                     this.x = null;
                 }
