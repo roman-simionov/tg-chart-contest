@@ -1,9 +1,8 @@
 import Chart from "./chart";
 
 window.changeTheme = function(e) {
-    const isDark = document.body.classList.contains("dark");
     document.body.classList.toggle("dark");
-    e.innerHTML = `Switch to ${isDark ? "Day" : "Night"} Mode`;
+    e.innerHTML = `Switch to ${document.body.classList.contains("dark") ? "Day" : "Night"} Mode`;
 };
 
 fetch("./chart_data.json").then(data => data.json()).then(d => {
