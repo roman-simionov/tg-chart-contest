@@ -44,7 +44,9 @@ export default class Chart {
 
         this.legend = new Legend(this.element, options.series, () => {
             this.renderAxis();
-            this.seriesView.transform(this.argumentAxis.domain.domain, this.valueAxis.domain.domain);
+            this.seriesView
+                .transform(this.argumentAxis.domain.domain, this.valueAxis.domain.domain)
+                .applyVisibility();
             this.selector.scaleSeries();
         });
 
@@ -88,17 +90,19 @@ export default class Chart {
     }
 
     renderAxis() {
-        const argumentTicks = createDateTicks(this.argumentAxis.domain.range, this.selector.value(), this.selector.domain[0]);
-        this.argumentAxis.setDomain(this.selector.value());
-        const valueDomain = this.seriesView.getRange(this.selector.value());
+        const argumentDomain = this.selector.value();
+        if (Math.abs(argumentDomain[1] - argumentDomain[0]) <= 0) {
+            return;
+        }
+        this.argumentAxis.setDomain(argumentDomain);
+        const valueDomain = this.seriesView.getRange(argumentDomain);
         const valueDomainSize = valueDomain[1] - valueDomain[0];
-        if (isFinite(valueDomainSize) && valueDomainSize > 0) {
+        if (isFinite(valueDomainSize) && Math.abs(valueDomainSize) > 0) {
             const valueTicks = createTicks(this.valueAxis.domain.range, valueDomain);
             this.valueAxis.setDomain([valueTicks[0], valueTicks[valueTicks.length - 1]]);
             this.valueAxis.render(valueTicks);
         }
-
-        this.argumentAxis.render(argumentTicks);
+        this.argumentAxis.render(createDateTicks(this.argumentAxis.domain.range, argumentDomain, this.selector.domain[0]));
     }
 }
 

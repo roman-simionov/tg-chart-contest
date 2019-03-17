@@ -1,6 +1,19 @@
 import Series from "./series";
 import { SvgWrapper } from "./renderer";
 
+function calculateTransform(domain, scale, size) {
+    const newStart = scale(domain[0]);
+    const newEnd = scale(domain[1]);
+
+    const translateValue = size * newStart / (newEnd - newStart);
+    const scaleValue = size / (newEnd - newStart);
+
+    if (isFinite(translateValue) && isFinite(scaleValue)) {
+        return [-translateValue, scaleValue || 1];
+    }
+    return null;
+}
+
 export default class SeriesView {
     /**
      *
@@ -51,33 +64,26 @@ export default class SeriesView {
     }
 
     transform(argumentDomain, valueDomain) {
-        const range = valueDomain || this.getRange(argumentDomain);
-        const newStart = this.valueCommonScale(range[1]);
-        const newEnd = this.valueCommonScale(range[0]);
-
-        const translateY = (this.height) * newStart / (newEnd - newStart);
-        let scaleY = this.height / (newEnd - newStart);
-        if (isFinite(scaleY) || isFinite(translateY)) {
-            this.container.move(0, -translateY);
-            this.scaleY.scale(1, scaleY || 1);
+        valueDomain = (valueDomain || this.getRange(argumentDomain)).slice().reverse();
+        const transformY = calculateTransform(valueDomain, this.valueCommonScale, this.height);
+        if (transformY) {
+            this.container.move(0, transformY[0]);
+            this.scaleY.scale(1, transformY[1]);
         }
 
         if (argumentDomain) {
-            const range = argumentDomain;
-            const newStart = this.argumentCommonScale(range[0]);
-            const newEnd = this.argumentCommonScale(range[1]);
-
-            const translateX = (this.width) * newStart / (newEnd - newStart);
-            let scaleX = this.width / (newEnd - newStart);
-            if (isFinite(scaleX) || isFinite(translateX)) {
-                this.transformX.setAttributes({ "transform": `translate(${-translateX} 0) scale(${scaleX}, 1)` });
+            const transformX = calculateTransform(argumentDomain, this.argumentCommonScale, this.width);
+            if (transformX) {
+                this.transformX.setAttributes({ "transform": `translate(${transformX[0]} 0) scale(${transformX[1]}, 1)` });
             }
         }
 
-        this.series.forEach(s => {
-            s.applyVisibility();
-            s.resetTracker();
-        });
+        this.series.forEach(s => s.resetTracker());
+        return this;
+    }
+
+    applyVisibility() {
+        this.series.forEach(s => s.applyVisibility());
     }
 
     /**
