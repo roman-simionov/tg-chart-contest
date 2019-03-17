@@ -13,7 +13,7 @@ html, body{
     height: 100%
 }
 .chart{
-    height: 70%;
+    height: 80%;
     margin-bottom: 15px;
 }
 
@@ -133,6 +133,7 @@ html, body{
 
 .circle-border{
     fill: transparent;
+    stroke-width: 3px;
 }
 
 .checking .circle{
