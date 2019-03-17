@@ -56,7 +56,7 @@ export default class SeriesView {
         const newEnd = this.valueCommonScale(range[0]);
 
         const translateY = (this.height) * newStart / (newEnd - newStart);
-        let scaleY = (translateY / newStart);
+        let scaleY = this.height / (newEnd - newStart);
         if (isFinite(scaleY) || isFinite(translateY)) {
             this.container.move(0, -translateY);
             this.scaleY.scale(1, scaleY || 1);

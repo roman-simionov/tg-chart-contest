@@ -21,7 +21,10 @@ export default class Series {
             return [];
         }
         const x = this.options.x;
-        const visibleData = bounds !== undefined ? this.options.y.filter((_, i) => x[i + 1] >= bounds[0] && x[i - 1] <= bounds[1]) : this.options.y;
+        const visibleData = bounds !== undefined ?
+            this.options.y
+                .filter((_, i) => x[i] >= bounds[0] && x[i] <= bounds[1])
+            : this.options.y;
 
         return [Math.min.apply(null, visibleData), Math.max.apply(null, visibleData)];
     }
