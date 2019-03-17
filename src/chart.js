@@ -14,6 +14,8 @@ export default class Chart {
     constructor(container, options) {
         this.options = options;
 
+        this.container = container;
+
         this.element = document.createElement("div");
         container.appendChild(this.element);
         this.element.classList.add("chart");
@@ -58,7 +60,8 @@ export default class Chart {
     }
 
     resize() {
-        const { x, width, height } = this.element.getBoundingClientRect();
+        const { x } = this.element.getBoundingClientRect();
+        const { width, height } = this.container.getBoundingClientRect();
         const argumentsAxisMeasure = this.argumentAxis.measure();
 
         new Promise(r => r()).then(() => {
