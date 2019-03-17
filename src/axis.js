@@ -215,6 +215,10 @@ export class ValueAxis extends BaseAxis {
             "transform": `translate(0, ${-lineHeight})`
         });
         this.domain.setRange([0, height]);
+
+        (this.ticks || []).forEach(t => {
+            t.grid.setAttributes({ x1: 0, x2: width });
+        });
     }
 }
 
