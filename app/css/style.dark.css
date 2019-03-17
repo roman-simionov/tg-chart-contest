@@ -1,0 +1,46 @@
+
+.dark{
+    background: #262F3D;
+}
+
+.dark .label{
+    fill: #5C6B7B
+}
+
+.dark .hover-group{
+    stroke-width: 3px;
+    fill: #262F3D;
+}
+
+.dark #tooltip{
+    border-color: #404C5B;
+    color: #fff;
+    background-color: #262F3D;
+    box-shadow: 0 0 10px rgba(87, 87, 87, 0.623);
+}
+
+.dark .tooltip-line{
+    stroke: #404C5B;
+}
+
+.dark .grid{
+    stroke: #343E4C;
+}
+
+.dark .handler{
+    fill: #445669;
+}
+
+.dark .shutter{
+    fill: #445669;
+}
+
+.dark .legend-item{
+    border-color: #394858;
+    color: #F4F7F9;
+}
+
+.dark .checkmark .check{
+    stroke: #262F3D;
+}
+    
