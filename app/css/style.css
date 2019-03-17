@@ -6,7 +6,7 @@ html, body{
     height: 100%;
     overflow: auto;
     margin: 0 auto;
-
+    user-select: none;
 }
 .charts{
     margin: 15px;
@@ -24,7 +24,6 @@ html, body{
 .svg{
     fill: none;
     stroke: none;
-    user-select: none;
 }
 
 .label{
@@ -120,7 +119,6 @@ html, body{
     border-radius: 30px;
     padding: 10px;
     margin-right: 16px;
-    font-size: 18px;
 }
 
 .svg-wrapper {
