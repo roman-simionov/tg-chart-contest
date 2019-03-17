@@ -9,10 +9,11 @@ html, body{
 
 }
 .charts{
-    height: 70%;
     margin: 15px;
+    height: 100%
 }
 .chart{
+    height: 70%;
     margin-bottom: 15px;
 }
 
@@ -192,11 +193,18 @@ html, body{
     vertical-align: middle;
 }
 
+.theme-switcher{
+    visibility: hidden;
+    font-size: 32px;
+    padding: 40px;
+}
+
 #theme-switcher{
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
+    visibility: visible;
     text-align: center;
     color:#4D8DDD;
     padding: 40px;

@@ -14,12 +14,9 @@ export default class Chart {
     constructor(container, options) {
         this.options = options;
 
-        this.container = container;
-
         this.element = document.createElement("div");
         container.appendChild(this.element);
         this.element.classList.add("chart");
-
 
         if (options.title) {
             this.element.innerHTML = `<div class="title">${options.title}</div>`;
@@ -60,14 +57,17 @@ export default class Chart {
     }
 
     resize() {
-        const { x } = this.element.getBoundingClientRect();
-        const { width, height } = this.container.getBoundingClientRect();
+        const { x, width, height } = this.element.getBoundingClientRect();
         const argumentsAxisMeasure = this.argumentAxis.measure();
+        const legendHeight = this.legend.div.getBoundingClientRect().height;
 
         new Promise(r => r()).then(() => {
             if (width > 0) {
                 const selectorHeight = this.options.selectorHeight || 115;
-                const mainPlotHeight = (height && height - selectorHeight) || this.options.mainPlotHeight || 965;
+                let mainPlotHeight = (height && height - selectorHeight - legendHeight - argumentsAxisMeasure.height - argumentsAxisMeasure.lineHeight - 30) || this.options.mainPlotHeight || 965;
+                if (mainPlotHeight < 10) {
+                    mainPlotHeight = 10;
+                }
                 this.renderer.svg.setAttributes({ width, height: mainPlotHeight });
                 this.argumentAxis.resize(width, argumentsAxisMeasure.height, argumentsAxisMeasure.lineHeight);
                 this.valueAxis.resize(width, mainPlotHeight, argumentsAxisMeasure.lineHeight);
@@ -78,7 +78,6 @@ export default class Chart {
                 this.renderSeries();
             }
         });
-
     }
 
     renderSeries() {
