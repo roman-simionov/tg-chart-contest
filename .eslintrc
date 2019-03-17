@@ -83,7 +83,10 @@
                     "renderer",             
                     "svg",
                     "tooltip",
-                    "onend"
+                    "onend",
+                    "stderr",
+                    "stdout",
+                    "webpack"
                 ]
             }
         ]

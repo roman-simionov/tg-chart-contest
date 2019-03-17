@@ -13,6 +13,8 @@
   "dependencies": {},
   "scripts": {
     "webpack": "webpack",
+    "build": "webpack --config webpack.config.js",
+    "build-dev": "webpack --config webpack.config.dev.js",
     "gulp": "gulp"
   }
 }

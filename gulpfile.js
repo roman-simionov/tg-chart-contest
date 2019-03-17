@@ -2,7 +2,7 @@ const gulp = require("gulp");
 const spawn = require('child_process').spawn;
 
 gulp.task("webpack", function(done) {
-    const webpack = spawn("npm", ["run", "webpack"]);
+    const webpack = spawn("npm", ["run", "build-dev"]);
     const data = [];
     webpack.stdout.on("data", (d) => {
         data.push(d.toString());
