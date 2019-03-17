@@ -44,3 +44,7 @@
     stroke: #262F3D;
 }
     
+
+.dark #theme-switcher{
+    background-color: rgba(38,47,61,0.85);
+}

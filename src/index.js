@@ -1,5 +1,11 @@
 import Chart from "./chart";
 
+window.changeTheme = function(e) {
+    const isDark = document.body.classList.contains("dark");
+    document.body.classList.toggle("dark");
+    e.innerHTML = `Switch to ${isDark ? "Day" : "Night"} Mode`;
+};
+
 fetch("./chart_data.json").then(data => data.json()).then(d => {
     const charts = d
        // .slice(0, 1)

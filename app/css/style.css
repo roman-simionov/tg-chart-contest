@@ -1,15 +1,18 @@
 html, body{
-    width: 100%;
+    font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+    font-size: 22px;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    width: 98%;
     height: 100%;
+    overflow: auto;
+    margin: 0 auto;
+
 }
 .charts{
     height: 70%;
     margin: 15px;
 }
 .chart{
-    font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
-    font-size: 22px;
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
     margin-bottom: 15px;
 }
 
@@ -187,4 +190,16 @@ html, body{
     display: inline-block;
     margin: 0 25px;
     vertical-align: middle;
+}
+
+#theme-switcher{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color:#4D8DDD;
+    padding: 40px;
+    font-size: 32px;
+    background-color: rgba(255,255,255,0.85);
 }
