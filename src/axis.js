@@ -11,7 +11,7 @@ export function createTicks([s1, s2], [d1, d2]) {
     const domainRange = d2 - d1;
     const screenRange = s2 - s1;
 
-    const count = math.ceil(screenRange / 35);
+    const count = math.ceil(screenRange / 70);
     const interval = domainRange / count;
 
     const factor = math.pow(10, math.floor(math.log10(interval)));
@@ -40,7 +40,7 @@ export function createDateTicks([s1, s2], [d1, d2], firstDate) {
     const domainRange = d2 - d1;
     const screenRange = s2 - s1;
 
-    const count = math.ceil(screenRange / 55);
+    const count = math.ceil(screenRange / 150);
     const interval = domainRange / count;
 
     let adjustedInterval = 1000 * 60 * 60 * 24;

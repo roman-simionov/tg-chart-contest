@@ -13,7 +13,7 @@ class Handler {
      */
     constructor(renderer, changed) {
         this.renderer = renderer;
-        this.handlerWidth = 8;
+        this.handlerWidth = 10;
         this.element = renderer.createElement("rect")
             .addClass("handler")
             .setAttributes({
@@ -198,12 +198,8 @@ export default class Selector {
         this.handlers[0].value(0);
         this.handlers[1].value(this.width);
         this.background.setAttributes({ width, height });
-        this.r1.setAttributes({
-            height
-        });
-        this.r2.setAttributes({
-            height
-        });
+        this.r1.setAttributes({ height });
+        this.r2.setAttributes({ height });
 
         this.updateScale();
 

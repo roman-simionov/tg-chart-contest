@@ -58,18 +58,19 @@ export default class Chart {
     }
 
     resize() {
-        const { x, width } = this.element.getBoundingClientRect();
+        const { x, width, height } = this.element.getBoundingClientRect();
         const argumentsAxisMeasure = this.argumentAxis.measure();
 
         new Promise(r => r()).then(() => {
             if (width > 0) {
-                const height = this.options.mainPlotHeight || 350;
-                this.renderer.svg.setAttributes({ width, height });
+                const selectorHeight = this.options.selectorHeight || 115;
+                const mainPlotHeight = (height && height - selectorHeight) || this.options.mainPlotHeight || 965;
+                this.renderer.svg.setAttributes({ width, height: mainPlotHeight });
                 this.argumentAxis.resize(width, argumentsAxisMeasure.height, argumentsAxisMeasure.lineHeight);
-                this.valueAxis.resize(width, height, argumentsAxisMeasure.lineHeight);
-                this.selector.resize(width, this.options.selectorHeight || 75);
-                this.tooltip.resize(width, height, x);
-                this.seriesView.resize(width, height);
+                this.valueAxis.resize(width, mainPlotHeight, argumentsAxisMeasure.lineHeight);
+                this.selector.resize(width, selectorHeight);
+                this.tooltip.resize(width, mainPlotHeight, x);
+                this.seriesView.resize(width, mainPlotHeight);
                 this.renderAxis();
                 this.renderSeries();
             }

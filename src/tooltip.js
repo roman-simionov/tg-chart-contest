@@ -11,9 +11,9 @@ class ForeignObject extends SvgWrapper {
      *
      * @param {Date} date
      */
-    value(date, points, startWidth) {
+    value(date, points, containerWidth, containerHeight) {
         date = new Date(date);
-        this.element.innerHTML = ` <foreignobject id="obj" x="0" y="0" width="${startWidth}">
+        this.element.innerHTML = ` <foreignobject id="obj" x="0" y="0" width="${containerWidth}" height="${containerHeight}">
             <body xmlns="http://www.w3.org/1999/xhtml">
               <div id="tooltip">
               <div class="date">${DAYS[date.getDay()]}, ${MONTH[date.getMonth()]} ${date.getDate()}</div>
@@ -28,14 +28,11 @@ class ForeignObject extends SvgWrapper {
            </body>
         </foreignobject>`;
 
-        const object = this.element.querySelector("#obj");
         const div = this.element.querySelector("#tooltip");
 
-        const { width, height } = div.getBoundingClientRect(true);
+        const { width } = div.getBoundingClientRect(true);
 
         this.width = width;
-        object.setAttribute("width", width);
-        object.setAttribute("height", height);
     }
 }
 
@@ -54,8 +51,7 @@ export default class Tooltip {
     render(x = 0) {
         const renderer = this.renderer;
         this.group = renderer.createElement("g").renderTo(renderer.svg).setAttributes({
-            opacity: 0,
-            "pointer-events": "none"
+            opacity: 0
         });
         this.line = renderer.path()
             .addClass("tooltip-line")
@@ -95,7 +91,7 @@ export default class Tooltip {
                                 .setAttributes({
                                     cx: x,
                                     cy: y,
-                                    r: 6,
+                                    r: 10,
                                     stroke: series.options.color,
                                     opacity: 0
                                 })
@@ -103,8 +99,8 @@ export default class Tooltip {
                             circle.animate("opacity", 1);
                         });
                         this.line.move(x, 0, { dur: "0.2s" });
-                        this.tooltip.value(a, points, this.width / 2 - this.offset);
-                        const tooltipX = x < (this.width - this.offset) / 2 ? x + 8 : x - this.tooltip.width - 8;
+                        this.tooltip.value(a, points, this.width / 2 - this.offset, this.height);
+                        const tooltipX = x < (this.width - this.offset) / 2 ? x + 18 : x - this.tooltip.width - 18;
                         this.tooltipGroup.move(tooltipX, 0, { dur: "0.2s" });
                     }
                 }

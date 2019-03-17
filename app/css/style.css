@@ -1,8 +1,12 @@
-
+html, body{
+    width:100%;
+    height: 100%;
+}
 .chart{
     font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
-    font-size: 12px;
+    font-size: 22px;
     margin: 15px;
+    min-height: 70%;
     position: relative;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
@@ -18,45 +22,48 @@
 }
 
 .label{
-    fill: #888
+    fill: #7E8C96
 }
 
 .hover-group{
-    stroke-width: 2px;
+    stroke-width: 3px;
     fill: white;
 }
 
 #tooltip{
-    border: 1px solid #888;
-    border-radius: 8px;
+    border: 1px solid #E0E6EA;
+    color: black;
+    border-radius: 12px;
     display: inline-block;
-    padding: 8px;
+    padding: 20px 30px; 
     background-color: white;
+    font-size: 38px;
+    margin: 2px;
+    box-shadow: 0 0 10px rgba(87, 87, 87, 0.623);
 }
 
-.tooltip .date{
-    font-size: 14px;
+#tooltip .date{
     white-space: nowrap;
 }
 
 .series-data{
     display: inline-block;
-    margin-top: 8px;
     margin-right: 12px;
+    margin-top: 30px;
 }
 
 .series-data .value{
-    font-size: 16px;
     font-weight: bold;
 }
 
 .series-data .name{
-    font-size: 14px
+    margin-top: 10px;
+    font-size: 28px;
 }
 
 .tooltip-line{
-    stroke-width: 1;
-    stroke: #888;
+    stroke-width: 3px;
+    stroke: #E0E6EA;
 }
 
 .test-label{
@@ -64,8 +71,8 @@
 }
 
 .grid{
-    stroke: #e6e6e6;
-    stroke-width: 1px;
+    stroke: #F2F4F5;
+    stroke-width: 3px;
     transform: translate(0, 1px);
 }
 
@@ -74,13 +81,13 @@
 }
 
 .handler{
-    fill: cornflowerblue;
-    opacity: 0.35;
+    fill: #DDEAF3;
+    opacity: 0.60;
 }
 
 .shutter{
-    opacity: 0.15;
-    fill: cornflowerblue
+    opacity: 0.40;
+    fill: #DDEAF3;
 }
 
 .selector{
@@ -93,7 +100,7 @@
 }
 
 .series {
-    stroke-width: 2;
+    stroke-width: 3px;
 }
 
 .legend{
@@ -103,7 +110,7 @@
 
 .legend-item{
     display: inline-block;
-    border: 1px solid #888;
+    border: 3px solid #E0E6EA;
     border-radius: 30px;
     padding: 10px;
     margin-right: 16px;
@@ -113,8 +120,9 @@
 .svg-wrapper {
     display: inline-block;
     line-height:20px;
-    width: 30px;
-    height: 30px;
+    margin-left: 10px;
+    width: 40px;
+    height: 40px;
     overflow: visible;
     vertical-align: middle;
 }
@@ -170,12 +178,11 @@
 .checkmark .check{
     stroke: white;
     fill: transparent;
-    stroke-width: 2px;
+    stroke-width: 3px;
 }
 
 .legend-label{
     display: inline-block;
-    margin-left: 10px;
-    font-size: 18px;
+    margin: 0 25px;
     vertical-align: middle;
 }
