@@ -1,5 +1,3 @@
-const ANIMATION_DURATION = "0.2s";
-
 function getComputedTransform(type, svgWrapper) {
     const matrix = getComputedStyle(svgWrapper.element).transform;
     if (matrix === "none") {
@@ -120,44 +118,34 @@ export class SvgWrapper {
         }
     }
 
-    scale(x, y, options) {
-        const from = this.currentTransform("scale", this.scaleAnimation);
+    transform(type, x, y, options) {
+        const animationField = `${type}Animation`;
+
+        const from = this.currentTransform(type, this[animationField]);
 
         const animation = new TransformAnimation((v) => {
-            this.setAttributes({ "transform": `scale(${v})` });
+            this.setAttributes({ "transform": `${type}(${v})` });
         })
-            .value("scale", from, `${x} ${y}`, options)
+            .value(type, from, `${x} ${y}`, options)
             .renderTo(this)
             .start();
 
-        if (this.scaleAnimation) {
-            this.scaleAnimation.end();
-            this.scaleAnimation.remove();
+        if (this[animationField]) {
+            this[animationField].end();
+            this[animationField].remove();
         }
 
-        this.scaleAnimation = animation;
+        this[animationField] = animation;
 
         return this;
     }
 
+    scale(x, y, options) {
+        return this.transform("scale", x, y, options);
+    }
+
     move(x, y, options) {
-        const from = this.currentTransform("translate", this.moveAnimation);
-
-        const animation = new TransformAnimation((v) => {
-            this.setAttributes({ "transform": `translate(${v})` });
-        })
-            .value("translate", from, `${x} ${y}`, options)
-            .renderTo(this)
-            .start();
-
-        if (this.moveAnimation) {
-            this.moveAnimation.end();
-            this.moveAnimation.remove();
-        }
-
-        this.moveAnimation = animation;
-
-        return this;
+        return this.transform("translate", x, y, options);
     }
 }
 
@@ -224,7 +212,7 @@ class Animation extends SvgWrapper {
         this.setAttributes(Object.assign({
             to,
             from,
-            dur: ANIMATION_DURATION,
+            dur: "0.2s",
             attributeName,
             begin: "click",
             fill: "freeze"
@@ -264,8 +252,7 @@ class TransformAnimation extends Animation {
             return `${x} ${y}`;
         }
 
-        super.value("transform", from, to, Object.assign({ type }, options));
-        return this;
+        return super.value("transform", from, to, Object.assign({ type }, options));
     }
  }
 export default class Renderer {
