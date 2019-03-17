@@ -5,10 +5,10 @@ fetch("./chart_data.json").then(data => data.json()).then(d => {
        // .slice(0, 1)
         .map(settings => {
         const x = settings.columns.find(c => c[0] == "x").slice(1);
-        const chart = new Chart(document.querySelector("body"), {
+        const chart = new Chart(document.querySelector(".charts"), {
             x,
             series: Object.keys(settings.names)
-                // .slice(0, 1)
+                //.slice(0, 1)
                 .map(s => {
                 const name = settings.names[s];
                 return {
