@@ -120,5 +120,8 @@ export default class Tooltip {
         this.width = width;
         this.height = height;
         this.offset = offset;
+        if (this.line) {
+            this.line.value([[0, 0], [0, this.height]]);
+        }
     }
 }
