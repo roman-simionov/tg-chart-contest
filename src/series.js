@@ -36,7 +36,7 @@ export default class Series {
         const y = this.options.y;
 
         if (isFinite(valueScale(y[0]))) {
-            const points = y.map((v, i) => [argumentScale(x[i]), valueScale(v)]);
+            const points = y.map((v, i) => [Math.round(argumentScale(x[i])), Math.round(valueScale(v))]);
             this.path.value(points);
         }
     }
