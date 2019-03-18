@@ -15,6 +15,6 @@
     "webpack": "webpack",
     "build": "webpack --config webpack.config.js",
     "build-dev": "webpack --config webpack.config.dev.js",
-    "gulp": "php -S localhost:8000 -t ./app & gulp"
+    "start": "php -S localhost:8000 -t ./app & gulp"
   }
 }
