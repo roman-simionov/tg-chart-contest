@@ -101,14 +101,6 @@ export class ValueAxis extends BaseAxis {
 
     /**
      *
-     * @param {number} value
-     */
-    format(value) {
-        return value;
-    }
-
-    /**
-     *
      * @param {Number[]} tickValues
      */
     render(tickValues) {
@@ -142,17 +134,17 @@ export class ValueAxis extends BaseAxis {
                     grid: tick.grid
                 };
             } else {
-                const text = this.format(value);
-                const label = this.renderer.text().value(text);
+                const label = this.renderer.text()
+                    .setAttributes({ y })
+                    .value(value)
+                    .renderTo(this.group);
+
                 const grid = new SvgWrapper("line").setAttributes({
                     x1: 0,
                     x2: this.width,
                     y1: y,
                     y2: y
                 }).renderTo(this.gridGroup);
-
-                label.setAttributes({ y });
-                label.renderTo(this.group);
 
                 if (ticks.length && this.oldScale) {
                     const from = this.oldScale(value);
@@ -250,15 +242,6 @@ export class ArgumentAxis extends BaseAxis {
         const { y, height } = this.testLabel.element.getBBox();
         return { height: height, lineHeight: height + y };
     }
-
-    /**
-     *
-     * @param {Date} value
-     */
-    format(value) {
-        return `${MONTH[value.getMonth()]} ${value.getDate()}`;
-    }
-
     /**
      *
      * @param {Date[]} tickValues
@@ -268,7 +251,6 @@ export class ArgumentAxis extends BaseAxis {
 
         this.ticks = tickValues.map((value, index) => {
             value = new Date(value);
-            const text = this.format(value);
             const x = this.domain.scale(value);
 
             const tick = ticks.find(t => !t.removing && t.value.valueOf() === value.valueOf());
@@ -282,12 +264,13 @@ export class ArgumentAxis extends BaseAxis {
                 };
             }
 
-            const label = this.renderer.text().value(text);
+            const label = this.renderer.text()
+                .setAttributes({ x })
+                .value(`${MONTH[value.getMonth()]} ${value.getDate()}`)
+                .renderTo(this.group);
 
-            label.setAttributes({ x });
-            label.renderTo(this.group);
             if (ticks.length && (index !== 0 && index !== tickValues.length - 1)) {
-                label.animate("opacity", 1, { from: "0" });
+                label.animate("opacity", 1, { from: "0", dur: "0.2s" });
             }
 
             return {
@@ -301,7 +284,7 @@ export class ArgumentAxis extends BaseAxis {
                 t.label
                     .setAttributes({ x: this.domain.scale(t.value) });
                 if (!t.removing) {
-                    t.label.animate("opacity", 0);
+                    t.label.animate("opacity", 0, { dur: "0.2s" });
                     t.removing = true;
                 }
 
