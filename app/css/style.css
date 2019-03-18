@@ -108,17 +108,13 @@ html, body{
     stroke-width: 3px;
 }
 
-.legend{
-    padding-top: 15px;
-    user-select: none;
-}
-
 .legend-item{
     display: inline-block;
     border: 3px solid #E0E6EA;
     border-radius: 30px;
     padding: 10px;
     margin-right: 16px;
+    margin-top: 15px;
 }
 
 .svg-wrapper {
