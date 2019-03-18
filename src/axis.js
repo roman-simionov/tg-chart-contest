@@ -112,8 +112,14 @@ export class ValueAxis extends BaseAxis {
      * @param {Number[]} tickValues
      */
     render(tickValues) {
-
         const ticks = this.ticks || [];
+
+        if (this.min === tickValues[0] && this.max === tickValues[tickValues.length - 1]) {
+            return;
+        }
+
+        this.min = tickValues[0];
+        this.max = tickValues[tickValues.length - 1];
 
         this.ticks = tickValues.map((value, index) => {
 
@@ -219,6 +225,9 @@ export class ValueAxis extends BaseAxis {
         (this.ticks || []).forEach(t => {
             t.grid.setAttributes({ x1: 0, x2: width });
         });
+
+        this.min = null;
+        this.max = null;
     }
 }
 

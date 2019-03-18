@@ -37,6 +37,8 @@ export default class SeriesView {
             series.path.renderTo(this.transformX);
             return series;
         });
+
+        this.yTransformation = [];
     }
 
     /**
@@ -66,7 +68,8 @@ export default class SeriesView {
     transform(argumentDomain, valueDomain) {
         valueDomain = (valueDomain || this.getRange(argumentDomain)).slice().reverse();
         const transformY = calculateTransform(valueDomain, this.valueCommonScale, this.height);
-        if (transformY) {
+        if (transformY && (this.yTransformation[0] !== transformY[0] || this.yTransformation[1] !== transformY[1])) {
+            this.yTransformation = transformY;
             this.container.move(0, transformY[0]);
             this.scaleY.scale(1, transformY[1]);
         }
@@ -109,5 +112,6 @@ export default class SeriesView {
         this.width = width;
 
         this.series.forEach(s => s.resize(width, height));
+        this.yTransformation = [];
     }
 }

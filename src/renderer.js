@@ -114,19 +114,19 @@ export class SvgWrapper {
             if (parse[0] === type) {
                 return `${parse[1]} ${parse[2]}`;
             }
-            return "1 1";
         }
+        return "1 1";
     }
 
     transform(type, x, y, options) {
         const animationField = `${type}Animation`;
 
         const from = this.currentTransform(type, this[animationField]);
-
+        const to = `${x} ${y}`;
         const animation = new TransformAnimation((v) => {
             this.setAttributes({ "transform": `${type}(${v})` });
         })
-            .value(type, from, `${x} ${y}`, options)
+            .value(type, from, to, options)
             .renderTo(this)
             .start();
 
@@ -212,7 +212,7 @@ class Animation extends SvgWrapper {
         this.setAttributes(Object.assign({
             to,
             from,
-            dur: "0.2s",
+            dur: "0.4s",
             attributeName,
             begin: "click",
             fill: "freeze"
