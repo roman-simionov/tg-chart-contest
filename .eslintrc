@@ -74,6 +74,7 @@
                     "^\\$?..$"
                 ],
                 "skipWords": [
+                    "dev",
                     "devtool",
                     "dur",
                     "filename",

@@ -5,16 +5,16 @@
   "devDependencies": {
     "eslint": "^4.19.1",
     "eslint-plugin-spellcheck": "^0.0.10",
-    "mocha": "^4.0.1",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3",
-    "gulp": "^3.9.1"
+    "webpack-dev-server": "^3.2.1"
   },
   "dependencies": {},
   "scripts": {
     "webpack": "webpack",
-    "build": "webpack --config webpack.config.js",
-    "build-dev": "webpack --config webpack.config.dev.js",
-    "start": "php -S localhost:8000 -t ./app & gulp"
+    "build": "webpack --config webpack.config.build.js",
+    "build-dev": "webpack",
+    "watch": "webpack --watch",
+    "start": "npm run watch & webpack-dev-server"
   }
 }
