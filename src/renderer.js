@@ -172,7 +172,8 @@ export class Path extends SvgWrapper {
      * @param {Array<number>} points
      */
     value(points) {
-        return this.setAttributes({ d: `M${points.join("L")}` });
+        this.element.setAttribute("d", `M${points.join("L")}`);
+        return this;
     }
 }
 
