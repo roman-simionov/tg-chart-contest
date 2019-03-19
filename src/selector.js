@@ -2,9 +2,9 @@ import Renderer from "./renderer";
 import { numericScale, dateScale } from "./domain";
 import SeriesView from "./series-view";
 
-const pointer_start = ["pointerdown", "touchstart"];
-const pointer_move = ["pointermove", "touchmove"];
-const pointer_up = ["pointerup", "touchend"];
+const pointer_start = ["mousedown", "touchstart"];
+const pointer_move = ["mousemove", "touchmove"];
+const pointer_up = ["mouseup", "touchend"];
 
 class Handler {
     /**
@@ -16,6 +16,7 @@ class Handler {
         this.handlerWidth = 10;
         this.element = renderer.createElement("rect")
             .addClass("handler")
+            .addClass("move-handler")
             .setAttributes({
                 width: this.handlerWidth
             }).renderTo(renderer.svg);
@@ -28,9 +29,10 @@ class Handler {
 
         pointer_start.forEach(e => {
             this.element.element.addEventListener(e, (event) => {
+                event.preventDefault();
+                event.stopPropagation();
                 event.startValue = this.value();
                 this.startEvent = event;
-                event.preventDefault();
                 return false;
             }, { passive: false });
         });
@@ -42,8 +44,8 @@ class Handler {
                     this.value(this.startEvent.startValue + offset);
                     this.changed();
                     event.preventDefault();
-                    return false;
-                }
+                    event.stopPropagation();
+}
             }, { passive: false });
         });
 
@@ -136,6 +138,7 @@ export default class Selector {
             this.background.element.addEventListener(e, (event) => {
                 event.x1x2 = this.x1x2();
                 this.startEvent = event;
+                event.preventDefault();
                 event.stopPropagation();
             }, { passive: false });
         });
