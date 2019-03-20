@@ -2,13 +2,11 @@ import Chart from "./chart";
 
 window.changeTheme = function(e) {
     document.body.classList.toggle("dark");
-    e.innerHTML = `Switch to ${document.body.classList.contains("dark") ? "Day" : "Night"} Mode`;
 };
 
 fetch("./chart_data.json").then(data => data.json()).then(d => {
     const container = document.querySelector(".charts");
     const charts = d
-        //.slice(0, 1)
         .map(settings => {
             const x = settings.columns.find(c => c[0] == "x").slice(1);
             const chart = new Chart(container, {
@@ -28,9 +26,6 @@ fetch("./chart_data.json").then(data => data.json()).then(d => {
 
             return chart;
         });
-
-    container.appendChild(document.querySelector("#theme-placeholder"));
-
     let timeout = null;
     window.onresize = function() {
         clearTimeout(timeout);

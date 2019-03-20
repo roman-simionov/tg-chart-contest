@@ -16,8 +16,13 @@ html, body{
     margin: 15px;
     height: 100%;
 }
+
 .chart{
     height: 75%;
+}
+
+.charts .chart:last-child{
+    margin-bottom: 78px;
 }
 
 .title{
@@ -195,21 +200,18 @@ html, body{
     vertical-align: middle;
 }
 
-.theme-switcher{
-    visibility: hidden;
-    font-size: 32px;
-    padding: 40px;
-}
-
 #theme-switcher{
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    visibility: visible;
     text-align: center;
     color:#4D8DDD;
-    padding: 40px;
+    padding: 20px;
     font-size: 32px;
     background-color: rgba(255,255,255,0.85);
+}
+
+.night-label{
+    display: none;
 }

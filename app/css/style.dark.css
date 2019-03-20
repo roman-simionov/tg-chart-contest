@@ -48,3 +48,12 @@
 .dark #theme-switcher{
     background-color: rgba(38,47,61,0.85);
 }
+
+
+.dark .night-label{
+    display: block;
+}
+
+.dark .day-label{
+    display: none;
+}
