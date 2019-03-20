@@ -2,9 +2,7 @@ import Renderer from "./renderer";
 import { numericScale, dateScale } from "./domain";
 import SeriesView from "./series-view";
 
-const pointer_start = ["mousedown", "touchstart"];
-const pointer_move = ["mousemove", "touchmove"];
-const pointer_up = ["mouseup", "touchend"];
+import { pointerStart, pointerMove, pointerUp } from "./events";
 
 class Handler {
     /**
@@ -27,32 +25,27 @@ class Handler {
     attachEvents() {
         this.startEvent = null;
 
-        pointer_start.forEach(e => {
-            this.element.element.addEventListener(e, (event) => {
+        pointerStart.push((event) => {
+            if (event.target === this.element.element) {
                 event.preventDefault();
                 event.stopPropagation();
                 event.startValue = this.value();
                 this.startEvent = event;
-                return false;
-            }, { passive: false });
+            }
         });
 
-        pointer_move.forEach(e => {
-            document.addEventListener(e, (event) => {
-                if (this.startEvent) {
-                    const offset = event.pageX - this.startEvent.pageX;
-                    this.value(this.startEvent.startValue + offset);
-                    this.changed();
-                    event.preventDefault();
-                    event.stopPropagation();
-}
-            }, { passive: false });
+        pointerMove.push((event) => {
+            if (this.startEvent) {
+                const offset = event.pageX - this.startEvent.pageX;
+                this.value(this.startEvent.startValue + offset);
+                this.changed();
+                event.preventDefault();
+                event.stopPropagation();
+            }
         });
 
-        pointer_up.forEach(e => {
-            document.addEventListener(e, () => {
-                this.startEvent = null;
-            }, { passive: false });
+        pointerUp.push(() => {
+            this.startEvent = null;
         });
     }
 
@@ -134,43 +127,39 @@ export default class Selector {
     attachEvents() {
         this.startEvent = null;
 
-        pointer_start.forEach(e => {
-            this.background.element.addEventListener(e, (event) => {
+        pointerStart.push((event) => {
+            if (event.target === this.background.element) {
                 event.x1x2 = this.x1x2();
                 this.startEvent = event;
                 event.preventDefault();
                 event.stopPropagation();
-            }, { passive: false });
+            }
         });
 
-        pointer_move.forEach(e => {
-            document.addEventListener(e, (event) => {
-                if (this.startEvent) {
-                    let offset = event.pageX - this.startEvent.pageX;
-                    const [x1, x2] = this.startEvent.x1x2;
-                    if (offset < 0) {
-                        offset = x1 + offset < 0 ? 0 - x1 : offset;
-                    }
-
-                    if (offset > 0) {
-                        offset = x2 + offset > this.width ? this.width - x2 : offset;
-                    }
-
-                    this.handlers[0].value(x1 + offset);
-                    this.handlers[1].value(x2 + offset);
-                    this.handlerChanged();
-                    event.stopPropagation();
-                    event.preventDefault();
-                    return false;
+        pointerMove.push((event) => {
+            if (this.startEvent) {
+                let offset = event.pageX - this.startEvent.pageX;
+                const [x1, x2] = this.startEvent.x1x2;
+                if (offset < 0) {
+                    offset = x1 + offset < 0 ? 0 - x1 : offset;
                 }
-            }, { passive: false });
+
+                if (offset > 0) {
+                    offset = x2 + offset > this.width ? this.width - x2 : offset;
+                }
+
+                this.handlers[0].value(x1 + offset);
+                this.handlers[1].value(x2 + offset);
+                this.handlerChanged();
+                event.stopPropagation();
+                event.preventDefault();
+                return false;
+            }
         });
 
-        pointer_up.forEach(e => {
-            document.addEventListener(e, () => {
-                this.startEvent = null;
-            });
-        }, { passive: false });
+        pointerUp.push(() => {
+            this.startEvent = null;
+        });
     }
 
     x1x2(type = "value") {

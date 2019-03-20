@@ -3,6 +3,8 @@ import { MONTH } from "./axis";
 
 const DAYS = ["Sun", "Mon", "Tue", "Wen", "Thu", "Fri", "Sat"];
 
+import { pointerStart, pointerMove } from "./events";
+
 class ForeignObject extends SvgWrapper {
     constructor() {
         super("g");
@@ -74,51 +76,53 @@ export default class Tooltip {
      */
     attachEvents(element, seriesView) {
         let timeout = null;
-        ["pointermove", "touchstart", "touchmove"].forEach(eventName => {
-            element.addEventListener(eventName, (event) => {
-                const position = event.pageX - this.offset;
-                if (!this.group) {
-                    this.render(position);
-                }
-                const points = seriesView.getPoints(Math.round(position));
-                if (points && points.length) {
-                    let { x, a } = points[0];
-                    if (x !== this.x) {
-                        this.x = x;
-                        clearTimeout(timeout);
-                        timeout = setTimeout(() => {
-                            this.group.animate("opacity", 1);
-                            this.hoverGroup.element.textContent = "";
-                            points.forEach(({ x, y, series }) => {
-                                const circle = (new SvgWrapper("circle"))
-                                    .setAttributes({
-                                        cx: x,
-                                        cy: y,
-                                        r: 10,
-                                        stroke: series.options.color,
-                                        opacity: 0
-                                    })
-                                    .renderTo(this.hoverGroup);
-                                circle.animate("opacity", 1);
-                            });
-                            this.line.move(x, 0);
-                            this.tooltip.value(a, points, this.width / 2 - this.offset, this.height);
-                            const tooltipX = x < (this.width - this.offset) / 2 ? x + 18 : x - this.tooltip.width - 18;
-                            this.tooltipGroup.move(tooltipX, 0);
-                        }, 50);
-                    }
-                }
-                event.stopPropagation();
-            }, { passive: false });
 
-            document.addEventListener(eventName, () => {
+        const pointerStartHandler = (event) => {
+            if (event.target.closest(".svg") !== element) {
                 if (this.x !== null && this.group) {
                     clearTimeout(timeout);
                     this.group.animate("opacity", 0);
                     this.x = null;
                 }
-            });
-        });
+                return;
+            }
+            const position = event.pageX - this.offset;
+            if (!this.group) {
+                this.render(position);
+            }
+            const points = seriesView.getPoints(Math.round(position));
+            if (points && points.length) {
+                let { x, a } = points[0];
+                if (x !== this.x) {
+                    this.x = x;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => {
+                        this.group.animate("opacity", 1);
+                        this.hoverGroup.element.textContent = "";
+                        points.forEach(({ x, y, series }) => {
+                            const circle = (new SvgWrapper("circle"))
+                                .setAttributes({
+                                    cx: x,
+                                    cy: y,
+                                    r: 10,
+                                    stroke: series.options.color,
+                                    opacity: 0
+                                })
+                                .renderTo(this.hoverGroup);
+                            circle.animate("opacity", 1);
+                        });
+                        this.line.move(x, 0);
+                        this.tooltip.value(a, points, this.width / 2 - this.offset, this.height);
+                        const tooltipX = x < (this.width - this.offset) / 2 ? x + 18 : x - this.tooltip.width - 18;
+                        this.tooltipGroup.move(tooltipX, 0);
+                    }, 50);
+                }
+            }
+            event.stopPropagation();
+        };
+
+        pointerStart.push(pointerStartHandler);
+        pointerMove.push(pointerStartHandler);
     }
 
     resize(width, height, offset) {

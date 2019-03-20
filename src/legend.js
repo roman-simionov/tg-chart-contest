@@ -1,3 +1,4 @@
+import { pointerUp } from "./events";
 export default class Legend {
 
     /**
@@ -6,9 +7,8 @@ export default class Legend {
      * @param {*} options
      */
     constructor(element, options, changed) {
-        const div = document.createElement("div");
+        const div = this.div = document.createElement("div");
         div.classList.add("legend");
-        this.div = div;
         element.appendChild(div);
         this.options = options;
         div.innerHTML = options.map((o, i) => {
@@ -27,12 +27,16 @@ export default class Legend {
 
         this.changed = changed;
 
-        this.attachEvents();
+        this.attachEvents(div);
     }
 
-    attachEvents() {
-        this.div.addEventListener("click", (event) => {
-            const item = event.target.closest(".legend-item");
+    attachEvents(div) {
+        pointerUp.push(({ target }) => {
+            if (target.closest(".legend") !== div) {
+                return;
+            }
+
+            const item = target.closest(".legend-item");
             if (item) {
                 const checkMark = item.querySelector(".checkmark");
                 const id = item.getAttribute("id").split("-")[1];

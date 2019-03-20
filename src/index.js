@@ -1,6 +1,6 @@
 import Chart from "./chart";
 
-window.changeTheme = function(e) {
+window.changeTheme = function() {
     document.body.classList.toggle("dark");
 };
 
