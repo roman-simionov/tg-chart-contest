@@ -21,3 +21,8 @@ Object.keys(events).forEach(k => {
         });
     }, { passive: handlers === pointerUp });
 });
+
+
+export function getPageX(event) {
+    return event.pageX === undefined ? event.touches[0].pageX : event.pageX;
+}

@@ -2,7 +2,7 @@ import Renderer from "./renderer";
 import { numericScale, dateScale } from "./domain";
 import SeriesView from "./series-view";
 
-import { pointerStart, pointerMove, pointerUp } from "./events";
+import { pointerStart, pointerMove, pointerUp, getPageX } from "./events";
 
 class Handler {
     /**
@@ -36,7 +36,7 @@ class Handler {
 
         pointerMove.push((event) => {
             if (this.startEvent) {
-                const offset = event.pageX - this.startEvent.pageX;
+                const offset = getPageX(event) - getPageX(this.startEvent);
                 this.value(this.startEvent.startValue + offset);
                 this.changed();
                 event.preventDefault();
@@ -138,7 +138,7 @@ export default class Selector {
 
         pointerMove.push((event) => {
             if (this.startEvent) {
-                let offset = event.pageX - this.startEvent.pageX;
+                let offset = getPageX(event) - getPageX(this.startEvent);
                 const [x1, x2] = this.startEvent.x1x2;
                 if (offset < 0) {
                     offset = x1 + offset < 0 ? 0 - x1 : offset;

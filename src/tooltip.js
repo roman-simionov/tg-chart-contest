@@ -3,7 +3,7 @@ import { MONTH } from "./axis";
 
 const DAYS = ["Sun", "Mon", "Tue", "Wen", "Thu", "Fri", "Sat"];
 
-import { pointerStart, pointerMove } from "./events";
+import { pointerStart, pointerMove, getPageX } from "./events";
 
 class ForeignObject extends SvgWrapper {
     constructor() {
@@ -86,7 +86,7 @@ export default class Tooltip {
                 }
                 return;
             }
-            const position = event.pageX - this.offset;
+            const position = getPageX(event) - this.offset;
             if (!this.group) {
                 this.render(position);
             }
