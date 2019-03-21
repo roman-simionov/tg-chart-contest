@@ -21,10 +21,6 @@ html, body{
     height: 75%;
 }
 
-.charts .chart:last-child{
-    margin-bottom: 78px;
-}
-
 .title{
     font-size: 24px;
 }
@@ -200,15 +196,20 @@ html, body{
     vertical-align: middle;
 }
 
+.theme-switcher{
+    padding: 20px;
+    font-size: 32px;
+    visibility: hidden;
+}
+
 #theme-switcher{
     position: absolute;
+    visibility: visible;
     bottom: 0;
     left: 0;
     right: 0;
     text-align: center;
     color:#4D8DDD;
-    padding: 20px;
-    font-size: 32px;
     background-color: rgba(255,255,255,0.85);
 }
 

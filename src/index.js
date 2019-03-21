@@ -6,6 +6,9 @@ window.changeTheme = function() {
 
 fetch("./chart_data.json").then(data => data.json()).then(d => {
     const container = document.querySelector(".charts");
+    /**
+     * @type {Chart[]}
+     */
     const charts = d
         .map(settings => {
             const x = settings.columns.find(c => c[0] == "x").slice(1);
@@ -26,6 +29,7 @@ fetch("./chart_data.json").then(data => data.json()).then(d => {
 
             return chart;
         });
+    container.appendChild(document.querySelector("#theme-switcher-placeholder"));
     let timeout = null;
     window.onresize = function() {
         clearTimeout(timeout);
