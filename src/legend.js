@@ -31,8 +31,10 @@ export default class Legend {
     }
 
     attachEvents(div) {
-        pointerUp.push(({ target }) => {
-            if (target.closest(".legend") !== div) {
+        pointerUp.push(({ target, type }) => {
+            if (target.closest(".legend") !== div || 
+            ('ontouchstart' in window || navigator.maxTouchPoints) && type === "mouseup"
+            ) {
                 return;
             }
 
