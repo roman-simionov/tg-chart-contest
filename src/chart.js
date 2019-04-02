@@ -59,7 +59,7 @@ export default class Chart {
     }
 
     resize() {
-        const { x, width, height } = this.element.getBoundingClientRect();
+        const { x, left, width, height } = this.element.getBoundingClientRect();
         const argumentsAxisMeasure = this.argumentAxis.measure();
         const legendHeight = this.legend.div.getBoundingClientRect().height;
 
@@ -74,7 +74,7 @@ export default class Chart {
                 this.argumentAxis.resize(width, argumentsAxisMeasure.height, argumentsAxisMeasure.lineHeight);
                 this.valueAxis.resize(width, mainPlotHeight, argumentsAxisMeasure.lineHeight);
                 this.selector.resize(width, selectorHeight);
-                this.tooltip.resize(width, mainPlotHeight, x);
+                this.tooltip.resize(width, mainPlotHeight, x || left || 0);
                 this.seriesView.resize(width, mainPlotHeight);
                 this.renderAxis();
                 this.renderSeries();

@@ -186,11 +186,19 @@ class Animation extends SvgWrapper {
         });
     }
 
+    attributeName() {
+        return this.getAttribute("attributeName");
+    }
+
+    toValue() {
+        return this.to;
+    }
+
     start() {
         if (this.element.beginElement) {
             this.element.beginElement();
         } else {
-            this.element.parentNode.setAttribute(this.getAttribute("attributeName"), this.to);
+            this.element.parentNode.setAttribute(this.attributeName(), this.toValue());
         }
 
         return this;
@@ -255,6 +263,10 @@ class Animation extends SvgWrapper {
 class TransformAnimation extends Animation {
     constructor(onEnd) {
         super(onEnd, "animateTransform");
+    }
+
+    toValue() {
+        return `${this.getAttribute("type")}(${this.to})`;
     }
 
     /**
