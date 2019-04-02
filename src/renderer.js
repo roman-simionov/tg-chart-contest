@@ -187,12 +187,22 @@ class Animation extends SvgWrapper {
     }
 
     start() {
-        this.element.beginElement();
+        if (this.element.beginElement) {
+            this.element.beginElement();
+        } else {
+            this.element.parentNode.setAttribute(this.getAttribute("attributeName"), this.to);
+        }
+
         return this;
     }
 
     end() {
-        this.element.endElement();
+        try {
+            this.element.endElement && this.element.endElement();
+        } catch(e) {
+            return this;
+        }
+
         return this;
     }
 
@@ -225,9 +235,19 @@ class Animation extends SvgWrapper {
     calculateValue(start, end) {
         const diff = end - start;
         const duration = parseFloat(this.getAttribute("dur"));
-        const time = this.element.getCurrentTime() &&
-            Math.min(this.element.getCurrentTime() - this.element.getStartTime(), duration) ||
+
+        let startTime;
+        let time = duration;
+
+        try {
+            time = this.element.getCurrentTime() &&
+            Math.min(this.element.getCurrentTime() - startTime, duration) ||
             duration;
+            startTime = this.element.getStartTime();
+        } catch (e) {
+            time = duration;
+        }
+
         return start + diff * Math.min(1, time / duration);
     }
 }
