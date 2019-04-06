@@ -78,6 +78,7 @@
                     "devtool",
                     "dur",
                     "filename",
+                    "polyfill",
                     "rect",
                     "rects",
                     "resize",

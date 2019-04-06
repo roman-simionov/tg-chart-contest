@@ -12,11 +12,10 @@ elementClosest(window); // this is used to reference window.Element
 
 promise.polyfill();
 
-const rounding_const = 1000000;
+const roundValue = 1000000;
 
 function log10(n) {
-  return Math.round(rounding_const * Math.log(n) / Math.LN10) / rounding_const;
+  return Math.round(roundValue * Math.log(n) / Math.LN10) / roundValue;
 }
 
 Math.log10 = log10;
-
