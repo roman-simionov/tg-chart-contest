@@ -1,6 +1,13 @@
-
 .dark{
     background: #262F3D;
+}
+
+.dark .title{
+    color: #fff;
+}
+
+.dark .selected-range{
+    color: #fff;
 }
 
 .dark .label{

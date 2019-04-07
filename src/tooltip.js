@@ -76,14 +76,15 @@ export default class Tooltip {
             .value([[0, 0], [0, this.height]])
             .renderTo(this.group);
 
+        this.hoverGroup = renderer.createElement("g")
+            .addClass("hover-group")
+            .renderTo(this.group);
+
         this.tooltipGroup = renderer.createElement("g")
             .setAttributes({ "transform": `translate(${x} 0)` })
             .renderTo(this.group);
 
         this.tooltip = new ForeignObject().renderTo(this.tooltipGroup);
-        this.hoverGroup = renderer.createElement("g")
-            .addClass("hover-group")
-            .renderTo(this.group);
     }
     /**
      *
