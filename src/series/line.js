@@ -1,4 +1,4 @@
-import { Path } from "./renderer";
+import { Path } from "../renderer";
 export default class Series {
     /**
      *
@@ -123,6 +123,8 @@ export default class Series {
     show() {
         this.path.animate("opacity", 1);
     }
+
+    hover() { }
 
     clearHover() {
         this.hoverElement && this.hoverElement.remove();

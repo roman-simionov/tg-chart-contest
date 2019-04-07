@@ -1,5 +1,5 @@
-import Series from "./series";
-import { Path } from "./renderer";
+import Series from "./line";
+import { Path } from "../renderer";
 export default class BarSeries extends Series {
     constructor(options) {
         super(options);

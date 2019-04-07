@@ -1,5 +1,14 @@
-//import Series from "./stacked-bar-series";
-import Series from "./stacked-area-series";
+import LineSeries from "./series/line";
+import BarSeries from "./series/bar";
+import StackedBar from "./series/stacked-bar";
+import PercentArea from "./series/percent-area";
+
+const Series = {
+    line: LineSeries,
+    bar: BarSeries,
+    stackedBar: StackedBar,
+    percentArea: PercentArea
+};
 
 import { SvgWrapper } from "./renderer";
 
@@ -36,7 +45,7 @@ export default class SeriesView {
          */
         this.series = options.map(o => {
             o.seriesView = this;
-            const series = new Series(o);
+            const series = new Series[o.type](o);
             series.path.renderTo(this.transformX);
             return series;
         }).map((s, i, arr) => {

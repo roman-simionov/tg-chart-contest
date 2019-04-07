@@ -1,4 +1,4 @@
-import StackedSeries from "./stacked-bar-series";
+import StackedSeries from "./stacked-bar";
 
 export default class StackedAres extends StackedSeries {
     getRange() {

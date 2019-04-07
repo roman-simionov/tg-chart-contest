@@ -1,4 +1,4 @@
-import BarSeries from "./bar-series";
+import BarSeries from "./bar";
 
 export default class StackedBar extends BarSeries {
 
