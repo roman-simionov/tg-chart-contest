@@ -18,7 +18,7 @@ html, body{
 }
 
 .chart{
-    height: 75%;
+    height: 85%;
     position: relative;
 }
 
@@ -140,12 +140,16 @@ html, body{
     fill-opacity: 0.45;
 }
 
+.legend{
+    padding-top: 5px;
+}
+
 .legend-item{
     display: inline-block;
     border: 3px solid #E0E6EA;
     border-radius: 30px;
     padding: 10px;
-    margin: 15px 15px 15px 0;
+    margin: 5px 5px 5px 0;
 }
 
 .svg-wrapper {
@@ -215,7 +219,7 @@ html, body{
 
 .legend-label{
     display: inline-block;
-    margin: 0 25px;
+    margin: 0 5px;
     vertical-align: middle;
 }
 
