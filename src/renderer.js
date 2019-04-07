@@ -182,9 +182,7 @@ export class Path extends SvgWrapper {
             return;
         }
 
-        new Animation((v) => {
-            return true;
-        })
+        new Animation(() => true)
             .value(attributeName, null, value, options)
             .renderTo(this)
             .start();
