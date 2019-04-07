@@ -7,11 +7,11 @@ const MULTIPLIERS = [1, 2, 5, 10];
 
 const math = Math;
 
-export function createTicks([s1, s2], [d1, d2]) {
+export function createTicks([s1, s2], [d1, d2], externalCount) {
     const domainRange = d2 - d1;
     const screenRange = s2 - s1;
 
-    const count = math.ceil(screenRange / 70);
+    const count = externalCount || math.ceil(screenRange / 70);
     const interval = domainRange / count;
 
     const factor = math.pow(10, math.floor(math.log10(interval)));
@@ -30,6 +30,10 @@ export function createTicks([s1, s2], [d1, d2]) {
     const ticks = new Array(math.ceil(domainRange / adjustedInterval) + 1).fill(0).map((_, i) => startTick + adjustedInterval * i);
 
     if (ticks[ticks.length - 1] < d2) {
+        ticks.push(ticks[ticks.length - 1] + adjustedInterval);
+    }
+
+    while (ticks.length < externalCount) {
         ticks.push(ticks[ticks.length - 1] + adjustedInterval);
     }
 
@@ -99,6 +103,10 @@ export class ValueAxis extends BaseAxis {
             .renderTo(this.renderer.svg);
     }
 
+    labelX() {
+        return 0;
+    }
+
     /**
      *
      * @param {Number[]} tickValues
@@ -135,7 +143,10 @@ export class ValueAxis extends BaseAxis {
                 };
             } else {
                 const label = this.renderer.text()
-                    .setAttributes({ y })
+                    .setAttributes({
+                        y,
+                        x: this.labelX()
+                    })
                     .value(value)
                     .renderTo(this.group);
 
@@ -216,6 +227,7 @@ export class ValueAxis extends BaseAxis {
 
         (this.ticks || []).forEach(t => {
             t.grid.setAttributes({ x1: 0, x2: width });
+            t.label.setAttributes({ x: this.labelX() });
         });
 
         this.min = null;
@@ -307,5 +319,22 @@ export class ArgumentAxis extends BaseAxis {
             "transform": `translate(0, ${height})`
         });
         this.domain.setRange([0, width]);
+    }
+}
+
+
+export class RightValueAxis extends ValueAxis {
+    /**
+     *
+     * @param {Renderer} renderer
+     */
+    constructor(renderer) {
+        super(renderer);
+        this.group.addClass("right-axis");
+        this.gridGroup.remove();
+    }
+
+    labelX() {
+        return this.width;
     }
 }

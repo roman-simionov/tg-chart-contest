@@ -31,9 +31,10 @@ export default class SeriesView {
      * @param {container} container
      * @param {*} options
      */
-    constructor(container, options, argumentAxis, valueAxis) {
+    constructor(container, options, argumentAxis, valueAxis, rightAxis) {
         this.argumentAxis = argumentAxis;
         this.valueAxis = valueAxis;
+        this.rightAxis = rightAxis;
 
         this.container = container;
         this.scaleY = new SvgWrapper("g").renderTo(this.container);
@@ -47,6 +48,7 @@ export default class SeriesView {
             o.seriesView = this;
             const series = new Series[o.type](o);
             series.path.renderTo(this.transformX);
+            series.axis = o.axis === "a1" ? rightAxis : valueAxis;
             return series;
         }).map((s, i, arr) => {
             if (arr[i - 1]) {

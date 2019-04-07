@@ -88,6 +88,10 @@ html, body{
     transform: translate(0, -2px);
 }
 
+.right-axis {
+    text-anchor: end;
+}
+
 .handler{
     fill: #DDEAF3;
     opacity: 0.60;
