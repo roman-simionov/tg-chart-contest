@@ -2,7 +2,7 @@ import StackedSeries from "./stacked-bar";
 
 export default class StackedAres extends StackedSeries {
     getRange() {
-        return [0, 100];
+        return [0, 102];
     }
 
     percentValue(i) {
