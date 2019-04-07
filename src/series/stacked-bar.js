@@ -26,18 +26,16 @@ export default class StackedBar extends BarSeries {
 
         if (isFinite(valueScale(y[0]))) {
             const points =
-                y.reduce((arr, v, i, y) => {
+                y.reduce((arr, _, i) => {
                     const yc = Math.round(valueScale(this.value(i)));
                     const xc = Math.round(argumentScale(x[i]));
                     const x0c = i === 0 ? 0 : Math.round(argumentScale(x[i - 1]));
-                    const px_x = x0c + (xc - x0c) / 2;
+                    const x0_offset = x0c + (xc - x0c) / 2;
 
-                    arr.push(`H${px_x}V${yc}H${xc}`);
+                    arr.push(`H${x0_offset}V${yc}H${xc}`);
 
                     return arr;
                 }, [`M0 ${Math.round(valueScale(this.offset(0)))}`]);
-
-            //points.push(`V${Math.round(valueScale(this.offset(y.length - 1)))}`);
 
             const xr = x.slice().reverse();
             const bottom = y.slice().reverse().reduce((arr, v, i, y) => {
@@ -45,9 +43,9 @@ export default class StackedBar extends BarSeries {
                 const yc = Math.round(valueScale(this.offset(fi)));
                 const xc = Math.round(argumentScale(xr[i]));
                 const x0c = i === y.length - 1 ? 0 : Math.round(argumentScale(xr[i + 1]));
-                const px_x = x0c + (xc - x0c) / 2;
+                const x0_offset = x0c + (xc - x0c) / 2;
 
-                arr.push(`V${yc}H${px_x}`);
+                arr.push(`V${yc}H${x0_offset}`);
 
                 return arr;
             }, points);
