@@ -6,8 +6,8 @@ import PercentArea from "./series/percent-area";
 const Series = {
     line: LineSeries,
     bar: BarSeries,
-    stackedBar: StackedBar,
-    percentArea: PercentArea
+    "stackedbar": StackedBar,
+    "percentagearea": PercentArea
 };
 
 import { SvgWrapper } from "./renderer";
