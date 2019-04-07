@@ -1,4 +1,6 @@
-import Series from "./stacked-bar-series";
+//import Series from "./stacked-bar-series";
+import Series from "./stacked-area-series";
+
 import { SvgWrapper } from "./renderer";
 
 function calculateTransform(domain, scale, size) {
@@ -33,6 +35,7 @@ export default class SeriesView {
          * @type {Series}
          */
         this.series = options.map(o => {
+            o.seriesView = this;
             const series = new Series(o);
             series.path.renderTo(this.transformX);
             return series;
@@ -122,5 +125,14 @@ export default class SeriesView {
 
     clearHover() {
         this.series.forEach(s => s.clearHover());
+    }
+
+    getSeriesSum(index) {
+        return this.series.reduce((sum, { options }) => {
+            if (options.visible !== false) {
+                sum += options.y[index];
+            }
+            return sum;
+        }, 0);
     }
 }
