@@ -18,15 +18,26 @@ class ForeignObject extends SvgWrapper {
         this.element.innerHTML = ` <foreignobject id="obj" x="0" y="0" width="${containerWidth}" height="${containerHeight}">
             <body xmlns="http://www.w3.org/1999/xhtml">
               <div id="tooltip">
-              <div class="date">${DAYS[date.getDay()]}, ${MONTH[date.getMonth()]} ${date.getDate()}</div>
-                ${points.map(p => {
-                    const options = p.series.options;
-                    return `<div class="series-data" style="color:${options.color}">
-                                <span class="value">${p.v}</span><br/>
-                                <span class="name">${options.name}</span>
-                            </div>`;
-                }).join("")}
-              </div>
+                <div class="column">
+                    <div class="accent">${DAYS[date.getDay()]}, ${MONTH[date.getMonth()]} ${date.getDate()} ${date.getFullYear()}</div>
+                    
+                    ${points.map(p => {
+                        const options = p.series.options;
+                        return `<div >${options.name}</div>`;
+                    }).join("")}
+                    
+
+                </div>
+                <div class="right column accent">
+                    <div>&gt;</div>
+                    
+                    ${points.map(p => {
+                        const options = p.series.options;
+                        return `<div style="color: ${options.color}">${p.v}</div>`;
+                    }).join("")}
+
+                </div>
+            </div>
            </body>
         </foreignobject>`;
 
@@ -82,6 +93,7 @@ export default class Tooltip {
                 if (this.x !== null && this.group) {
                     clearTimeout(timeout);
                     this.group.animate("opacity", 0);
+                    seriesView.clearHover();
                     this.x = null;
                 }
                 return;
@@ -99,7 +111,9 @@ export default class Tooltip {
                     timeout = setTimeout(() => {
                         this.group.animate("opacity", 1);
                         this.hoverGroup.element.textContent = "";
-                        points.forEach(({ x, y, series }) => {
+                        seriesView.clearHover();
+
+                        points.forEach(({ x, y, series, index, }) => {
                             const circle = (new SvgWrapper("circle"))
                                 .setAttributes({
                                     cx: x,
@@ -109,11 +123,18 @@ export default class Tooltip {
                                     opacity: 0
                                 })
                                 .renderTo(this.hoverGroup);
+                            series.hover(index);
                             circle.animate("opacity", 1);
                         });
                         this.line.move(x, 0);
-                        this.tooltip.value(a, points, this.width / 2 - this.offset, this.height);
-                        const tooltipX = x < (this.width - this.offset) / 2 ? x + 18 : x - this.tooltip.width - 18;
+                        this.tooltip.value(a, points, this.width, this.height);
+                        let tooltipX = x < (this.width - this.offset) / 2 ? x + 18 : x - this.tooltip.width - 18;
+                        if (tooltipX < 0) {
+                            tooltipX = 0;
+                        }
+                        if (tooltipX + this.tooltip.width > this.width - 10) {
+                            tooltipX = this.width - this.tooltip.width - 10;
+                        }
                         this.tooltipGroup.move(tooltipX, 0);
                     }, 50);
                 }

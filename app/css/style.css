@@ -42,32 +42,31 @@ html, body{
 #tooltip{
     border: 1px solid #E0E6EA;
     color: black;
-    border-radius: 12px;
+    border-radius: 25px;
     display: inline-block;
-    padding: 20px 30px; 
+    padding: 0 10px; 
     background-color: white;
     font-size: 32px;
     margin: 2px;
     box-shadow: 0 0 10px rgba(87, 87, 87, 0.623);
-}
-
-#tooltip .date{
+    
     white-space: nowrap;
 }
 
-.series-data{
+.column{
     display: inline-block;
-    margin-right: 12px;
-    margin-top: 30px;
 }
 
-.series-data .value{
+.column div{
+    margin: 10px;
+}
+
+.right{
+    text-align: right;
+}
+
+#tooltip .accent{
     font-weight: bold;
-}
-
-.series-data .name{
-    margin-top: 10px;
-    font-size: 28px;
 }
 
 .tooltip-line{
