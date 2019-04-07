@@ -1,4 +1,4 @@
-import { Path } from "../renderer";
+import { Path, SvgWrapper } from "../renderer";
 export default class Series {
     /**
      *
@@ -124,9 +124,17 @@ export default class Series {
         this.path.animate("opacity", 1);
     }
 
-    hover() { }
+    hover({ x, y, series }) {
+        return new SvgWrapper("circle")
+            .setAttributes({
+                cx: x,
+                cy: y,
+                r: 10,
+                stroke: series.options.color,
+                opacity: 0
+            });
+    }
 
     clearHover() {
-        this.hoverElement && this.hoverElement.remove();
     }
 }

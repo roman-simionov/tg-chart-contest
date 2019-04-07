@@ -50,7 +50,7 @@ export default class BarSeries extends Series {
         this.argumentScale = argumentScale;
     }
 
-    hover(index) {
+    hover({ index }) {
         const x = this.options.x;
 
         const yc = Math.round(this.valueScale(this.value(index)));
@@ -71,5 +71,11 @@ export default class BarSeries extends Series {
 
         this.hoverElement.element.setAttribute("d", [`M${x0_offset} ${offset}V${yc}H${x1_offset}V${offset}Z`]);
         this.path.element.parentNode.appendChild(this.hoverElement.element);
+
+        return this.hoverElement;
+    }
+
+    clearHover() {
+        this.hoverElement && this.hoverElement.remove();
     }
 }

@@ -259,14 +259,14 @@ class Animation extends SvgWrapper {
         const diff = end - start;
         const duration = parseFloat(this.getAttribute("dur"));
 
-        let startTime;
         let time = duration;
 
         try {
+            const startTime = this.element.getStartTime();
             time = this.element.getCurrentTime() &&
-            Math.min(this.element.getCurrentTime() - startTime, duration) ||
-            duration;
-            startTime = this.element.getStartTime();
+                Math.min(this.element.getCurrentTime() - startTime, duration) ||
+                duration;
+
         } catch (e) {
             time = duration;
         }

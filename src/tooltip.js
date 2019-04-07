@@ -113,18 +113,13 @@ export default class Tooltip {
                         this.hoverGroup.element.textContent = "";
                         seriesView.clearHover();
 
-                        points.forEach(({ x, y, series, index, }) => {
-                            const circle = (new SvgWrapper("circle"))
-                                .setAttributes({
-                                    cx: x,
-                                    cy: y,
-                                    r: 10,
-                                    stroke: series.options.color,
-                                    opacity: 0
-                                })
-                                .renderTo(this.hoverGroup);
-                            series.hover(index);
-                            circle.animate("opacity", 1);
+                        points.forEach((point) => {
+                            const hoverElement = point.series.hover(point);
+                            if (hoverElement && !hoverElement.element.parentNode) {
+                                hoverElement
+                                    .renderTo(this.hoverGroup)
+                                    .animate("opacity", 1);
+                            }
                         });
                         this.line.move(x, 0);
                         this.tooltip.value(a, points, this.width, this.height);
