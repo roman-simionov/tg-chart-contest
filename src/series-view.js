@@ -1,4 +1,4 @@
-import Series from "./series";
+import Series from "./stacked-bar-series";
 import { SvgWrapper } from "./renderer";
 
 function calculateTransform(domain, scale, size) {
@@ -36,6 +36,11 @@ export default class SeriesView {
             const series = new Series(o);
             series.path.renderTo(this.transformX);
             return series;
+        }).map((s, i, arr) => {
+            if (arr[i - 1]) {
+                s.stackSeries = arr[i - 1];
+            }
+            return s;
         });
 
         this.yTransformation = [];
@@ -113,5 +118,9 @@ export default class SeriesView {
 
         this.series.forEach(s => s.resize(width, height));
         this.yTransformation = [];
+    }
+
+    clearHover() {
+        this.series.forEach(s => s.clearHover());
     }
 }

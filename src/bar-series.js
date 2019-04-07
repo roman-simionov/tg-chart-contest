@@ -14,6 +14,10 @@ export default class BarSeries extends Series {
         return [0, super.getRange(bounds)[1]];
     }
 
+    offset() {
+        return 0;
+    }
+
     render(valueScale, argumentScale) {
         const x = this.options.x;
         const y = this.options.y;
@@ -21,7 +25,7 @@ export default class BarSeries extends Series {
         if (isFinite(valueScale(y[0]))) {
             const points =
                 y.reduce((arr, v, i, y) => {
-                    const yc = Math.round(valueScale(v));
+                    const yc = Math.round(valueScale(this.value(i)));
                     const xc = Math.round(argumentScale(x[i]));
                     const x0c = i === 0 ? 0 : Math.round(argumentScale(x[i - 1]));
                     const px_x = x0c + (xc - x0c) / 2;
@@ -41,9 +45,8 @@ export default class BarSeries extends Series {
 
     hover(index) {
         const x = this.options.x;
-        const y = this.options.y;
 
-        const yc = Math.round(this.valueScale(y[index]));
+        const yc = Math.round(this.valueScale(this.value(index)));
         const xc = Math.round(this.argumentScale(x[index]));
 
         const x0c = index === 0 ? 0 : Math.round(this.argumentScale(x[index - 1]));
@@ -57,7 +60,9 @@ export default class BarSeries extends Series {
             fill: this.options.color
         });
 
-        this.hoverElement.element.setAttribute("d", [`M${px_x} ${this.height}V${yc}H${px_x1}V${this.height}Z`]);
+        const offset = Math.round(this.valueScale(this.offset(index)));
+
+        this.hoverElement.element.setAttribute("d", [`M${px_x} ${offset}V${yc}H${px_x1}V${offset}Z`]);
         this.path.element.parentNode.appendChild(this.hoverElement.element);
     }
 }
