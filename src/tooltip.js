@@ -23,7 +23,11 @@ class ForeignObject extends SvgWrapper {
                     
                     ${points.map(p => {
                         const options = p.series.options;
-                        return `<div >${options.name}</div>`;
+                        const percent = p.series.percentValue ? `<span class="percent-value">${p.series.percentValue(p.index).toFixed(0)}%</span>` : "";
+                        return `<div >
+                                ${percent}
+                                ${options.name}
+                            </div>`;
                     }).join("")}
                     
 

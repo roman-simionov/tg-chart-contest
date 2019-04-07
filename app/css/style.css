@@ -77,6 +77,12 @@ html, body{
     font-weight: bold;
 }
 
+.percent-value{
+    display: inline-block;
+    font-weight: bold;
+    width: 90px;
+}
+
 .tooltip-line{
     stroke-width: 3px;
     stroke: #E0E6EA;
