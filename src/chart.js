@@ -1,9 +1,18 @@
 import Renderer from "./renderer";
-import { ArgumentAxis, ValueAxis, createTicks, createDateTicks, RightValueAxis } from "./axis";
+import { ArgumentAxis, ValueAxis, createTicks, createDateTicks, RightValueAxis, FULL_MONTH } from "./axis";
 import Selector from "./selector";
 import SeriesView from "./series-view";
 import Legend from "./legend";
 import Tooltip from "./tooltip";
+
+/**
+ *
+ * @param {Date} date
+ */
+function formatDateValue(date) {
+    date = new Date(date);
+    return `${date.getDate()} ${FULL_MONTH[date.getMonth()]} ${date.getFullYear()}`;
+}
 
 export default class Chart {
     /**
@@ -19,7 +28,12 @@ export default class Chart {
         this.element.classList.add("chart");
 
         if (options.title) {
-            this.element.innerHTML = `<div class="title">${options.title}</div>`;
+            this.element.innerHTML = `
+                <span class="title">${options.title}</span>
+                <span class="selected-range"></span>
+            `;
+
+            this.selectedRangeText = this.element.querySelector(".selected-range");
         }
 
         this.renderer = new Renderer(this.element);
@@ -99,6 +113,10 @@ export default class Chart {
         this.argumentAxis.setDomain(argumentDomain);
         const valueDomain = this.seriesView.getRange(argumentDomain);
         const valueDomainSize = valueDomain[1] - valueDomain[0];
+
+        if (this.selectedRangeText) {
+            this.selectedRangeText.innerHTML = `${formatDateValue(argumentDomain[0])} - ${formatDateValue(argumentDomain[1])}`;
+        }
 
         let valueTicks = [];
 

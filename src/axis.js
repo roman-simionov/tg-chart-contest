@@ -1,7 +1,8 @@
 import Renderer, { SvgWrapper } from "./renderer";
 import Domain from "./domain";
 
-export const MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+export const FULL_MONTH = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+export const MONTH = FULL_MONTH.map(m => m.slice(0, 3));
 
 const MULTIPLIERS = [1, 2, 5, 10];
 
