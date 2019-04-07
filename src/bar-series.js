@@ -1,7 +1,5 @@
 import Series from "./series";
 import { Path } from "./renderer";
-
-
 export default class BarSeries extends Series {
     constructor(options) {
         super(options);
@@ -11,14 +9,23 @@ export default class BarSeries extends Series {
         this.path.addClass("bar");
     }
     getRange(bounds) {
-        return [0, super.getRange(bounds)[1]];
+        return [0, super.getRange(bounds)[1] || 0];
     }
 
     offset() {
         return 0;
     }
 
-    render(valueScale, argumentScale) {
+    drawPath(pathArray, animate) {
+        if (!animate) {
+            this.path.element.setAttribute("d", pathArray.join(""));
+            this.path.element.innerHTML = "";
+        } else {
+            this.path.animate("d", pathArray.join(""));
+        }
+    }
+
+    render(valueScale, argumentScale, animate) {
         const x = this.options.x;
         const y = this.options.y;
 
@@ -36,7 +43,7 @@ export default class BarSeries extends Series {
                 }, [`M0 ${this.height}`]);
             points.push(`V${this.height}Z`);
 
-            this.path.element.setAttribute("d", points.join(""));
+            this.drawPath(points, animate);
         }
 
         this.valueScale = valueScale;

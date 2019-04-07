@@ -17,7 +17,7 @@ export default class Series {
     }
 
     value(i) {
-        return this.options.y[i];
+        return this.options.visible === false ? 0 : this.options.y[i];
     }
 
     getRange(bounds) {

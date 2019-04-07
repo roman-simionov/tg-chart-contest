@@ -15,15 +15,14 @@ export default class StackedBar extends BarSeries {
         return super.value(i) + this.offset(i);
     }
 
-    render(valueScale, argumentScale) {
+    render(valueScale, argumentScale, animate) {
         const x = this.options.x;
         const y = this.options.y;
 
         if (!this.stackSeries) {
-            super.render(valueScale, argumentScale);
+            super.render(valueScale, argumentScale, animate);
             return;
         }
-
 
         if (isFinite(valueScale(y[0]))) {
             const points =
@@ -53,10 +52,16 @@ export default class StackedBar extends BarSeries {
                 return arr;
             }, points);
 
-            this.path.element.setAttribute("d", bottom.join(""));
+            this.drawPath(bottom, animate);
+
         }
 
         this.valueScale = valueScale;
         this.argumentScale = argumentScale;
+    }
+
+    applyVisibility() {
+        super.applyVisibility();
+        this.render(this.valueScale, this.argumentScale, true);
     }
 }
