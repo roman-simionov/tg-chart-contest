@@ -35,7 +35,7 @@ export class SvgWrapper {
     setCss(styleSheet) {
         Object.keys(styleSheet).forEach(k => {
             const value = styleSheet[k];
-            this.element.setAttribute(k, value);
+            this.element.style[k] = value;
         });
         return this;
     }

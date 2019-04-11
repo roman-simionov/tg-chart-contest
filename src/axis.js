@@ -243,6 +243,12 @@ export class ValueAxis extends BaseAxis {
         this.min = null;
         this.max = null;
     }
+
+    fill(color) {
+        this.group.setCss({
+            fill: color
+        });
+    }
 }
 
 export class ArgumentAxis extends BaseAxis {

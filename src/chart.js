@@ -49,10 +49,10 @@ export default class Chart {
         const x = this.options.x;
         this.selector.setDomain([x[0], x[x.length - 1]]);
 
-        const seriesOptions = [
+        const seriesOptions = ([
             options.series.filter((_, i) => !options.y_scaled || i % 2 === 0),
             options.series.filter((_, i) => options.y_scaled && i % 2 === 1)
-        ];
+        ]).filter(o => o.length > 0);
 
         this.selector.setSeries(seriesOptions);
 
@@ -76,6 +76,10 @@ export default class Chart {
 
         this.tooltip = new Tooltip(this.renderer, this.seriesView);
 
+        if (this.seriesView.length === 2) {
+            this.valueAxis.fill(this.seriesView[0].series[0].options.color);
+            this.rightAxis.fill(this.seriesView[1].series[0].options.color);
+        }
 
         new Promise(r => r()).then(() => {
             this.resize();
@@ -149,9 +153,7 @@ export default class Chart {
                 valueAxis.setDomain([ticks[0], ticks[ticks.length - 1]]);
                 valueAxis.render(ticks);
                 valueTicks = ticks;
-
             }
-
         });
 
         this.argumentAxis.render(createDateTicks(this.argumentAxis.domain.range, argumentDomain, this.selector.domain[0]));
