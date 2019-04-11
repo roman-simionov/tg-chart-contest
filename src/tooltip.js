@@ -60,7 +60,7 @@ export default class Tooltip {
     /**
      *
      * @param {Renderer} renderer
-     * @param {SeriesView} seriesView
+     * @param {SeriesView[]} seriesView
      */
     constructor(renderer, seriesView) {
         this.x = null;
@@ -101,7 +101,7 @@ export default class Tooltip {
                 if (this.x !== null && this.group) {
                     clearTimeout(timeout);
                     this.group.animate("opacity", 0);
-                    seriesView.clearHover();
+                    seriesView.forEach(s => s.clearHover());
                     this.x = null;
                 }
                 return;
@@ -110,7 +110,7 @@ export default class Tooltip {
             if (!this.group) {
                 this.render(position);
             }
-            const points = seriesView.getPoints(Math.round(position));
+            const points = seriesView.reduce((points, s) => points.concat(s.getPoints(Math.round(position))), []);
             if (points && points.length) {
                 let { x, a } = points[0];
                 if (x !== this.x) {
@@ -119,7 +119,7 @@ export default class Tooltip {
                     timeout = setTimeout(() => {
                         this.group.animate("opacity", 1);
                         this.hoverGroup.element.textContent = "";
-                        seriesView.clearHover();
+                        seriesView.forEach(s => s.clearHover());
 
                         points.forEach((point) => {
                             const hoverElement = point.series.hover(point);

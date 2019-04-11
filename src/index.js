@@ -4,7 +4,7 @@ window.changeTheme = function() {
     document.body.classList.toggle("dark");
 };
 
-fetch("./data/5/overview.json").then(data => data.json()).then(d => {
+fetch("./data/2/overview.json").then(data => data.json()).then(d => {
     const container = document.querySelector(".charts");
     d = d instanceof Array ? d : [d];
     /**
@@ -15,8 +15,9 @@ fetch("./data/5/overview.json").then(data => data.json()).then(d => {
             const chart = new Chart(container, {
                 x,
                 title: `Chart#${index}`,
+                y_scaled: settings.y_scaled,
                 series: Object.keys(settings.names)
-                    .map(s => {
+                    .map((s) => {
                         const name = settings.names[s];
                         let typePrefix = "";
                         if (settings.stacked) {

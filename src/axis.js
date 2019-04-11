@@ -1,12 +1,19 @@
 import Renderer, { SvgWrapper } from "./renderer";
-import Domain from "./domain";
+import Domain, { numericScale } from "./domain";
 
 export const FULL_MONTH = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 export const MONTH = FULL_MONTH.map(m => m.slice(0, 3));
 
-const MULTIPLIERS = [1, 2, 5, 10];
+const MULTIPLIERS = [1, 2, 5, 10, 50, 100];
 
 const math = Math;
+
+export function getSynchronizer(t1, t2) {
+    const scale = numericScale([t1[0], t1[t1.length - 1]], [t2[t1.length - 1], t2[0]]);
+    return ticks => {
+        return ticks.map(t => scale(t));
+    };
+}
 
 export function createTicks([s1, s2], [d1, d2], externalCount) {
     const domainRange = d2 - d1;
@@ -22,13 +29,15 @@ export function createTicks([s1, s2], [d1, d2], externalCount) {
 
     while (adjustedInterval < interval) {
         adjustedInterval = factor * MULTIPLIERS[m++];
-        if (m > MULTIPLIERS.length) {
+        if (m >= MULTIPLIERS.length) {
             break;
         }
     }
 
     const startTick = math.floor(d1 / adjustedInterval) * adjustedInterval;
-    const ticks = new Array(math.ceil(domainRange / adjustedInterval) + 1).fill(0).map((_, i) => startTick + adjustedInterval * i);
+    const adjustedCount = math.ceil(domainRange / adjustedInterval) + 1;
+
+    const ticks = new Array(adjustedCount).fill(0).map((_, i) => startTick + adjustedInterval * i);
 
     if (ticks[ticks.length - 1] < d2) {
         ticks.push(ticks[ticks.length - 1] + adjustedInterval);

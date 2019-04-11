@@ -1,5 +1,5 @@
 import Renderer from "./renderer";
-import { ArgumentAxis, ValueAxis, createTicks, createDateTicks, RightValueAxis, FULL_MONTH } from "./axis";
+import { ArgumentAxis, ValueAxis, createTicks, createDateTicks, RightValueAxis, FULL_MONTH, getSynchronizer } from "./axis";
 import Selector from "./selector";
 import SeriesView from "./series-view";
 import Legend from "./legend";
@@ -43,25 +43,34 @@ export default class Chart {
         this.rightAxis = new RightValueAxis(this.renderer);
         this.selector = new Selector(this.element, () => {
             this.renderAxis();
-            this.seriesView.transform(this.argumentAxis.domain.domain, this.valueAxis.domain.domain);
+            this.seriesView.forEach(seriesView => seriesView.transform(seriesView.argumentAxis.domain.domain, seriesView.valueAxis.domain.domain));
         });
 
         const x = this.options.x;
         this.selector.setDomain([x[0], x[x.length - 1]]);
-        this.selector.setSeries(this.options.series);
 
-        const seriesGroup = this.renderer
-            .createElement("g")
-            .addClass("series")
-            .renderTo(this.renderer.svg);
+        const seriesOptions = [
+            options.series.filter((_, i) => !options.y_scaled || i % 2 === 0),
+            options.series.filter((_, i) => options.y_scaled && i % 2 === 1)
+        ];
 
-        this.seriesView = new SeriesView(seriesGroup, this.options.series, this.argumentAxis, this.valueAxis, this.rightAxis);
+        this.selector.setSeries(seriesOptions);
+
+        this.seriesView = seriesOptions.map((options, index) => {
+            const seriesGroup = this.renderer
+                .createElement("g")
+                .addClass("series")
+                .renderTo(this.renderer.svg);
+            return new SeriesView(seriesGroup, options, this.argumentAxis, index % 2 === 0 ? this.valueAxis : this.rightAxis);
+        });
 
         this.legend = new Legend(this.element, options.series, () => {
             this.renderAxis();
-            this.seriesView
-                .transform(this.argumentAxis.domain.domain, this.valueAxis.domain.domain)
+            this.seriesView.forEach(seriesView => {
+                seriesView.transform(seriesView.argumentAxis.domain.domain, seriesView.valueAxis.domain.domain)
                 .applyVisibility();
+            });
+
             this.selector.scaleSeries();
         });
 
@@ -91,7 +100,7 @@ export default class Chart {
                 this.rightAxis.resize(width, mainPlotHeight, argumentsAxisMeasure.lineHeight);
                 this.selector.resize(width, selectorHeight);
                 this.tooltip.resize(width, mainPlotHeight, x || left || 0);
-                this.seriesView.resize(width, mainPlotHeight);
+                this.seriesView.forEach(s => s.resize(width, mainPlotHeight));
                 this.renderAxis();
                 this.renderSeries();
             }
@@ -99,10 +108,13 @@ export default class Chart {
     }
 
     renderSeries() {
-        const valueScale = this.valueAxis.domain.scale;
         const argumentScale = this.argumentAxis.domain.scale;
-        this.seriesView.render(valueScale, argumentScale);
-        this.seriesView.setCommonScale(valueScale, argumentScale);
+        this.seriesView.forEach(seriesView => {
+            const valueScale = seriesView.valueAxis.domain.scale;
+            seriesView.render(valueScale, argumentScale);
+            seriesView.setCommonScale(valueScale, argumentScale);
+        });
+
     }
 
     renderAxis() {
@@ -111,29 +123,36 @@ export default class Chart {
             return;
         }
         this.argumentAxis.setDomain(argumentDomain);
-        const valueDomain = this.seriesView.getRange(argumentDomain);
-        const valueDomainSize = valueDomain[1] - valueDomain[0];
 
         if (this.selectedRangeText) {
             this.selectedRangeText.innerHTML = `${formatDateValue(argumentDomain[0])} - ${formatDateValue(argumentDomain[1])}`;
         }
 
         let valueTicks = [];
+        this.seriesView.forEach(seriesView => {
+            const valueAxis = seriesView.valueAxis;
+            const valueDomain = seriesView.getRange(argumentDomain);
+            const valueDomainSize = valueDomain[1] - valueDomain[0];
 
-        if (isFinite(valueDomainSize) && Math.abs(valueDomainSize) > 0) {
-            valueTicks = createTicks(this.valueAxis.domain.range, valueDomain);
-            this.valueAxis.setDomain([valueTicks[0], valueTicks[valueTicks.length - 1]]);
-            this.valueAxis.render(valueTicks);
-        }
+            if (isFinite(valueDomainSize) && Math.abs(valueDomainSize) > 0) {
+                let ticks;
 
-        const rightDomain = this.seriesView.getRange(argumentDomain);
-        const rightDomainSize = rightDomain[1] - rightDomain[0];
+                if (valueTicks.length > 0 && valueAxis.synchronizer) {
+                    ticks = valueAxis.synchronizer(valueTicks);
+                } else if (valueTicks.length > 0) {
+                    ticks = createTicks(valueAxis.domain.range, valueDomain, valueTicks.length);
+                    valueAxis.synchronizer = getSynchronizer(valueTicks, ticks);
+                } else {
+                    ticks = createTicks(valueAxis.domain.range, valueDomain, valueTicks.length);
+                }
 
-        if (isFinite(rightDomainSize) && Math.abs(rightDomainSize) > 0) {
-            const rightTicks = createTicks(this.rightAxis.domain.range, rightDomain, valueTicks.length);
-            this.rightAxis.setDomain([rightTicks[0], rightTicks[rightTicks.length - 1]]);
-            this.rightAxis.render(rightTicks);
-        }
+                valueAxis.setDomain([ticks[0], ticks[ticks.length - 1]]);
+                valueAxis.render(ticks);
+                valueTicks = ticks;
+
+            }
+
+        });
 
         this.argumentAxis.render(createDateTicks(this.argumentAxis.domain.range, argumentDomain, this.selector.domain[0]));
     }
