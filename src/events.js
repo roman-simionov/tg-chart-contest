@@ -20,7 +20,7 @@ Object.keys(events).forEach(k => {
         handlers.forEach((eventHandler) => {
             eventHandler(event);
         });
-    }, { passive: handlers === pointerUp || handlers === pointerStart });
+    }, { passive: handlers === pointerUp });
 });
 
 let timer = null;
