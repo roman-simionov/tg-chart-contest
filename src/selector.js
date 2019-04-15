@@ -11,7 +11,7 @@ class Handler {
      */
     constructor(renderer, changed) {
         this.renderer = renderer;
-        this.handlerWidth = 10;
+        this.handlerWidth = 30;
         this.element = renderer.createElement("rect")
             .addClass("handler")
             .addClass("move-handler")
