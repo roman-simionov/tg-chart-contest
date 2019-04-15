@@ -1,4 +1,11 @@
-import { pointerUp } from "./events";
+import { pointerUp, longTap } from "./events";
+
+function getItem(target, div) {
+    if (target.closest(".legend") !== div) {
+        return;
+    }
+    return target.closest(".legend-item");
+}
 export default class Legend {
 
     /**
@@ -30,15 +37,22 @@ export default class Legend {
         this.attachEvents(div);
     }
 
+    /**
+     *
+     * @param {Element} div
+     */
     attachEvents(div) {
+        let lockPointerUp = false;
         pointerUp.push(({ target, type }) => {
-            if (target.closest(".legend") !== div || 
-            ('ontouchstart' in window || navigator.maxTouchPoints) && type === "mouseup"
+            const item = getItem(target, div);
+            if (lockPointerUp) {
+                lockPointerUp = false;
+                return;
+            }
+            if (('ontouchstart' in window || navigator.maxTouchPoints) && type === "mouseup"
             ) {
                 return;
             }
-
-            const item = target.closest(".legend-item");
             if (item) {
                 const checkMark = item.querySelector(".checkmark");
                 const id = item.getAttribute("id").split("-")[1];
@@ -54,5 +68,35 @@ export default class Legend {
                 this.changed();
             }
         });
+
+        longTap.push(event => {
+            const item = getItem(event.target, div);
+            if (item) {
+                lockPointerUp = true;
+                event.preventDefault();
+                event.stopPropagation();
+
+                const items = div.querySelectorAll(".legend-item") || [];
+
+                items.forEach((i) => {
+                    const id = i.getAttribute("id").split("-")[1];
+                    const checkMark = i.querySelector(".checkmark");
+                    const options = this.options[id];
+                    if (i === item) {
+                        options.visible = true;
+                        if (checkMark.classList.contains("unchecking")) {
+                            checkMark.classList.add("checking");
+                            checkMark.classList.remove("unchecking");
+                        }
+                    } else {
+                        options.visible = false;
+                        checkMark.classList.remove("checking");
+                        checkMark.classList.add("unchecking");
+                    }
+                });
+                this.changed();
+            }
+        });
+
     }
 }

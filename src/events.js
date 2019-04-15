@@ -1,6 +1,7 @@
 export const pointerStart = [];
 export const pointerMove = [];
 export const pointerUp = [];
+export const longTap = [];
 
 const events = {
     "mousedown": pointerStart,
@@ -19,7 +20,25 @@ Object.keys(events).forEach(k => {
         handlers.forEach((eventHandler) => {
             eventHandler(event);
         });
-    }, { passive: handlers === pointerUp });
+    }, { passive: handlers === pointerUp || handlers === pointerStart });
+});
+
+let timer = null;
+const touchDuration = 250;
+
+pointerStart.push((event) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+        longTap.forEach((eventHandler) => {
+            eventHandler(event);
+        });
+    }, touchDuration);
+});
+
+pointerUp.push(() => {
+    if (timer) {
+        clearTimeout(timer);
+    }
 });
 
 
