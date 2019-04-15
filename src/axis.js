@@ -119,6 +119,19 @@ export class ValueAxis extends BaseAxis {
 
     /**
      *
+     * @param {number} value
+     */
+    format(value) {
+        if (value >= 1000000) {
+            return v => `${v / 1000000}M`;
+        } else if (value > 1000) {
+            return v => `${v / 1000}K`;
+         }
+        return v => v;
+    }
+
+    /**
+     *
      * @param {Number[]} tickValues
      */
     render(tickValues) {
@@ -136,6 +149,8 @@ export class ValueAxis extends BaseAxis {
             const y = this.domain.scale(value);
 
             const tick = ticks.find(t => !t.removing && t.value.valueOf() === value.valueOf());
+
+            const format = this.format(this.max);
 
             let tickObject;
 
@@ -157,7 +172,7 @@ export class ValueAxis extends BaseAxis {
                         y,
                         x: this.labelX()
                     })
-                    .value(value)
+                    .value(format(value))
                     .renderTo(this.group);
 
                 const grid = new SvgWrapper("line").setAttributes({
