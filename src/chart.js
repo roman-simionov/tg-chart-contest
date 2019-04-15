@@ -37,6 +37,7 @@ export default class Chart {
         }
 
         this.renderer = new Renderer(this.element);
+        this.renderer.svg.addClass("main-plot");
 
         this.argumentAxis = new ArgumentAxis(this.element);
         this.valueAxis = new ValueAxis(this.renderer);
@@ -94,7 +95,7 @@ export default class Chart {
         new Promise(r => r()).then(() => {
             if (width > 0) {
                 const selectorHeight = this.options.selectorHeight || 115;
-                let mainPlotHeight = (height && height - selectorHeight - legendHeight - argumentsAxisMeasure.height - argumentsAxisMeasure.lineHeight - 30) || this.options.mainPlotHeight || 965;
+                let mainPlotHeight = (height && height - selectorHeight - legendHeight - argumentsAxisMeasure.height - argumentsAxisMeasure.lineHeight - 100) || this.options.mainPlotHeight || 965;
                 if (mainPlotHeight < 10) {
                     mainPlotHeight = 10;
                 }
