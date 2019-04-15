@@ -62,4 +62,8 @@ export default class StackedBar extends BarSeries {
         super.applyVisibility();
         this.render(this.valueScale, this.argumentScale, true);
     }
+
+    lineVisibility() {
+        return false;
+    }
 }

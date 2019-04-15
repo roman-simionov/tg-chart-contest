@@ -57,4 +57,8 @@ export default class StackedAres extends StackedSeries {
     }
 
     hover() { }
+
+    lineVisibility() {
+        return true;
+    }
 }

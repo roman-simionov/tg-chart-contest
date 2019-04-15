@@ -78,4 +78,8 @@ export default class BarSeries extends Series {
     clearHover() {
         this.hoverElement && this.hoverElement.remove();
     }
+
+    lineVisibility() {
+        return false;
+    }
 }

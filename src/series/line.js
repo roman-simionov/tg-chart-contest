@@ -137,4 +137,8 @@ export default class Series {
 
     clearHover() {
     }
+
+    lineVisibility() {
+        return true;
+    }
 }

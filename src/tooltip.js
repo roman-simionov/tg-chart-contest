@@ -68,7 +68,7 @@ export default class Tooltip {
         this.attachEvents(renderer.svg.element, seriesView);
     }
 
-    render(x = 0) {
+    render(x = 0, lineVisibility) {
         const renderer = this.renderer;
         this.group = renderer.createElement("g").renderTo(renderer.svg).setAttributes({
             opacity: 0
@@ -76,9 +76,10 @@ export default class Tooltip {
         this.line = renderer.path()
             .addClass("tooltip-line")
             .setAttributes({ "transform": `translate(${x} 0)` })
-            .value([[0, 0], [0, this.height]])
-            .renderTo(this.group);
-
+            .value([[0, 0], [0, this.height]]);
+        if (lineVisibility) {
+            this.line.renderTo(this.group);
+        }
         this.hoverGroup = renderer.createElement("g")
             .addClass("hover-group")
             .renderTo(this.group);
@@ -108,7 +109,7 @@ export default class Tooltip {
             }
             const position = getPageX(event) - this.offset;
             if (!this.group) {
-                this.render(position);
+                this.render(position, seriesView[0].lineVisibility());
             }
             const points = seriesView.reduce((points, s) => points.concat(s.getPoints(Math.round(position))), []);
             if (points && points.length) {

@@ -141,6 +141,12 @@ export default class SeriesView {
         this.series.forEach(s => s.clearHover());
     }
 
+    lineVisibility() {
+        return this.series.reduce((r, s) => {
+            return r && s.lineVisibility();
+        }, true);
+    }
+
     getSeriesSum(index) {
         return this.series.reduce((sum, { options }) => {
             if (options.visible !== false) {
