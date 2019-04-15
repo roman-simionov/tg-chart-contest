@@ -1,4 +1,15 @@
-import Series from "./series";
+import LineSeries from "./series/line";
+import BarSeries from "./series/bar";
+import StackedBar from "./series/stacked-bar";
+import PercentArea from "./series/percent-area";
+
+const Series = {
+    line: LineSeries,
+    bar: BarSeries,
+    "stackedbar": StackedBar,
+    "percentagearea": PercentArea
+};
+
 import { SvgWrapper } from "./renderer";
 
 function calculateTransform(domain, scale, size) {
@@ -33,9 +44,20 @@ export default class SeriesView {
          * @type {Series}
          */
         this.series = options.map(o => {
-            const series = new Series(o);
+            o.seriesView = this;
+            const series = new Series[o.type](o);
             series.path.renderTo(this.transformX);
+
+            if (o.axis === "a1") {
+                series.axis = "a1";
+            }
+
             return series;
+        }).map((s, i, arr) => {
+            if (arr[i - 1]) {
+                s.stackSeries = arr[i - 1];
+            }
+            return s;
         });
 
         this.yTransformation = [];
@@ -113,5 +135,24 @@ export default class SeriesView {
 
         this.series.forEach(s => s.resize(width, height));
         this.yTransformation = [];
+    }
+
+    clearHover() {
+        this.series.forEach(s => s.clearHover());
+    }
+
+    lineVisibility() {
+        return this.series.reduce((r, s) => {
+            return r && s.lineVisibility();
+        }, true);
+    }
+
+    getSeriesSum(index) {
+        return this.series.reduce((sum, { options }) => {
+            if (options.visible !== false) {
+                sum += options.y[index];
+            }
+            return sum;
+        }, 0);
     }
 }

@@ -35,7 +35,7 @@ export class SvgWrapper {
     setCss(styleSheet) {
         Object.keys(styleSheet).forEach(k => {
             const value = styleSheet[k];
-            this.element.setAttribute(k, value);
+            this.element.style[k] = value;
         });
         return this;
     }
@@ -175,14 +175,30 @@ export class Path extends SvgWrapper {
         this.element.setAttribute("d", `M${points.join("L")}`);
         return this;
     }
+
+    animate(attributeName, value, options = {}) {
+        if (attributeName !== "d") {
+            super.animate(attributeName, value, options);
+            return;
+        }
+
+        new Animation(() => true)
+            .value(attributeName, null, value, options)
+            .renderTo(this)
+            .start();
+
+        return this;
+    }
 }
 
 class Animation extends SvgWrapper {
     constructor(onEnd, tagName) {
         super(tagName || "animate");
         this.element.addEventListener("endEvent", () => {
-            onEnd && onEnd(this.value());
-            this.remove();
+            const endResult = onEnd && onEnd(this.value());
+            if (endResult !== true) {
+                this.remove();
+            }
         });
     }
 
@@ -230,12 +246,11 @@ class Animation extends SvgWrapper {
 
         this.setAttributes(Object.assign({
             to,
-            from,
             dur: "0.4s",
             attributeName,
             begin: "click",
             fill: "freeze"
-        }, options));
+        }, from !== null ? { from } : {}, options));
 
         return this;
     }
@@ -244,14 +259,14 @@ class Animation extends SvgWrapper {
         const diff = end - start;
         const duration = parseFloat(this.getAttribute("dur"));
 
-        let startTime;
         let time = duration;
 
         try {
+            const startTime = this.element.getStartTime();
             time = this.element.getCurrentTime() &&
-            Math.min(this.element.getCurrentTime() - startTime, duration) ||
-            duration;
-            startTime = this.element.getStartTime();
+                Math.min(this.element.getCurrentTime() - startTime, duration) ||
+                duration;
+
         } catch (e) {
             time = duration;
         }

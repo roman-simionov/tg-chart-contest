@@ -18,11 +18,23 @@ html, body{
 }
 
 .chart{
-    height: 75%;
+    height: 85%;
+    position: relative;
 }
 
 .title{
     font-size: 24px;
+    width: 50%;
+}
+
+.main-plot{
+    margin-top:10px;
+}
+
+.selected-range{
+    text-align: right;
+    position: absolute;
+    right: 0;
 }
 
 .svg{
@@ -42,32 +54,37 @@ html, body{
 #tooltip{
     border: 1px solid #E0E6EA;
     color: black;
-    border-radius: 12px;
+    border-radius: 25px;
     display: inline-block;
-    padding: 20px 30px; 
+    padding: 0 10px; 
     background-color: white;
     font-size: 32px;
     margin: 2px;
-    box-shadow: 0 0 10px rgba(87, 87, 87, 0.623);
-}
-
-#tooltip .date{
+    box-shadow: 0 0 4px rgba(87, 87, 87, 0.623);
+    
     white-space: nowrap;
 }
 
-.series-data{
+.column{
     display: inline-block;
-    margin-right: 12px;
-    margin-top: 30px;
 }
 
-.series-data .value{
+.column div{
+    margin: 10px;
+}
+
+.right{
+    text-align: right;
+}
+
+#tooltip .accent{
     font-weight: bold;
 }
 
-.series-data .name{
-    margin-top: 10px;
-    font-size: 28px;
+.percent-value{
+    display: inline-block;
+    font-weight: bold;
+    width: 90px;
 }
 
 .tooltip-line{
@@ -87,6 +104,10 @@ html, body{
 
 .grid .first{
     transform: translate(0, -2px);
+}
+
+.right-axis {
+    text-anchor: end;
 }
 
 .handler{
@@ -117,12 +138,22 @@ html, body{
     stroke-width: 3px;
 }
 
+.series .bar{
+    stroke: transparent;
+    stroke-width: 0;
+    fill-opacity: 0.45;
+}
+
+.legend{
+    padding-top: 5px;
+}
+
 .legend-item{
     display: inline-block;
     border: 3px solid #E0E6EA;
     border-radius: 30px;
     padding: 10px;
-    margin: 15px 15px 15px 0;
+    margin: 5px 5px 5px 0;
 }
 
 .svg-wrapper {
@@ -192,7 +223,7 @@ html, body{
 
 .legend-label{
     display: inline-block;
-    margin: 0 25px;
+    margin: 0 5px;
     vertical-align: middle;
 }
 

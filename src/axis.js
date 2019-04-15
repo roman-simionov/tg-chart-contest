@@ -1,17 +1,25 @@
 import Renderer, { SvgWrapper } from "./renderer";
-import Domain from "./domain";
+import Domain, { numericScale } from "./domain";
 
-export const MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+export const FULL_MONTH = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+export const MONTH = FULL_MONTH.map(m => m.slice(0, 3));
 
-const MULTIPLIERS = [1, 2, 5, 10];
+const MULTIPLIERS = [1, 2, 5, 10, 50, 100];
 
 const math = Math;
 
-export function createTicks([s1, s2], [d1, d2]) {
+export function getSynchronizer(t1, t2) {
+    const scale = numericScale([t1[0], t1[t1.length - 1]], [t2[t1.length - 1], t2[0]]);
+    return ticks => {
+        return ticks.map(t => scale(t));
+    };
+}
+
+export function createTicks([s1, s2], [d1, d2], externalCount) {
     const domainRange = d2 - d1;
     const screenRange = s2 - s1;
 
-    const count = math.ceil(screenRange / 70);
+    const count = externalCount || math.ceil(screenRange / 70);
     const interval = domainRange / count;
 
     const factor = math.pow(10, math.floor(math.log10(interval)));
@@ -21,15 +29,21 @@ export function createTicks([s1, s2], [d1, d2]) {
 
     while (adjustedInterval < interval) {
         adjustedInterval = factor * MULTIPLIERS[m++];
-        if (m > MULTIPLIERS.length) {
+        if (m >= MULTIPLIERS.length) {
             break;
         }
     }
 
     const startTick = math.floor(d1 / adjustedInterval) * adjustedInterval;
-    const ticks = new Array(math.ceil(domainRange / adjustedInterval) + 1).fill(0).map((_, i) => startTick + adjustedInterval * i);
+    const adjustedCount = math.ceil(domainRange / adjustedInterval) + 1;
+
+    const ticks = new Array(adjustedCount).fill(0).map((_, i) => startTick + adjustedInterval * i);
 
     if (ticks[ticks.length - 1] < d2) {
+        ticks.push(ticks[ticks.length - 1] + adjustedInterval);
+    }
+
+    while (ticks.length < externalCount) {
         ticks.push(ticks[ticks.length - 1] + adjustedInterval);
     }
 
@@ -99,6 +113,10 @@ export class ValueAxis extends BaseAxis {
             .renderTo(this.renderer.svg);
     }
 
+    labelX() {
+        return 0;
+    }
+
     /**
      *
      * @param {Number[]} tickValues
@@ -135,7 +153,10 @@ export class ValueAxis extends BaseAxis {
                 };
             } else {
                 const label = this.renderer.text()
-                    .setAttributes({ y })
+                    .setAttributes({
+                        y,
+                        x: this.labelX()
+                    })
                     .value(value)
                     .renderTo(this.group);
 
@@ -216,10 +237,17 @@ export class ValueAxis extends BaseAxis {
 
         (this.ticks || []).forEach(t => {
             t.grid.setAttributes({ x1: 0, x2: width });
+            t.label.setAttributes({ x: this.labelX() });
         });
 
         this.min = null;
         this.max = null;
+    }
+
+    fill(color) {
+        this.group.setCss({
+            fill: color
+        });
     }
 }
 
@@ -307,5 +335,22 @@ export class ArgumentAxis extends BaseAxis {
             "transform": `translate(0, ${height})`
         });
         this.domain.setRange([0, width]);
+    }
+}
+
+
+export class RightValueAxis extends ValueAxis {
+    /**
+     *
+     * @param {Renderer} renderer
+     */
+    constructor(renderer) {
+        super(renderer);
+        this.group.addClass("right-axis");
+        this.gridGroup.remove();
+    }
+
+    labelX() {
+        return this.width;
     }
 }

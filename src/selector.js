@@ -204,7 +204,9 @@ export default class Selector {
 
         this.drawRects();
 
-        this.seriesView.resize(width, height);
+        this.seriesView.forEach(seriesView => {
+            seriesView.resize(width, height);
+        });
 
         this.renderSeriesView();
     }
@@ -228,17 +230,24 @@ export default class Selector {
     }
 
     renderSeriesView(animate) {
-        const valueScale = numericScale(this.seriesView.getRange(), [0, this.height]);
-        const argumentScale = dateScale(this.domain.map(d=>new Date(d)), [0, this.width]);
-        this.seriesView.render(valueScale, argumentScale, animate);
-        this.seriesView.setCommonScale(valueScale);
+        this.seriesView.forEach(seriesView => {
+            const valueScale = numericScale(seriesView.getRange(), [0, this.height]);
+            const argumentScale = dateScale(this.domain.map(d => new Date(d)), [0, this.width]);
+            const secondScale = numericScale(seriesView.getRange(undefined, "a1"), [0, this.height]);
+            seriesView.render(valueScale, argumentScale, animate, secondScale);
+            seriesView.setCommonScale(valueScale, secondScale);
+        });
     }
 
     scaleSeries() {
-        this.seriesView.transform().applyVisibility();
+        this.seriesView.forEach(seriesView => {
+            seriesView.transform().applyVisibility();
+        });
     }
 
     setSeries(options) {
-        this.seriesView = new SeriesView(this.seriesGroup, options);
+        this.seriesView = options.map(options => {
+            return new SeriesView(this.seriesGroup, options);
+        });
      }
 }

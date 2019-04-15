@@ -1,4 +1,4 @@
-import { Path } from "./renderer";
+import { Path, SvgWrapper } from "../renderer";
 export default class Series {
     /**
      *
@@ -16,17 +16,24 @@ export default class Series {
         this.pointArguments = [];
     }
 
+    value(i) {
+        return this.options.visible === false ? 0 : this.options.y[i];
+    }
+
     getRange(bounds) {
         if (!this.options.visible) {
             return [];
         }
         const x = this.options.x;
-        const visibleData = bounds !== undefined ?
+        const visibleData = (bounds !== undefined ?
             this.options.y
-                .filter((_, i) => {
-                    return (x[i - 1] >= bounds[0] || x[i] >= bounds[0]) && (x[i + 1] <= bounds[1] || x[i] <= bounds[1]);
-                })
-            : this.options.y;
+                .reduce((data, _, i) => {
+                    if ((x[i - 1] >= bounds[0] || x[i] >= bounds[0]) && (x[i + 1] <= bounds[1] || x[i] <= bounds[1])) {
+                        data.push(this.value(i));
+                    }
+                    return data;
+                }, [])
+            : this.options.y.map((_, i)=>this.value(i)));
 
         return [Math.min.apply(null, visibleData), Math.max.apply(null, visibleData)];
     }
@@ -64,12 +71,14 @@ export default class Series {
         let j = x;
         let v;
         let a;
+        let pIndex;
         const check = (c) => {
             const index = this.pointArguments[c];
             if (index !== undefined) {
                 a = this.options.x[index];
                 v = this.options.y[index];
                 x = c;
+                pIndex = index;
                 return true;
             }
         };
@@ -85,7 +94,8 @@ export default class Series {
             v,
             y: valueScale(v),
             a,
-            x
+            x,
+            index: pIndex
         };
     }
 
@@ -112,5 +122,23 @@ export default class Series {
 
     show() {
         this.path.animate("opacity", 1);
+    }
+
+    hover({ x, y, series }) {
+        return new SvgWrapper("circle")
+            .setAttributes({
+                cx: x,
+                cy: y,
+                r: 10,
+                stroke: series.options.color,
+                opacity: 0
+            });
+    }
+
+    clearHover() {
+    }
+
+    lineVisibility() {
+        return true;
     }
 }
