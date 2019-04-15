@@ -35,12 +35,13 @@
 }
 
 .dark .handler{
-    fill: #445669;
+    fill: #56626D;
 }
 
 .dark .shutter{
-    fill: #445669;
+    fill: #304259;
 }
+
 
 .dark .legend-item{
     border-color: #394858;

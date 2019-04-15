@@ -111,8 +111,7 @@ html, body{
 }
 
 .handler{
-    fill: #DDEAF3;
-    opacity: 0.60;
+    fill: #C0D1E1;
 }
 
 .move-handler{
@@ -122,8 +121,8 @@ html, body{
 }
 
 .shutter{
-    opacity: 0.40;
-    fill: #DDEAF3;
+    opacity: 0.6;
+    fill: #E2EEF9;
 }
 
 .selector{
